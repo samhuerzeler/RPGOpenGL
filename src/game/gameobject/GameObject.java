@@ -14,6 +14,8 @@ public abstract class GameObject {
     protected float z;
     protected int type;
     protected Sprite spr;
+    public boolean jumping = false;
+    public long jumpingTime = 150;
     protected boolean[] flags = new boolean[1];
 
     public void update() {

@@ -3,7 +3,7 @@ package game.gameobject;
 public class StatObject extends GameObject {
 
     protected Stats stats;
-    
+
     public void damage(int amt) {
         stats.damage(amt);
     }

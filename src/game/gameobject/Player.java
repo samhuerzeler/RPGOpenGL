@@ -44,6 +44,11 @@ public class Player extends StatObject {
                 addItem((Item) go);
             }
         }
+        if (jumping) {
+            jump();
+        } else if (!jumping && y > 0) {
+            fall();
+        }
     }
 
     public void getInput() {
@@ -59,8 +64,27 @@ public class Player extends StatObject {
         if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
             move(1, 0);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE) && attackDelay.isOver()) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_F) && attackDelay.isOver()) {
             attack();
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+            if (!jumping && y <= 0) {
+                jumping = true;
+                new Thread(new stopJumping()).start();
+            }
+        }
+    }
+
+    public class stopJumping implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(jumpingTime);
+                jumping = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -119,6 +143,14 @@ public class Player extends StatObject {
 
         x += getSpeed() * magX * Time.getDelta();
         z += getSpeed() * magZ * Time.getDelta();
+    }
+
+    private void jump() {
+        y += getSpeed() * Time.getDelta();
+    }
+
+    private void fall() {
+        y -= getSpeed() * Time.getDelta();
     }
 
     public void addItem(Item item) {

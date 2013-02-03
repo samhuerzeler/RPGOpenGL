@@ -1,7 +1,7 @@
 package game;
 
-import game.gameobject.GameObject;
 import engine.Physics;
+import game.gameobject.GameObject;
 import game.gameobject.Goblin;
 import game.gameobject.Player;
 import game.gameobject.item.Bow;

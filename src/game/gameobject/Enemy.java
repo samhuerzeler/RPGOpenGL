@@ -74,7 +74,7 @@ public class Enemy extends StatObject {
 
     protected void chase() {
         float speedX = (getTarget().getX() - x);
-        float speedZ = (getTarget().getY() - z);
+        float speedZ = (getTarget().getZ() - z);
 
         float maxSpeed = getStats().getSpeed() * DAMPING;
 
@@ -99,7 +99,7 @@ public class Enemy extends StatObject {
         float speedX = (spawnX - x);
         float speedZ = (spawnZ - z);
 
-        float maxSpeed = getStats().getSpeed() * DAMPING;
+        float maxSpeed = getStats().getSpeed();
 
         if (speedX > maxSpeed) {
             speedX = maxSpeed;
