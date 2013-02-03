@@ -1,6 +1,5 @@
 package game.gameobject;
 
-import game.GameObject;
 import game.Sprite;
 import game.Delay;
 import game.Game;

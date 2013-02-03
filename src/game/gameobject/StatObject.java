@@ -1,7 +1,5 @@
 package game.gameobject;
 
-import game.GameObject;
-
 public class StatObject extends GameObject {
 
     protected Stats stats;

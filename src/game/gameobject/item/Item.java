@@ -1,6 +1,6 @@
 package game.gameobject.item;
 
-import game.GameObject;
+import game.gameobject.GameObject;
 import game.Sprite;
 
 public class Item extends GameObject {

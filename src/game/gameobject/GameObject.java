@@ -1,5 +1,6 @@
-package game;
+package game.gameobject;
 
+import game.Sprite;
 import static org.lwjgl.opengl.GL11.*;
 
 public abstract class GameObject {
