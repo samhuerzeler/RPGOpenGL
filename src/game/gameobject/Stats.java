@@ -6,7 +6,7 @@ public class Stats {
     private boolean levelable;
     private int level;
     private float xp;
-    private int health;
+    private int health; 
 
     public Stats(float xp, boolean levelable) {
         this.levelable = levelable;
