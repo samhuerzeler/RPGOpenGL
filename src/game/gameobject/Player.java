@@ -21,15 +21,18 @@ public class Player extends StatObject {
     private Delay attackDelay;
     private int attackDamage;
     private int facingDirection;
+    public boolean jumping = false;
+    public long jumpingTime = 150;
 
     public Player(float x, float y, float z) {
         init(x, y, z, 0.2f, 0.2f, 1.0f, SIZE, SIZE, SIZE, PLAYER_ID);
         stats = new Stats(0, true);
+        name = "Player";
         inventory = new Inventory(20);
         equipment = new Equipment(inventory);
         attackDelay = new Delay(500);
         attackRange = 43;
-        attackDamage = 2;
+        attackDamage = 1;
         facingDirection = 0;
         attackDelay.terminate();
     }
@@ -76,7 +79,6 @@ public class Player extends StatObject {
     }
 
     public void attack() {
-        System.out.print("attacking");
         // find objects in attack range
         ArrayList<GameObject> objects = new ArrayList<GameObject>();
         if (facingDirection == FORWARD) {
@@ -107,9 +109,10 @@ public class Player extends StatObject {
             }
             // attack enemy
             target.damage(attackDamage);
-            System.out.println(" : " + target.getCurrentHealth());
+            target.extendFleeRange();
+            System.out.println(name + " attacking " + target.name + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
         } else {
-            System.out.println(" : No Target");
+            System.out.println(name + " : No Target");
         }
         attackDelay.restart();
     }

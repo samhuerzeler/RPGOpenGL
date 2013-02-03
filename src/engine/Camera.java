@@ -24,9 +24,9 @@ public class Camera {
     private float far;
 
     public Camera(float fov, float aspect, float near, float far) {
-        x = -200;
-        y = -300;
-        z = -300;
+        x = -150;
+        y = -250;
+        z = -250;
         rx = 33;
         ry = 20;
         rz = 0;

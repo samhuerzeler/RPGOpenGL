@@ -25,6 +25,7 @@ public class Game {
         objects.add(new Sword(32, 0, 0));
         objects.add(new Bow(500, 0, 0));
         objects.add(new Goblin(300, 0, -500, 1));
+        objects.add(new Goblin(100, 0, -300, 1));
     }
 
     public void getInput() {

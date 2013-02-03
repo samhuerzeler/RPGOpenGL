@@ -3,6 +3,7 @@ package game.gameobject;
 public class StatObject extends GameObject {
 
     protected Stats stats;
+    protected String name;
 
     public void damage(int amt) {
         stats.damage(amt);
@@ -30,5 +31,9 @@ public class StatObject extends GameObject {
 
     public float getMana() {
         return stats.getMana();
+    }
+
+    String getName() {
+        return name;
     }
 }

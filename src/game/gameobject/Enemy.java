@@ -1,8 +1,8 @@
 package game.gameobject;
 
-import game.Sprite;
 import game.Delay;
 import game.Game;
+import game.Sprite;
 import game.Time;
 import game.Util;
 import java.util.ArrayList;
@@ -14,9 +14,12 @@ public class Enemy extends StatObject {
     protected float spawnY;
     protected float spawnZ;
     private float sightRange;
+    private float basicFleeRange;
+    private float currentFleeRange;
     private float chaseRange;
     private float attackRange;
     private int attackDamage;
+    private boolean resetting = false;
     private Delay attackDelay;
     private StatObject target;
 
@@ -27,6 +30,8 @@ public class Enemy extends StatObject {
         attackRange = 42f;
         attackDamage = 1;
         sightRange = 120f;
+        basicFleeRange = 300f;
+        currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
         attackDelay.terminate();
     }
@@ -41,11 +46,16 @@ public class Enemy extends StatObject {
                     attack();
                 }
             } else {
-                if (Util.dist(x, z, getTarget().getX(), getTarget().getZ()) <= chaseRange) {
+                if (Util.dist(x, z, spawnX, spawnZ) > currentFleeRange) {
+                    resetting = true;
+                    resetPosition();
+                } else if (!resetting && Util.dist(x, z, getTarget().getX(), getTarget().getZ()) <= chaseRange) {
                     chase();
                 } else {
                     if (Math.abs(x - spawnX) > (getStats().getSpeed()) || Math.abs(z - spawnZ) > (getStats().getSpeed())) {
                         resetPosition();
+                    } else {
+                        resetting = false;
                     }
                 }
             }
@@ -58,7 +68,7 @@ public class Enemy extends StatObject {
 
     protected void attack() {
         getTarget().damage(getAttackDamage());
-        System.out.println("We're hit : " + getTarget().getCurrentHealth() + "/" + getTarget().getMaxHealth());
+        System.out.println(name + " attacking " + getTarget().getName() + " : " + getTarget().getCurrentHealth() + "/" + getTarget().getMaxHealth());
         attackDelay.restart();
     }
 
@@ -96,6 +106,7 @@ public class Enemy extends StatObject {
     }
 
     protected void resetPosition() {
+        resetFleeRange();
         float speedX = (spawnX - x);
         float speedZ = (spawnZ - z);
 
@@ -132,6 +143,14 @@ public class Enemy extends StatObject {
 
     public Stats getStats() {
         return stats;
+    }
+
+    public void extendFleeRange() {
+        currentFleeRange = Util.dist(x, z, spawnX, spawnZ) + basicFleeRange;
+    }
+
+    public void resetFleeRange() {
+        currentFleeRange = basicFleeRange;
     }
 
     public int getAttackDamage() {
