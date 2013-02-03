@@ -44,7 +44,7 @@ public class Enemy extends StatObject {
                 if (Util.dist(x, z, getTarget().getX(), getTarget().getZ()) <= chaseRange) {
                     chase();
                 } else {
-                    if (Math.abs(x - spawnX) > (getStats().getSpeed() * DAMPING) || Math.abs(z - spawnZ) > (getStats().getSpeed() * DAMPING)) {
+                    if (Math.abs(x - spawnX) > (getStats().getSpeed()) || Math.abs(z - spawnZ) > (getStats().getSpeed())) {
                         resetPosition();
                     }
                 }

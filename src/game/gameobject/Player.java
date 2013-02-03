@@ -75,19 +75,6 @@ public class Player extends StatObject {
         }
     }
 
-    public class stopJumping implements Runnable {
-
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(jumpingTime);
-                jumping = false;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void attack() {
         System.out.print("attacking");
         // find objects in attack range
@@ -159,5 +146,18 @@ public class Player extends StatObject {
 
     public void addXp(float amt) {
         stats.addXp(amt);
+    }
+
+    public class stopJumping implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(jumpingTime);
+                jumping = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
