@@ -1,6 +1,6 @@
 package game.gameobject;
 
-import engine.GameObject;
+import game.GameObject;
 import game.Delay;
 import game.Game;
 import game.Time;

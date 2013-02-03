@@ -1,7 +1,5 @@
 package game;
 
-import engine.GameObject;
-
 public class Util {
     
     public static boolean lineOfSight(GameObject go1, GameObject go2) {

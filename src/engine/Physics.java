@@ -1,5 +1,6 @@
 package engine;
 
+import game.GameObject;
 import java.awt.Rectangle;
 
 public class Physics {

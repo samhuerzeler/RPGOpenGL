@@ -1,6 +1,6 @@
 package game.gameobject.item;
 
-import engine.Sprite;
+import game.Sprite;
 
 public class EquippableItem extends Item {
 

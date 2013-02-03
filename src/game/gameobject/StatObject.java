@@ -1,6 +1,6 @@
 package game.gameobject;
 
-import engine.GameObject;
+import game.GameObject;
 
 public class StatObject extends GameObject {
 

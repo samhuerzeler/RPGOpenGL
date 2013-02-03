@@ -1,5 +1,7 @@
 package engine;
 
+import game.Sprite;
+
 public class Frame {
 
     private int length;

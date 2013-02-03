@@ -1,7 +1,7 @@
 package game.gameobject;
 
-import engine.GameObject;
-import engine.Sprite;
+import game.GameObject;
+import game.Sprite;
 import game.Delay;
 import game.Game;
 import game.Time;
