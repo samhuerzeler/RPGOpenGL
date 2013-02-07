@@ -12,8 +12,6 @@ import game.gameobject.Item;
 import game.gameobject.StatObject;
 import game.gameobject.item.EquippableItem;
 import game.gameobject.item.equippableitem.Weapon;
-import game.gameobject.item.equippableitem.weapon.Bow;
-import game.gameobject.item.equippableitem.weapon.Sword;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 
@@ -104,15 +102,32 @@ public class Player extends StatObject {
 
     private void attack() {
         // find objects in attack range
-        ArrayList<GameObject> objects = new ArrayList<GameObject>();
+        ArrayList<GameObject> objects = Game.sphereCollide(x, z, attackRange);
+        // remove enemies not in front of the player
         if (facingDirection == FORWARD) {
-            objects = Game.rectangleCollide(x, z, x + SIZE, z + attackRange);
+            for (int i = 0; i < objects.size(); i++) {
+                if (objects.get(i).getZ() + SIZE / 2 < z + SIZE / 2) {
+                    objects.remove(objects.get(i));
+                }
+            }
         } else if (facingDirection == BACKWARD) {
-            objects = Game.rectangleCollide(x, z - attackRange + SIZE, x + SIZE, z);
+            for (int i = 0; i < objects.size(); i++) {
+                if (objects.get(i).getZ() + SIZE / 2 > z + SIZE / 2) {
+                    objects.remove(objects.get(i));
+                }
+            }
         } else if (facingDirection == LEFT) {
-            objects = Game.rectangleCollide(x - attackRange + SIZE, z, x, z + SIZE);
+            for (int i = 0; i < objects.size(); i++) {
+                if (objects.get(i).getX() + SIZE / 2 > x + SIZE / 2) {
+                    objects.remove(objects.get(i));
+                }
+            }
         } else if (facingDirection == RIGHT) {
-            objects = Game.rectangleCollide(x, z, x + attackRange, z + SIZE);
+            for (int i = 0; i < objects.size(); i++) {
+                if (objects.get(i).getX() + SIZE / 2 < x + SIZE / 2) {
+                    objects.remove(objects.get(i));
+                }
+            }
         }
         // find which objects are enemies
         ArrayList<Enemy> enemies = new ArrayList<Enemy>();

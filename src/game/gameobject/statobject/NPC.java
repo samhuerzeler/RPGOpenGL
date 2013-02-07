@@ -129,8 +129,13 @@ public class NPC extends StatObject {
             speedZ = -maxSpeed;
         }
 
-        x = x + speedX * Time.getDelta();
-        z = z + speedZ * Time.getDelta();
+        if (Math.abs(x - spawnX) > (getStats().getSpeed())) {
+            x = x + speedX * Time.getDelta();
+        }
+        if (Math.abs(z - spawnZ) > (getStats().getSpeed())) {
+            z = z + speedZ * Time.getDelta();
+        }
+
     }
 
     protected void die() {
