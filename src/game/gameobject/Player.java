@@ -1,10 +1,13 @@
 package game.gameobject;
 
+import game.GameObject;
 import game.Delay;
 import game.Game;
 import game.Time;
 import game.Util;
+import game.gameobject.item.EquippableItem;
 import game.gameobject.item.Item;
+import game.gameobject.item.equippableitem.Weapon;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 
@@ -19,7 +22,6 @@ public class Player extends StatObject {
     private Equipment equipment;
     private int attackRange;
     private Delay attackDelay;
-    private int attackDamage;
     private int facingDirection;
     public boolean jumping = false;
     public long jumpingTime = 150;
@@ -74,6 +76,22 @@ public class Player extends StatObject {
             if (!jumping && y <= 0) {
                 jumping = true;
                 new Thread(new stopJumping()).start();
+            }
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+            Item sword = inventory.findByName("Sword");
+            if (sword != null) {
+                equipment.equip((EquippableItem) sword);
+                setAttackDamage(((Weapon) sword).getDamage());
+                System.out.println("Sword equipped");
+            }
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+            Item bow = inventory.findByName("Bow");
+            if (bow != null) {
+                equipment.equip((EquippableItem) bow);
+                setAttackDamage(((Weapon) bow).getDamage());
+                System.out.println("Bow equipped");
             }
         }
     }

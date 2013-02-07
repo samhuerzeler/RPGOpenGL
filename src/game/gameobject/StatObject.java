@@ -1,5 +1,7 @@
 package game.gameobject;
 
+import game.GameObject;
+
 public class StatObject extends GameObject {
 
     protected Stats stats;
@@ -32,7 +34,7 @@ public class StatObject extends GameObject {
     public float getMana() {
         return stats.getMana();
     }
-    
+
     public String getName() {
         return name;
     }

@@ -1,6 +1,5 @@
-package game.gameobject;
+package game;
 
-import game.Sprite;
 import static org.lwjgl.opengl.GL11.*;
 
 public abstract class GameObject {
@@ -14,6 +13,7 @@ public abstract class GameObject {
     protected float z;
     protected int type;
     protected Sprite spr;
+    protected int attackDamage;
     protected boolean[] flags = new boolean[1];
 
     public void update() {
@@ -62,6 +62,10 @@ public abstract class GameObject {
 
     public void remove() {
         flags[0] = true;
+    }
+
+    public void setAttackDamage(int amt) {
+        attackDamage = amt;
     }
 
     protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz, int type) {

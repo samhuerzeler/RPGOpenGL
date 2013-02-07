@@ -1,5 +1,6 @@
 package game.gameobject;
 
+import game.GameObject;
 import game.Delay;
 import game.Game;
 import game.Sprite;
@@ -18,7 +19,6 @@ public class Enemy extends StatObject {
     private float currentFleeRange;
     private float chaseRange;
     private float attackRange;
-    private int attackDamage;
     private boolean resetting = false;
     private Delay attackDelay;
     private StatObject target;
@@ -68,7 +68,7 @@ public class Enemy extends StatObject {
 
     protected void attack() {
         getTarget().damage(getAttackDamage());
-        System.out.println(name + " attacking " + getTarget().getName() + " : " + getTarget().getCurrentHealth() + "/" + getTarget().getMaxHealth());
+        System.err.println(name + " attacking " + getTarget().getName() + " : " + getTarget().getCurrentHealth() + "/" + getTarget().getMaxHealth());
         attackDelay.restart();
     }
 
