@@ -8,12 +8,12 @@ public abstract class GameObject {
     public static final int ITEM_ID = 1;
     public static final int PLAYER_ID = 2;
     public static final int ENEMY_ID = 3;
+    public static final int NPC_ID = 4;
     protected float x;
     protected float y;
     protected float z;
     protected int type;
     protected Sprite spr;
-    protected int attackDamage;
     protected boolean[] flags = new boolean[1];
 
     public void update() {
@@ -62,10 +62,6 @@ public abstract class GameObject {
 
     public void remove() {
         flags[0] = true;
-    }
-
-    public void setAttackDamage(int amt) {
-        attackDamage = amt;
     }
 
     protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz, int type) {

@@ -8,6 +8,8 @@ public class Sword extends Weapon {
 
     public Sword(float x, float y, float z) {
         init(x, y, z, 1.0f, 0.5f, 0, SIZE, SIZE, SIZE, "Sword", WEAPON_SLOT);
+        id = 0;
         damage = 3;
+        range = 43;
     }
 }

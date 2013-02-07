@@ -10,7 +10,7 @@ import game.Util;
 import game.gameobject.StatObject;
 import java.util.ArrayList;
 
-public class Enemy extends StatObject {
+public class NPC extends StatObject {
 
     public static final float DAMPING = 0.5f;
     protected float spawnX;
@@ -24,13 +24,13 @@ public class Enemy extends StatObject {
     private Delay attackDelay;
     private StatObject target;
 
-    public Enemy(int level) {
+    public NPC(int level) {
         stats = new Stats(level, false);
         target = null;
         attackDelay = new Delay(500);
         attackRange = 42;
         attackDamage = 1;
-        sightRange = 120f;
+        sightRange = 200f;
         basicFleeRange = 300f;
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
@@ -39,6 +39,9 @@ public class Enemy extends StatObject {
 
     @Override
     public void update() {
+        if (target != null && target.getCurrentHealth() <= 0) {
+            setTarget(null);
+        }
         if (target == null) {
             idle();
         } else {
@@ -77,7 +80,7 @@ public class Enemy extends StatObject {
         ArrayList<GameObject> objects = Game.sphereCollide(x, z, sightRange);
 
         for (GameObject go : objects) {
-            if (go.getType() == PLAYER_ID) {
+            if (go.getType() == ENEMY_ID) {
                 setTarget((StatObject) go);
             }
         }
@@ -171,7 +174,7 @@ public class Enemy extends StatObject {
         this.spawnX = x;
         this.spawnY = y;
         this.spawnZ = z;
-        this.type = ENEMY_ID;
+        this.type = NPC_ID;
         this.spr = new Sprite(r, g, b, sx, sy, sz);
     }
 }

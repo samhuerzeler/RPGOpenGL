@@ -12,6 +12,8 @@ import game.gameobject.Item;
 import game.gameobject.StatObject;
 import game.gameobject.item.EquippableItem;
 import game.gameobject.item.equippableitem.Weapon;
+import game.gameobject.item.equippableitem.weapon.Bow;
+import game.gameobject.item.equippableitem.weapon.Sword;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 
@@ -24,7 +26,6 @@ public class Player extends StatObject {
     public static final int RIGHT = 3;
     private Inventory inventory;
     private Equipment equipment;
-    private int attackRange;
     private Delay attackDelay;
     private int facingDirection;
     public boolean jumping = false;
@@ -84,23 +85,24 @@ public class Player extends StatObject {
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
             Item sword = inventory.findByName("Sword");
-            if (sword != null) {
-                equipment.equip((EquippableItem) sword);
-                setAttackDamage(((Weapon) sword).getDamage());
-                System.out.println("Sword equipped");
-            }
+            equipWeapon((Weapon) sword);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
             Item bow = inventory.findByName("Bow");
-            if (bow != null) {
-                equipment.equip((EquippableItem) bow);
-                setAttackDamage(((Weapon) bow).getDamage());
-                System.out.println("Bow equipped");
-            }
+            equipWeapon((Weapon) bow);
         }
     }
 
-    public void attack() {
+    private void equipWeapon(Weapon weapon) {
+        if (weapon != null) {
+            equipment.equip((EquippableItem) weapon);
+            setAttackDamage(((Weapon) weapon).getDamage());
+            setAttackRange(((Weapon) weapon).getRange());
+            System.out.println(weapon.getName() + " equipped");
+        }
+    }
+
+    private void attack() {
         // find objects in attack range
         ArrayList<GameObject> objects = new ArrayList<GameObject>();
         if (facingDirection == FORWARD) {
@@ -165,15 +167,15 @@ public class Player extends StatObject {
         y -= getSpeed() * Time.getDelta();
     }
 
-    public void addItem(Item item) {
+    private void addItem(Item item) {
         inventory.add(item);
     }
 
-    public void addXp(float amt) {
+    private void addXp(float amt) {
         stats.addXp(amt);
     }
 
-    public class stopJumping implements Runnable {
+    private class stopJumping implements Runnable {
 
         @Override
         public void run() {

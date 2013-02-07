@@ -7,6 +7,8 @@ public class StatObject extends GameObject {
 
     protected Stats stats;
     protected String name;
+    protected int attackDamage;
+    protected int attackRange;
 
     public void damage(int amt) {
         stats.damage(amt);
@@ -38,5 +40,21 @@ public class StatObject extends GameObject {
 
     public String getName() {
         return name;
+    }
+    
+    public int getAttackRange() {
+        return attackRange;
+    }
+    
+    public void setAttackRange(int amt) {
+        attackRange = amt;
+    }
+
+    public int getAttackDamage() {
+        return attackDamage;
+    }
+
+    public void setAttackDamage(int amt) {
+        attackDamage = amt;
     }
 }

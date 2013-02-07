@@ -5,10 +5,15 @@ import game.Sprite;
 
 public class Item extends GameObject {
 
-    protected String name;
+    public String name;
+    public int id;
 
     public String getName() {
         return name;
+    }
+
+    public int getId() {
+        return id;
     }
 
     protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz, String name) {
