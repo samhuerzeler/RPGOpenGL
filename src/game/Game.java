@@ -3,7 +3,7 @@ package game;
 import engine.Physics;
 import game.gameobject.item.equippableitem.weapon.Bow;
 import game.gameobject.item.equippableitem.weapon.Sword;
-import game.gameobject.item.equippableitem.weapon.head.HelmOfCommand;
+import game.gameobject.item.equippableitem.head.HelmOfCommand;
 import game.gameobject.statobject.Player;
 import game.gameobject.statobject.enemy.Goblin;
 import game.gameobject.statobject.npc.Guard;

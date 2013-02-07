@@ -1,4 +1,4 @@
-package game.gameobject.item.equippableitem.weapon.head;
+package game.gameobject.item.equippableitem.head;
 
 import game.gameobject.item.equippableitem.Head;
 
