@@ -32,8 +32,8 @@ public class StatObject extends GameObject {
     public float getMana() {
         return stats.getMana();
     }
-
-    String getName() {
+    
+    public String getName() {
         return name;
     }
 }
