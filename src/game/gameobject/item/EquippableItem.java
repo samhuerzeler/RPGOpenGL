@@ -1,6 +1,7 @@
 package game.gameobject.item;
 
 import game.Sprite;
+import game.gameobject.Item;
 
 public class EquippableItem extends Item {
 

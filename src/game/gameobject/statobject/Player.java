@@ -1,12 +1,16 @@
-package game.gameobject;
+package game.gameobject.statobject;
 
-import game.GameObject;
 import game.Delay;
+import game.Equipment;
 import game.Game;
+import game.GameObject;
+import game.Inventory;
+import game.Stats;
 import game.Time;
 import game.Util;
+import game.gameobject.Item;
+import game.gameobject.StatObject;
 import game.gameobject.item.EquippableItem;
-import game.gameobject.item.Item;
 import game.gameobject.item.equippableitem.Weapon;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
@@ -128,7 +132,7 @@ public class Player extends StatObject {
             // attack enemy
             target.damage(attackDamage);
             target.extendFleeRange();
-            System.out.println(name + " attacking " + target.name + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
+            System.out.println(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
         } else {
             System.out.println(name + " : No Target");
         }

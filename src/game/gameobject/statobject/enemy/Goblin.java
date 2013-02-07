@@ -1,4 +1,6 @@
-package game.gameobject;
+package game.gameobject.statobject.enemy;
+
+import game.gameobject.statobject.Enemy;
 
 public class Goblin extends Enemy {
 

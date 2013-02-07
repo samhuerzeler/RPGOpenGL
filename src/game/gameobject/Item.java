@@ -1,4 +1,4 @@
-package game.gameobject.item;
+package game.gameobject;
 
 import game.GameObject;
 import game.Sprite;

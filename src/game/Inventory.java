@@ -1,6 +1,6 @@
-package game.gameobject;
+package game;
 
-import game.gameobject.item.Item;
+import game.gameobject.Item;
 
 public class Inventory {
     

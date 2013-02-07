@@ -1,10 +1,10 @@
 package game;
 
 import engine.Physics;
-import game.gameobject.Goblin;
-import game.gameobject.Player;
 import game.gameobject.item.equippableitem.weapon.Bow;
 import game.gameobject.item.equippableitem.weapon.Sword;
+import game.gameobject.statobject.Player;
+import game.gameobject.statobject.enemy.Goblin;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import org.lwjgl.opengl.Display;

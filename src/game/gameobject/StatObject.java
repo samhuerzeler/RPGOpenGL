@@ -1,6 +1,7 @@
 package game.gameobject;
 
 import game.GameObject;
+import game.Stats;
 
 public class StatObject extends GameObject {
 

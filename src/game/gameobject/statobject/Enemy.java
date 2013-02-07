@@ -1,11 +1,13 @@
-package game.gameobject;
+package game.gameobject.statobject;
 
-import game.GameObject;
 import game.Delay;
 import game.Game;
+import game.GameObject;
 import game.Sprite;
+import game.Stats;
 import game.Time;
 import game.Util;
+import game.gameobject.StatObject;
 import java.util.ArrayList;
 
 public class Enemy extends StatObject {

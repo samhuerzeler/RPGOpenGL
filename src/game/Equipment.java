@@ -1,4 +1,4 @@
-package game.gameobject;
+package game;
 
 import game.gameobject.item.EquippableItem;
 
