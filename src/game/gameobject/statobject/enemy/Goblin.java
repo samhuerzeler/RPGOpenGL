@@ -8,7 +8,7 @@ public class Goblin extends Enemy {
         super(level);
         name = "Goblin";
         size = 32;
-        attackRange = size + 2;
+        attackRange = size;
         init(x, y, z, 0.1f, 1.0f, 0.25f, size, size, size, ENEMY_ID);
     }
 }

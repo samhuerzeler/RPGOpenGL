@@ -22,7 +22,6 @@ public class NPC extends StatObject {
     public NPC(int level) {
         stats = new Stats(level, false);
         target = null;
-        attackRange = 42;
         attackDamage = 1;
         sightRange = 150f;
         basicFleeRange = 150f;
@@ -33,9 +32,6 @@ public class NPC extends StatObject {
 
     @Override
     public void update() {
-        if (target != null && target.getCurrentHealth() <= 0) {
-            setTarget(null);
-        }
         if (target == null) {
             idle();
         } else {

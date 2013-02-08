@@ -4,7 +4,11 @@ import static org.lwjgl.opengl.GL11.*;
 
 public abstract class GameObject {
 
-    // Objects IDs
+    protected int type;
+    protected Sprite spr;
+    protected boolean[] flags = new boolean[1];
+    protected int size;
+    // object IDs
     public static final int ITEM_ID = 1;
     public static final int PLAYER_ID = 2;
     public static final int ENEMY_ID = 3;
@@ -13,9 +17,11 @@ public abstract class GameObject {
     protected float x;
     protected float y;
     protected float z;
+    // spawn position
     protected float spawnX;
     protected float spawnY;
     protected float spawnZ;
+    // directions
     protected float dx;
     protected float dy;
     protected float dz;
@@ -23,10 +29,6 @@ public abstract class GameObject {
     protected float rx;
     protected float ry;
     protected float rz;
-    protected int type;
-    protected Sprite spr;
-    protected boolean[] flags = new boolean[1];
-    protected int size;
 
     public void update() {
     }

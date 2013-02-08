@@ -15,12 +15,12 @@ public class Game {
 
     public static Game game;
     private ArrayList<GameObject> objects;
-    private ArrayList<GameObject> remove;
+    private ArrayList<GameObject> objectsToRemove;
     public Player player;
 
     public Game() {
         objects = new ArrayList<GameObject>();
-        remove = new ArrayList<GameObject>();
+        objectsToRemove = new ArrayList<GameObject>();
         player = new Player(300, 0, 0);
         objects.add(player);
         objects.add(new Guard(400, 0, 0, 1));
@@ -41,10 +41,10 @@ public class Game {
             if (!go.getRemove()) {
                 go.update();
             } else {
-                remove.add(go);
+                objectsToRemove.add(go);
             }
         }
-        for (GameObject go : remove) {
+        for (GameObject go : objectsToRemove) {
             objects.remove(go);
         }
     }

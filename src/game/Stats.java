@@ -1,6 +1,6 @@
 package game;
 
-public class Stats {
+public final class Stats {
 
     public static final double LEVEL_CONST = 25.0 * Math.pow(3.0, (3.0 / 2.0));
     private boolean levelable;

@@ -64,10 +64,13 @@ public class Player extends StatObject {
         }
         // Keyboard Input
         float movementSpeed = 1.0f;
+        float rotationSpeed = 2.0f;
+
         boolean movingForward = Keyboard.isKeyDown(Keyboard.KEY_W);
         boolean movingBackward = Keyboard.isKeyDown(Keyboard.KEY_S);
         boolean movingLeft = Keyboard.isKeyDown(Keyboard.KEY_Q);
         boolean movingRight = Keyboard.isKeyDown(Keyboard.KEY_E);
+
         if ((movingForward && (movingLeft || movingRight)) || (movingBackward && (movingLeft || movingRight))) {
             movementSpeed = movementSpeed * 2 - (float) Math.sqrt(movementSpeed * movementSpeed + movementSpeed * movementSpeed);
         }
@@ -84,10 +87,10 @@ public class Player extends StatObject {
             move(movementSpeed, 0);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            rotateY(-2.0f);
+            rotateY(-rotationSpeed);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            rotateY(2.0f);
+            rotateY(rotationSpeed);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_F) && attackDelay.isOver()) {
             attack();
@@ -118,25 +121,35 @@ public class Player extends StatObject {
     }
 
     private void attack() {
-        // find objects in sight range
         ArrayList<GameObject> objects = Game.sphereCollide(x, z, attackRange);
-        /**
-         * TODO remove enemies not in front of the player
-         */
-        for (int i = 0; i < objects.size(); i++) {
-            if (objects.get(i).getZ() + size / 2 < z + size / 2) {
-                objects.remove(objects.get(i--));
-            }
-        }
+        removeEnemiesInBack(objects);
+        ArrayList<Enemy> enemies = findEnemies(objects);
+        attackClosestEnemy(enemies);
+        attackDelay.restart();
+    }
 
-        // find which objects are enemies
+    private void removeEnemiesInBack(ArrayList<GameObject> objects) {
+        /**
+         * ToDo
+         */
+//        for (int i = 0; i < objects.size(); i++) {
+//            if (objects.get(i).getZ() + size / 2 < z + size / 2) {
+//                objects.remove(objects.get(i--));
+//            }
+//        }
+    }
+
+    private ArrayList<Enemy> findEnemies(ArrayList<GameObject> objects) {
         ArrayList<Enemy> enemies = new ArrayList<Enemy>();
         for (GameObject go : objects) {
             if (go.getType() == ENEMY_ID) {
                 enemies.add((Enemy) go);
             }
         }
-        // find closest enemy if one exists
+        return enemies;
+    }
+
+    private void attackClosestEnemy(ArrayList<Enemy> enemies) {
         if (enemies.size() > 0) {
             Enemy target = enemies.get(0);
             if (enemies.size() > 1) {
@@ -153,7 +166,6 @@ public class Player extends StatObject {
         } else {
             System.out.println(name + " : No Target");
         }
-        attackDelay.restart();
     }
 
     private void move(float amt, float dir) {
@@ -182,8 +194,8 @@ public class Player extends StatObject {
     }
 
     private void rotate() {
-        float dx = Mouse.getDX();
-        float dy = Mouse.getDY();
+        dx = Mouse.getDX();
+        dy = Mouse.getDY();
         ry += (dx * 0.1f);
         rx += (dy * 0.1f);
         if (rx > 90) {
