@@ -129,10 +129,10 @@ public class Camera {
     }
 
     void getInput() {
-        if(Keyboard.isKeyDown(Keyboard.KEY_ADD)) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_ADD)) {
             zoomIn();
         }
-        if(Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT)) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT)) {
             zoomOut();
         }
     }

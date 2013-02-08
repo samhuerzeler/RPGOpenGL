@@ -41,11 +41,11 @@ public class StatObject extends GameObject {
     public String getName() {
         return name;
     }
-    
+
     public int getAttackRange() {
         return attackRange;
     }
-    
+
     public void setAttackRange(int amt) {
         attackRange = amt;
     }

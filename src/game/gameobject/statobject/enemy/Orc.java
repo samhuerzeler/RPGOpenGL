@@ -1,4 +1,3 @@
-
 package game.gameobject.statobject.enemy;
 
 import game.gameobject.statobject.Enemy;

@@ -71,17 +71,25 @@ public class Player extends StatObject {
             Mouse.setGrabbed(false);
         }
         // Keyboard Input
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            move(-1.0f, 1);
+        float movementSpeed = 1.0f;
+        boolean movingForward = Keyboard.isKeyDown(Keyboard.KEY_W);
+        boolean movingBackward = Keyboard.isKeyDown(Keyboard.KEY_S);
+        boolean movingLeft = Keyboard.isKeyDown(Keyboard.KEY_Q);
+        boolean movingRight = Keyboard.isKeyDown(Keyboard.KEY_E);
+        if ((movingForward && (movingLeft || movingRight)) || (movingBackward && (movingLeft || movingRight))) {
+            movementSpeed = movementSpeed * 2 - (float) Math.sqrt(movementSpeed * movementSpeed + movementSpeed * movementSpeed);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            move(1.0f, 1);
+        if (movingForward) {
+            move(-movementSpeed, 1);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-            move(-1.0f, 0);
+        if (movingBackward) {
+            move(movementSpeed, 1);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-            move(1.0f, 0);
+        if (movingLeft) {
+            move(-movementSpeed, 0);
+        }
+        if (movingRight) {
+            move(movementSpeed, 0);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
             rotateY(-2.0f);
