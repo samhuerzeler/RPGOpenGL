@@ -19,6 +19,7 @@ public class Main {
         initCamera();
         gameLoop();
         cleanUp();
+
     }
 
     private static void initGame() {
@@ -32,7 +33,7 @@ public class Main {
 
     private static void getInput() {
         Game.game.getInput();
-        //Camera.camera.getInput();
+        Camera.camera.getInput();
     }
 
     private static void update() {

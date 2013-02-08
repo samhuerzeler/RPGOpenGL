@@ -1,6 +1,8 @@
 package engine;
 
 import game.GameObject;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.*;
 
@@ -10,7 +12,10 @@ public class Camera {
     public static final int MOUSEB_LEFT = 0;
     private GameObject target;
     // distance
-    private float zDistance = 250.0f;
+    private float distance;
+    private float minDistance = 100.0f;
+    private float maxDistance = 1000.0f;
+    private boolean zoomIn;
     // position
     private float x;
     private float y;
@@ -31,9 +36,11 @@ public class Camera {
         x = 0;
         y = 0;
         z = 0;
-        rx = 20;
-        ry = 0;//20
+        rx = 0;
+        ry = 0;
         rz = 0;
+        distance = 300.0f;
+        zoomIn = false;
         this.fov = fov;
         this.aspect = aspect;
         this.near = near;
@@ -109,8 +116,41 @@ public class Camera {
         ry += amt;
     }
 
+    public void zoomIn() {
+        if (distance > minDistance) {
+            distance -= 10.0f;
+        }
+    }
+
+    public void zoomOut() {
+        if (distance < maxDistance) {
+            distance += 10.0f;
+        }
+    }
+
+    void getInput() {
+        if(Keyboard.isKeyDown(Keyboard.KEY_ADD)) {
+            zoomIn();
+        }
+        if(Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT)) {
+            zoomOut();
+        }
+    }
+
+    public void checkMouseWheel() {
+        int dWheel = Mouse.getDWheel();
+        if (dWheel < 0) {
+            System.out.println("DOWN");
+        } else if (dWheel > 0) {
+            System.out.println("UP");
+        }
+    }
+
     public void update() {
-        glTranslatef(0.0f, -zDistance / 2, -zDistance);
+        if (Mouse.hasWheel()) {
+            checkMouseWheel();
+        }
+        glTranslatef(0.0f, -distance / 4, -distance);
         glRotatef(-target.getRX(), 1.0f, 0.0f, 0.0f);
         glRotatef(target.getRY(), 0.0f, 1.0f, 0.0f);
         glTranslatef(-target.getX(), -target.getY(), -target.getZ());
