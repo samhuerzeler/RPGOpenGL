@@ -15,7 +15,6 @@ public class Camera {
     private float distance;
     private float minDistance = 100.0f;
     private float maxDistance = 1000.0f;
-    private boolean zoomIn;
     // position
     private float x;
     private float y;
@@ -40,7 +39,6 @@ public class Camera {
         ry = 0;
         rz = 0;
         distance = 300.0f;
-        zoomIn = false;
         this.fov = fov;
         this.aspect = aspect;
         this.near = near;
