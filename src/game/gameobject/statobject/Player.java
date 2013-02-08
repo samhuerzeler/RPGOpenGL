@@ -14,6 +14,7 @@ import game.gameobject.item.EquippableItem;
 import game.gameobject.item.equippableitem.Weapon;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 public class Player extends StatObject {
 
@@ -22,6 +23,8 @@ public class Player extends StatObject {
     public static final int BACKWARD = 1;
     public static final int LEFT = 2;
     public static final int RIGHT = 3;
+    public static final int MOUSEB_LEFT = 0;
+    public static final int MOUSEB_RIGHT = 1;
     private Inventory inventory;
     private Equipment equipment;
     private Delay attackDelay;
@@ -38,7 +41,7 @@ public class Player extends StatObject {
         attackDelay = new Delay(500);
         attackRange = 43;
         attackDamage = 1;
-        facingDirection = 0;
+        facingDirection = FORWARD;
         attackDelay.terminate();
     }
 
@@ -60,17 +63,31 @@ public class Player extends StatObject {
     }
 
     public void getInput() {
-        if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-            move(0, -1);
+        // Mouse Input
+        if (Mouse.isButtonDown(MOUSEB_RIGHT)) {
+            rotate();
+            Mouse.setGrabbed(true);
+        } else {
+            Mouse.setGrabbed(false);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-            move(0, 1);
+        // Keyboard Input
+        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+            move(-1.0f, 1);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-            move(-1, 0);
+        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+            move(1.0f, 1);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-            move(1, 0);
+        if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
+            move(-1.0f, 0);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
+            move(1.0f, 0);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+            rotateY(-2.0f);
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+            rotateY(2.0f);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_F) && attackDelay.isOver()) {
             attack();
@@ -107,25 +124,25 @@ public class Player extends StatObject {
         if (facingDirection == FORWARD) {
             for (int i = 0; i < objects.size(); i++) {
                 if (objects.get(i).getZ() + SIZE / 2 < z + SIZE / 2) {
-                    objects.remove(objects.get(i));
+                    objects.remove(objects.get(i--));
                 }
             }
         } else if (facingDirection == BACKWARD) {
             for (int i = 0; i < objects.size(); i++) {
                 if (objects.get(i).getZ() + SIZE / 2 > z + SIZE / 2) {
-                    objects.remove(objects.get(i));
+                    objects.remove(objects.get(i--));
                 }
             }
         } else if (facingDirection == LEFT) {
             for (int i = 0; i < objects.size(); i++) {
                 if (objects.get(i).getX() + SIZE / 2 > x + SIZE / 2) {
-                    objects.remove(objects.get(i));
+                    objects.remove(objects.get(i--));
                 }
             }
         } else if (facingDirection == RIGHT) {
             for (int i = 0; i < objects.size(); i++) {
                 if (objects.get(i).getX() + SIZE / 2 < x + SIZE / 2) {
-                    objects.remove(objects.get(i));
+                    objects.remove(objects.get(i--));
                 }
             }
         }
@@ -156,24 +173,32 @@ public class Player extends StatObject {
         attackDelay.restart();
     }
 
-    private void move(float magX, float magZ) {
-        if (magX == 0 && magZ == 1) {
-            facingDirection = FORWARD;
-        }
-        if (magX == 0 && magZ == -1) {
-            facingDirection = BACKWARD;
-        }
-        if (magX == -1 && magZ == 0) {
-            facingDirection = LEFT;
-        }
-        if (magX == 1 && magZ == 0) {
-            facingDirection = RIGHT;
-        }
-
-        x += getSpeed() * magX * Time.getDelta();
-        z += getSpeed() * magZ * Time.getDelta();
+    private void move(float amt, float dir) {
+        z += getSpeed() * Time.getDelta() * amt * Math.sin(Math.toRadians(ry + 90 * dir));
+        x += getSpeed() * Time.getDelta() * amt * Math.cos(Math.toRadians(ry + 90 * dir));
     }
 
+    public void rotateY(float amt) {
+        ry += amt;
+    }
+
+//    private void move(float magX, float magZ) {
+//        if (magX == 0 && magZ == 1) {
+//            facingDirection = FORWARD;
+//        }
+//        if (magX == 0 && magZ == -1) {
+//            facingDirection = BACKWARD;
+//        }
+//        if (magX == -1 && magZ == 0) {
+//            facingDirection = LEFT;
+//        }
+//        if (magX == 1 && magZ == 0) {
+//            facingDirection = RIGHT;
+//        }
+//
+//        x += getSpeed() * magX * Time.getDelta();
+//        z += getSpeed() * magZ * Time.getDelta();
+//    }
     private void jump() {
         y += getSpeed() * Time.getDelta();
     }
@@ -188,6 +213,19 @@ public class Player extends StatObject {
 
     private void addXp(float amt) {
         stats.addXp(amt);
+    }
+
+    private void rotate() {
+        float dx = Mouse.getDX();
+        float dy = Mouse.getDY();
+        ry += (dx * 0.1f);
+        rx += (dy * 0.1f);
+        if (rx > 90) {
+            rx = 90;
+        }
+        if (rx < -90) {
+            rx = -90;
+        }
     }
 
     private class stopJumping implements Runnable {

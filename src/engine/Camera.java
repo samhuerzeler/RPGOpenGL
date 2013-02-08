@@ -1,12 +1,16 @@
 package engine;
 
-import org.lwjgl.input.Keyboard;
+import game.GameObject;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.*;
 
 public class Camera {
 
     public static Camera camera;
+    public static final int MOUSEB_LEFT = 0;
+    private GameObject target;
+    // distance
+    private float zDistance = 250.0f;
     // position
     private float x;
     private float y;
@@ -23,17 +27,18 @@ public class Camera {
     private float near;
     private float far;
 
-    public Camera(float fov, float aspect, float near, float far) {
-        x = -150;
-        y = -250;
-        z = -250;
-        rx = 33;
-        ry = 20;
+    public Camera(float fov, float aspect, float near, float far, GameObject target) {
+        x = 0;
+        y = 0;
+        z = 0;
+        rx = 20;
+        ry = 0;//20
         rz = 0;
         this.fov = fov;
         this.aspect = aspect;
         this.near = near;
         this.far = far;
+        this.target = target;
         initProjection();
     }
 
@@ -99,36 +104,15 @@ public class Camera {
     public void setRZ(float rz) {
         this.rz = rz;
     }
-    float speed = 0.01f;
-
-    public void move(float amt, float dir) {
-        z += amt * Math.sin(Math.toRadians(ry + 90 * dir));
-        x += amt * Math.cos(Math.toRadians(ry + 90 * dir));
-    }
 
     public void rotateY(float amt) {
         ry += amt;
     }
 
-    public void getInput() {
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            move(10.0f, 1);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            move(-10.0f, 1);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            rotateY(-2.0f);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            rotateY(2.0f);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-            move(10.0f, 0);
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_E)) {
-            move(-10.0f, 0);
-        }
+    public void update() {
+        glTranslatef(0.0f, -zDistance / 2, -zDistance);
+        glRotatef(-target.getRX(), 1.0f, 0.0f, 0.0f);
+        glRotatef(target.getRY(), 0.0f, 1.0f, 0.0f);
+        glTranslatef(-target.getX(), -target.getY(), -target.getZ());
     }
 }

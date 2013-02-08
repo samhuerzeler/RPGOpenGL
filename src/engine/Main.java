@@ -1,6 +1,7 @@
 package engine;
 
 import game.Game;
+import game.GameObject;
 import game.Time;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,8 +15,8 @@ public class Main {
 
     public static void main(String[] args) {
         initDisplay();
-        initCamera();
         initGame();
+        initCamera();
         gameLoop();
         cleanUp();
     }
@@ -25,12 +26,13 @@ public class Main {
     }
 
     private static void initCamera() {
-        Camera.camera = new Camera(70, (float) Display.getWidth() / (float) Display.getHeight(), 0.3f, 5000f);
+        GameObject cameraTarget = Game.game.player;
+        Camera.camera = new Camera(70, (float) Display.getWidth() / (float) Display.getHeight(), 0.3f, 10000f, cameraTarget);
     }
 
     private static void getInput() {
         Game.game.getInput();
-        Camera.camera.getInput();
+        //Camera.camera.getInput();
     }
 
     private static void update() {
@@ -41,6 +43,7 @@ public class Main {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glLoadIdentity();
         Camera.camera.useView();
+        Camera.camera.update();
         Game.game.render();
         Display.update();
         Display.sync(60);

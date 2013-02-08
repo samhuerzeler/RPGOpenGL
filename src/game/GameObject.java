@@ -9,9 +9,14 @@ public abstract class GameObject {
     public static final int PLAYER_ID = 2;
     public static final int ENEMY_ID = 3;
     public static final int NPC_ID = 4;
+    // position
     protected float x;
     protected float y;
     protected float z;
+    // rotation
+    protected float rx;
+    protected float ry;
+    protected float rz;
     protected int type;
     protected Sprite spr;
     protected boolean[] flags = new boolean[1];
@@ -38,6 +43,18 @@ public abstract class GameObject {
 
     public float getZ() {
         return z;
+    }
+
+    public float getRX() {
+        return rx;
+    }
+
+    public float getRY() {
+        return ry;
+    }
+
+    public float getRZ() {
+        return rz;
     }
 
     public float getSX() {
