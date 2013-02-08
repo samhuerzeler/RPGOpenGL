@@ -1,5 +1,6 @@
 package game.gameobject;
 
+import game.Delay;
 import game.GameObject;
 import game.Stats;
 
@@ -9,6 +10,8 @@ public class StatObject extends GameObject {
     protected String name;
     protected int attackDamage;
     protected int attackRange;
+    protected float sightRange;
+    protected Delay attackDelay = new Delay(1000);
 
     public void damage(int amt) {
         stats.damage(amt);

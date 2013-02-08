@@ -18,7 +18,6 @@ import org.lwjgl.input.Mouse;
 
 public class Player extends StatObject {
 
-    public static final int SIZE = 32;
     public static final int FORWARD = 0;
     public static final int BACKWARD = 1;
     public static final int LEFT = 2;
@@ -27,18 +26,18 @@ public class Player extends StatObject {
     public static final int MOUSEB_RIGHT = 1;
     private Inventory inventory;
     private Equipment equipment;
-    private Delay attackDelay;
     private int facingDirection;
     public boolean jumping = false;
     public long jumpingTime = 150;
 
     public Player(float x, float y, float z) {
-        init(x, y, z, 0.2f, 0.2f, 1.0f, SIZE, SIZE, SIZE, PLAYER_ID);
         stats = new Stats(0, true);
         name = "Player";
+        size = 32;
+        init(x, y, z, 0.2f, 0.2f, 1.0f, size, size, size, PLAYER_ID);
         inventory = new Inventory(20);
         equipment = new Equipment(inventory);
-        attackDelay = new Delay(500);
+        sightRange = 150f;
         attackRange = 43;
         attackDamage = 1;
         facingDirection = FORWARD;
@@ -47,7 +46,7 @@ public class Player extends StatObject {
 
     @Override
     public void update() {
-        ArrayList<GameObject> objects = Game.rectangleCollide(x, z, x + SIZE, z + SIZE);
+        ArrayList<GameObject> objects = Game.rectangleCollide(x, z, x + size, z + size);
         for (GameObject go : objects) {
             if (go.getType() == ITEM_ID) {
                 System.out.println("Picked up " + ((Item) go).getName() + "!");
@@ -126,30 +125,30 @@ public class Player extends StatObject {
     }
 
     private void attack() {
-        // find objects in attack range
+        // find objects in sight range
         ArrayList<GameObject> objects = Game.sphereCollide(x, z, attackRange);
         // remove enemies not in front of the player
         if (facingDirection == FORWARD) {
             for (int i = 0; i < objects.size(); i++) {
-                if (objects.get(i).getZ() + SIZE / 2 < z + SIZE / 2) {
+                if (objects.get(i).getZ() + size / 2 < z + size / 2) {
                     objects.remove(objects.get(i--));
                 }
             }
         } else if (facingDirection == BACKWARD) {
             for (int i = 0; i < objects.size(); i++) {
-                if (objects.get(i).getZ() + SIZE / 2 > z + SIZE / 2) {
+                if (objects.get(i).getZ() + size / 2 > z + size / 2) {
                     objects.remove(objects.get(i--));
                 }
             }
         } else if (facingDirection == LEFT) {
             for (int i = 0; i < objects.size(); i++) {
-                if (objects.get(i).getX() + SIZE / 2 > x + SIZE / 2) {
+                if (objects.get(i).getX() + size / 2 > x + size / 2) {
                     objects.remove(objects.get(i--));
                 }
             }
         } else if (facingDirection == RIGHT) {
             for (int i = 0; i < objects.size(); i++) {
-                if (objects.get(i).getX() + SIZE / 2 < x + SIZE / 2) {
+                if (objects.get(i).getX() + size / 2 < x + size / 2) {
                     objects.remove(objects.get(i--));
                 }
             }

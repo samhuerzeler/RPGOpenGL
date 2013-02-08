@@ -1,6 +1,7 @@
 package game;
 
 import game.gameobject.item.EquippableItem;
+import game.gameobject.item.equippableitem.Weapon;
 
 public class Equipment {
 
@@ -29,5 +30,9 @@ public class Equipment {
             return true;
         }
         return false;
+    }
+    
+    public Weapon getEquippedWeapon() {
+        return (Weapon) items[EquippableItem.WEAPON_SLOT];
     }
 }

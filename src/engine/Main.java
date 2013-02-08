@@ -13,8 +13,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Main {
     
-    private static final int DISPLAY_WIDTH = 1024;
-    private static final int DISPLAY_HEIGHT = 768;
+    private static final int DISPLAY_WIDTH = 800;
+    private static final int DISPLAY_HEIGHT = 600;
 
     public static void main(String[] args) {
         initDisplay();

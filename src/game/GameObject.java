@@ -13,6 +13,9 @@ public abstract class GameObject {
     protected float x;
     protected float y;
     protected float z;
+    protected float spawnX;
+    protected float spawnY;
+    protected float spawnZ;
     // rotation
     protected float rx;
     protected float ry;
@@ -20,6 +23,7 @@ public abstract class GameObject {
     protected int type;
     protected Sprite spr;
     protected boolean[] flags = new boolean[1];
+    protected int size;
 
     public void update() {
     }

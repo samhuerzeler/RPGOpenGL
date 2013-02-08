@@ -13,24 +13,18 @@ import java.util.ArrayList;
 public class NPC extends StatObject {
 
     public static final float DAMPING = 0.5f;
-    protected float spawnX;
-    protected float spawnY;
-    protected float spawnZ;
-    private float sightRange;
     private float basicFleeRange;
     private float currentFleeRange;
     private float chaseRange;
     private boolean resetting = false;
-    private Delay attackDelay;
     private StatObject target;
 
     public NPC(int level) {
         stats = new Stats(level, false);
         target = null;
-        attackDelay = new Delay(500);
         attackRange = 42;
         attackDamage = 1;
-        sightRange = 200f;
+        sightRange = 150f;
         basicFleeRange = 300f;
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;

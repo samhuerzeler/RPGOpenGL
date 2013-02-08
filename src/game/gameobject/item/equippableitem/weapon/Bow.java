@@ -4,12 +4,12 @@ import game.gameobject.item.equippableitem.Weapon;
 
 public class Bow extends Weapon {
 
-    public static final float SIZE = 32;
-
     public Bow(float x, float y, float z) {
-        init(x, y, z, 1.0f, 0.5f, 0, SIZE, SIZE, SIZE, "Bow", WEAPON_SLOT);
         id = 1;
         damage = 2;
-        range = 300;
+        speed = 1200;
+        range = CAST_RANGE;
+        size = 32;
+        init(x, y, z, 1.0f, 0.5f, 0, size, size, size, "Bow", WEAPON_SLOT);
     }
 }

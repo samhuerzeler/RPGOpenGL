@@ -6,6 +6,7 @@ import game.gameobject.item.equippableitem.weapon.Bow;
 import game.gameobject.item.equippableitem.weapon.Sword;
 import game.gameobject.statobject.Player;
 import game.gameobject.statobject.enemy.Goblin;
+import game.gameobject.statobject.enemy.Orc;
 import game.gameobject.statobject.npc.Guard;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -26,7 +27,9 @@ public class Game {
         objects.add(new Sword(200, 0, 80));
         objects.add(new Bow(500, 0, 0));
         objects.add(new HelmOfCommand(250, 0, 0));
-        objects.add(new Goblin(120, 0, -200, 10));
+        objects.add(new Goblin(120, 0, -200, 2));
+        objects.add(new Goblin(300, 0, -300, 1));
+        objects.add(new Orc(120, 0, -300, 5));
     }
 
     public void getInput() {
