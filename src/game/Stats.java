@@ -21,7 +21,7 @@ public class Stats {
     }
 
     public float getSpeed() {
-        return 4f;
+        return 4.0f;
     }
 
     public int getLevel() {

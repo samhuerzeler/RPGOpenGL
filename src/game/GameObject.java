@@ -16,6 +16,9 @@ public abstract class GameObject {
     protected float spawnX;
     protected float spawnY;
     protected float spawnZ;
+    protected float dx;
+    protected float dy;
+    protected float dz;
     // rotation
     protected float rx;
     protected float ry;
@@ -32,6 +35,7 @@ public abstract class GameObject {
         glPushMatrix();
         {
             glTranslatef(x, y, z);
+            glRotatef(-ry, 0.0f, 1.0f, 0.0f);
             spr.render();
         }
         glPopMatrix();

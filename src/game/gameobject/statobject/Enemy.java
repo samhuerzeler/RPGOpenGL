@@ -23,8 +23,8 @@ public class Enemy extends StatObject {
         stats = new Stats(level, false);
         target = null;
         attackDamage = 1;
-        sightRange = 150f;
-        basicFleeRange = 300f;
+        sightRange = 150.0f;
+        basicFleeRange = 300.0f;
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
         attackDelay.terminate();
@@ -50,6 +50,7 @@ public class Enemy extends StatObject {
                         resetPosition();
                     } else {
                         resetting = false;
+                        idle();
                     }
                 }
             }
@@ -77,54 +78,37 @@ public class Enemy extends StatObject {
     }
 
     protected void chase() {
-        float speedX = (getTarget().getX() - x);
-        float speedZ = (getTarget().getZ() - z);
-
-        float maxSpeed = getStats().getSpeed() * DAMPING;
-
-        if (speedX > maxSpeed) {
-            speedX = maxSpeed;
-        }
-        if (speedX < maxSpeed) {
-            speedX = -maxSpeed;
-        }
-        if (speedZ > maxSpeed) {
-            speedZ = maxSpeed;
-        }
-        if (speedZ < maxSpeed) {
-            speedZ = -maxSpeed;
-        }
-
-        x = x + speedX * Time.getDelta();
-        z = z + speedZ * Time.getDelta();
+        float startX = x;
+        float startZ = z;
+        float endX = target.getX();
+        float endZ = target.getZ();
+        float distance = (float) Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endZ - startZ, 2));
+        dx = (endX - startX) / distance * DAMPING;
+        dz = (endZ - startZ) / distance * DAMPING;
+        rotate();
+        move();
     }
 
     protected void resetPosition() {
         resetFleeRange();
-        float speedX = (spawnX - x);
-        float speedZ = (spawnZ - z);
+        float startX = x;
+        float startZ = z;
+        float endX = spawnX;
+        float endZ = spawnZ;
+        float distance = (float) Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endZ - startZ, 2));
+        dx = (endX - startX) / distance;
+        dz = (endZ - startZ) / distance;
+        rotate();
+        move();
+    }
 
-        float maxSpeed = getStats().getSpeed();
+    private void move() {
+        x += dx * getStats().getSpeed() * Time.getDelta();
+        z += dz * getStats().getSpeed() * Time.getDelta();
+    }
 
-        if (speedX > maxSpeed) {
-            speedX = maxSpeed;
-        }
-        if (speedX < maxSpeed) {
-            speedX = -maxSpeed;
-        }
-        if (speedZ > maxSpeed) {
-            speedZ = maxSpeed;
-        }
-        if (speedZ < maxSpeed) {
-            speedZ = -maxSpeed;
-        }
-
-        if (Math.abs(x - spawnX) > (getStats().getSpeed())) {
-            x = x + speedX * Time.getDelta();
-        }
-        if (Math.abs(z - spawnZ) > (getStats().getSpeed())) {
-            z = z + speedZ * Time.getDelta();
-        }
+    private void rotate() {
+        ry = (float) -Math.toDegrees(Math.atan2(dx, dz));
     }
 
     protected void die() {

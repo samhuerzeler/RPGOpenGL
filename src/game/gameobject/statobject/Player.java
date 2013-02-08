@@ -1,6 +1,5 @@
 package game.gameobject.statobject;
 
-import game.Delay;
 import game.Equipment;
 import game.Game;
 import game.GameObject;
@@ -18,15 +17,10 @@ import org.lwjgl.input.Mouse;
 
 public class Player extends StatObject {
 
-    public static final int FORWARD = 0;
-    public static final int BACKWARD = 1;
-    public static final int LEFT = 2;
-    public static final int RIGHT = 3;
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
     private Inventory inventory;
     private Equipment equipment;
-    private int facingDirection;
     public boolean jumping = false;
     public long jumpingTime = 150;
 
@@ -40,7 +34,6 @@ public class Player extends StatObject {
         sightRange = 150f;
         attackRange = 43;
         attackDamage = 1;
-        facingDirection = FORWARD;
         attackDelay.terminate();
     }
 
@@ -127,32 +120,15 @@ public class Player extends StatObject {
     private void attack() {
         // find objects in sight range
         ArrayList<GameObject> objects = Game.sphereCollide(x, z, attackRange);
-        // remove enemies not in front of the player
-        if (facingDirection == FORWARD) {
-            for (int i = 0; i < objects.size(); i++) {
-                if (objects.get(i).getZ() + size / 2 < z + size / 2) {
-                    objects.remove(objects.get(i--));
-                }
-            }
-        } else if (facingDirection == BACKWARD) {
-            for (int i = 0; i < objects.size(); i++) {
-                if (objects.get(i).getZ() + size / 2 > z + size / 2) {
-                    objects.remove(objects.get(i--));
-                }
-            }
-        } else if (facingDirection == LEFT) {
-            for (int i = 0; i < objects.size(); i++) {
-                if (objects.get(i).getX() + size / 2 > x + size / 2) {
-                    objects.remove(objects.get(i--));
-                }
-            }
-        } else if (facingDirection == RIGHT) {
-            for (int i = 0; i < objects.size(); i++) {
-                if (objects.get(i).getX() + size / 2 < x + size / 2) {
-                    objects.remove(objects.get(i--));
-                }
+        /**
+         * TODO remove enemies not in front of the player
+         */
+        for (int i = 0; i < objects.size(); i++) {
+            if (objects.get(i).getZ() + size / 2 < z + size / 2) {
+                objects.remove(objects.get(i--));
             }
         }
+
         // find which objects are enemies
         ArrayList<Enemy> enemies = new ArrayList<Enemy>();
         for (GameObject go : objects) {
@@ -189,23 +165,6 @@ public class Player extends StatObject {
         ry += amt;
     }
 
-//    private void move(float magX, float magZ) {
-//        if (magX == 0 && magZ == 1) {
-//            facingDirection = FORWARD;
-//        }
-//        if (magX == 0 && magZ == -1) {
-//            facingDirection = BACKWARD;
-//        }
-//        if (magX == -1 && magZ == 0) {
-//            facingDirection = LEFT;
-//        }
-//        if (magX == 1 && magZ == 0) {
-//            facingDirection = RIGHT;
-//        }
-//
-//        x += getSpeed() * magX * Time.getDelta();
-//        z += getSpeed() * magZ * Time.getDelta();
-//    }
     private void jump() {
         y += getSpeed() * Time.getDelta();
     }
