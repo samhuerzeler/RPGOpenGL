@@ -3,7 +3,7 @@ package game.gameobject.item;
 import game.Sprite;
 import game.gameobject.Item;
 
-public class EquippableItem extends Item {
+public abstract class EquippableItem extends Item {
 
     public static final int NUM_SLOTS = 4;
     public static final int WEAPON_SLOT = 0;

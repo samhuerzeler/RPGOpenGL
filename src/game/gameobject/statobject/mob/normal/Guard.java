@@ -1,6 +1,6 @@
-package game.gameobject.statobject.npc;
+package game.gameobject.statobject.mob.normal;
 
-import game.gameobject.statobject.NPC;
+import game.gameobject.statobject.mob.NPC;
 
 public class Guard extends NPC {
 

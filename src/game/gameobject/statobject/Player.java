@@ -11,6 +11,7 @@ import game.gameobject.Item;
 import game.gameobject.StatObject;
 import game.gameobject.item.EquippableItem;
 import game.gameobject.item.equippableitem.Weapon;
+import game.gameobject.statobject.mob.Enemy;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -169,8 +170,8 @@ public class Player extends StatObject {
     }
 
     private void move(float amt, float dir) {
-        z += getSpeed() * Time.getDelta() * amt * Math.sin(Math.toRadians(ry + 90 * dir));
         x += getSpeed() * Time.getDelta() * amt * Math.cos(Math.toRadians(ry + 90 * dir));
+        z += getSpeed() * Time.getDelta() * amt * Math.sin(Math.toRadians(ry + 90 * dir));
     }
 
     public void rotateY(float amt) {

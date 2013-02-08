@@ -5,9 +5,9 @@ import game.gameobject.item.equippableitem.head.HelmOfCommand;
 import game.gameobject.item.equippableitem.weapon.Bow;
 import game.gameobject.item.equippableitem.weapon.Sword;
 import game.gameobject.statobject.Player;
-import game.gameobject.statobject.enemy.Goblin;
-import game.gameobject.statobject.enemy.Orc;
-import game.gameobject.statobject.npc.Guard;
+import game.gameobject.statobject.mob.normal.Goblin;
+import game.gameobject.statobject.mob.normal.Guard;
+import game.gameobject.statobject.mob.normal.Orc;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 

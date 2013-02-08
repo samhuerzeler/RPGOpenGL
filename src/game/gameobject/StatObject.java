@@ -4,7 +4,7 @@ import game.Delay;
 import game.GameObject;
 import game.Stats;
 
-public class StatObject extends GameObject {
+public abstract class StatObject extends GameObject {
 
     protected Stats stats;
     protected String name;
@@ -59,5 +59,9 @@ public class StatObject extends GameObject {
 
     public void setAttackDamage(int amt) {
         attackDamage = amt;
+    }
+
+    public boolean isAlive() {
+        return stats.getCurrentHealth() > 0;
     }
 }

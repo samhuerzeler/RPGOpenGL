@@ -2,7 +2,7 @@ package game.gameobject.item.equippableitem;
 
 import game.gameobject.item.EquippableItem;
 
-public class Weapon extends EquippableItem {
+public abstract class Weapon extends EquippableItem {
 
     protected static final int MELEE_RANGE = 42;
     protected static final int CAST_RANGE = 300;
@@ -25,7 +25,7 @@ public class Weapon extends EquippableItem {
     public void setRange(int amt) {
         range = amt;
     }
-    
+
     public int getSpeed() {
         return speed;
     }

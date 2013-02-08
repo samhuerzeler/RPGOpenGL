@@ -3,7 +3,7 @@ package game.gameobject;
 import game.GameObject;
 import game.Sprite;
 
-public class Item extends GameObject {
+public abstract class Item extends GameObject {
 
     public String name;
     public int id;

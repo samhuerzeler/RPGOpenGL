@@ -1,25 +1,21 @@
 package game.gameobject.statobject;
 
 import game.Delay;
-import game.Game;
-import game.GameObject;
-import game.Sprite;
 import game.Stats;
 import game.Time;
 import game.Util;
 import game.gameobject.StatObject;
-import java.util.ArrayList;
 
-public class Enemy extends StatObject {
+public abstract class Mob extends StatObject {
 
     public static final float DAMPING = 0.5f;
-    private float basicFleeRange;
-    private float currentFleeRange;
-    private float chaseRange;
-    private boolean resetting = false;
-    private StatObject target;
+    protected float basicFleeRange;
+    protected float currentFleeRange;
+    protected float chaseRange;
+    protected boolean resetting = false;
+    protected StatObject target;
 
-    public Enemy(int level) {
+    public Mob(int level) {
         stats = new Stats(level, false);
         target = null;
         attackDamage = 1;
@@ -35,20 +31,36 @@ public class Enemy extends StatObject {
         if (target == null) {
             idle();
         } else {
-            if (Util.lineOfSight(this, target) && Util.dist(x, z, getTarget().getX(), getTarget().getZ()) <= attackRange) {
+            // if in line of sight
+            // if in attack range
+            if (target.isAlive() && Util.lineOfSight(this, target) && Util.dist(x, z, target.getX(), target.getZ()) <= attackRange) {
                 if (attackDelay.isOver()) {
                     attack();
                 }
             } else {
-                if (Util.dist(x, z, spawnX, spawnZ) > currentFleeRange) {
-                    resetting = true;
-                    resetPosition();
-                } else if (!resetting && Util.dist(x, z, getTarget().getX(), getTarget().getZ()) <= chaseRange) {
-                    chase();
-                } else {
+                // if target not alive
+                // if not too far away from spawn point
+                if (!target.isAlive() || Util.dist(x, z, spawnX, spawnZ) > currentFleeRange) {
+                    // if not yet at spawn point
                     if (Math.abs(x - spawnX) > (getStats().getSpeed()) || Math.abs(z - spawnZ) > (getStats().getSpeed())) {
                         resetPosition();
+                        resetting = true;
                     } else {
+                        // if at spawn point
+                        resetting = false;
+                        idle();
+                    }
+                } else if (!resetting && Util.dist(x, z, target.getX(), target.getZ()) <= chaseRange) {
+                    // if not resetting
+                    // if target not too far away
+                    chase();
+                } else {
+                    // if not yet at spawn point
+                    if (Math.abs(x - spawnX) > (getStats().getSpeed()) || Math.abs(z - spawnZ) > (getStats().getSpeed())) {
+                        resetPosition();
+                        resetting = true;
+                    } else {
+                        // if at spawn point
                         resetting = false;
                         idle();
                     }
@@ -62,28 +74,24 @@ public class Enemy extends StatObject {
     }
 
     protected void attack() {
-        getTarget().damage(getAttackDamage());
-        System.err.println(name + " attacking " + getTarget().getName() + " : " + getTarget().getCurrentHealth() + "/" + getTarget().getMaxHealth());
+        target.damage(getAttackDamage());
+        System.err.println(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
         attackDelay.restart();
     }
 
     protected void idle() {
-        ArrayList<GameObject> objects = Game.sphereCollide(x, z, sightRange);
-
-        for (GameObject go : objects) {
-            if (go.getType() == PLAYER_ID) {
-                setTarget((StatObject) go);
-            }
-        }
     }
 
     protected void chase() {
         float startX = x;
+        float startY = y;
         float startZ = z;
         float endX = target.getX();
+        float endY = target.getY();
         float endZ = target.getZ();
-        float distance = (float) Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endZ - startZ, 2));
+        float distance = (float) Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2) + Math.pow(endZ - startZ, 2));
         dx = (endX - startX) / distance * DAMPING;
+        dy = (endY - startY) / distance * DAMPING;
         dz = (endZ - startZ) / distance * DAMPING;
         rotate();
         move();
@@ -92,22 +100,26 @@ public class Enemy extends StatObject {
     protected void resetPosition() {
         resetFleeRange();
         float startX = x;
+        float startY = y;
         float startZ = z;
         float endX = spawnX;
+        float endY = spawnY;
         float endZ = spawnZ;
-        float distance = (float) Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endZ - startZ, 2));
+        float distance = (float) Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2) + Math.pow(endZ - startZ, 2));
         dx = (endX - startX) / distance;
+        dy = (endY - startY) / distance;
         dz = (endZ - startZ) / distance;
         rotate();
         move();
     }
 
-    private void move() {
+    protected void move() {
         x += dx * getStats().getSpeed() * Time.getDelta();
+        y += dy * getStats().getSpeed() * Time.getDelta();
         z += dz * getStats().getSpeed() * Time.getDelta();
     }
 
-    private void rotate() {
+    protected void rotate() {
         ry = (float) -Math.toDegrees(Math.atan2(dx, dz));
     }
 
@@ -117,10 +129,6 @@ public class Enemy extends StatObject {
 
     public void setTarget(StatObject target) {
         this.target = target;
-    }
-
-    public StatObject getTarget() {
-        return target;
     }
 
     public Stats getStats() {
@@ -146,13 +154,5 @@ public class Enemy extends StatObject {
 
     @Override
     protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz, int type) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.spawnX = x;
-        this.spawnY = y;
-        this.spawnZ = z;
-        this.type = ENEMY_ID;
-        this.spr = new Sprite(r, g, b, sx, sy, sz);
     }
 }
