@@ -12,6 +12,9 @@ import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Main {
+    
+    private static final int DISPLAY_WIDTH = 1024;
+    private static final int DISPLAY_HEIGHT = 768;
 
     public static void main(String[] args) {
         initDisplay();
@@ -19,7 +22,6 @@ public class Main {
         initCamera();
         gameLoop();
         cleanUp();
-
     }
 
     private static void initGame() {
@@ -67,7 +69,7 @@ public class Main {
 
     private static void initDisplay() {
         try {
-            Display.setDisplayMode(new DisplayMode(800, 600));
+            Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT));
             Display.create();
             Keyboard.create();
             Display.setVSyncEnabled(true);

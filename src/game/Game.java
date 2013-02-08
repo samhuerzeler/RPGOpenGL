@@ -9,7 +9,6 @@ import game.gameobject.statobject.enemy.Goblin;
 import game.gameobject.statobject.npc.Guard;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import org.lwjgl.opengl.Display;
 
 public class Game {
 
@@ -21,13 +20,13 @@ public class Game {
     public Game() {
         objects = new ArrayList<GameObject>();
         remove = new ArrayList<GameObject>();
-        player = new Player(Display.getWidth() / 2 - player.SIZE / 2, 0, 0);
+        player = new Player(300, 0, 0);
         objects.add(player);
-        objects.add(new Guard(player.x, player.y, player.z - player.SIZE, 1));
-        objects.add(new Sword(32, 0, 0));
+        objects.add(new Guard(400, 0, 0, 1));
+        objects.add(new Sword(200, 0, 80));
         objects.add(new Bow(500, 0, 0));
         objects.add(new HelmOfCommand(250, 0, 0));
-        objects.add(new Goblin(100, 0, -200, 10));
+        objects.add(new Goblin(120, 0, -200, 10));
     }
 
     public void getInput() {
