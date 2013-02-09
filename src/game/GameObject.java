@@ -9,6 +9,7 @@ public abstract class GameObject {
     protected boolean[] flags = new boolean[1];
     protected int size;
     // object IDs
+    public static final int NULL_ID = 0;
     public static final int ITEM_ID = 1;
     public static final int PLAYER_ID = 2;
     public static final int ENEMY_ID = 3;

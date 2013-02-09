@@ -64,4 +64,8 @@ public abstract class StatObject extends GameObject {
     public boolean isAlive() {
         return stats.getCurrentHealth() > 0;
     }
+
+    public abstract boolean isResetting();
+
+    protected abstract void die();
 }

@@ -1,26 +1,13 @@
 package game.gameobject.statobject.mob;
 
-import game.Game;
-import game.GameObject;
 import game.Sprite;
-import game.gameobject.StatObject;
 import game.gameobject.statobject.Mob;
-import java.util.ArrayList;
 
 public abstract class NPC extends Mob {
 
     public NPC(int level) {
         super(level);
-    }
-
-    @Override
-    protected void idle() {
-        ArrayList<GameObject> objects = Game.sphereCollide(x, z, sightRange);
-        for (GameObject go : objects) {
-            if (go.getType() == ENEMY_ID) {
-                setTarget((StatObject) go);
-            }
-        }
+        enemyTypeId = ENEMY_ID;
     }
 
     @Override

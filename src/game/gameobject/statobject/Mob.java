@@ -1,10 +1,13 @@
 package game.gameobject.statobject;
 
 import game.Delay;
+import game.Game;
+import game.GameObject;
 import game.Stats;
 import game.Time;
 import game.Util;
 import game.gameobject.StatObject;
+import java.util.ArrayList;
 
 public abstract class Mob extends StatObject {
 
@@ -12,12 +15,14 @@ public abstract class Mob extends StatObject {
     protected float basicFleeRange;
     protected float currentFleeRange;
     protected float chaseRange;
-    protected boolean resetting = false;
+    protected boolean resetting;
     protected StatObject target;
+    protected int enemyTypeId;
 
     public Mob(int level) {
         stats = new Stats(level, false);
         target = null;
+        resetting = false;
         attackDamage = 1;
         sightRange = 150.0f;
         basicFleeRange = 300.0f;
@@ -33,14 +38,14 @@ public abstract class Mob extends StatObject {
         } else {
             // if in line of sight
             // if in attack range
-            if (target.isAlive() && Util.lineOfSight(this, target) && Util.dist(x, z, target.getX(), target.getZ()) <= attackRange) {
+            if (!target.isResetting() && target.isAlive() && Util.lineOfSight(this, target) && Util.dist(x, z, target.getX(), target.getZ()) <= attackRange) {
                 if (attackDelay.isOver()) {
                     attack();
                 }
             } else {
                 // if target not alive
                 // if not too far away from spawn point
-                if (!target.isAlive() || Util.dist(x, z, spawnX, spawnZ) > currentFleeRange) {
+                if (target.isResetting() || !target.isAlive() || Util.dist(x, z, spawnX, spawnZ) > currentFleeRange) {
                     // if not yet at spawn point
                     if (Math.abs(x - spawnX) > (getStats().getSpeed()) || Math.abs(z - spawnZ) > (getStats().getSpeed())) {
                         resetPosition();
@@ -80,6 +85,14 @@ public abstract class Mob extends StatObject {
     }
 
     protected void idle() {
+        if (enemyTypeId != NULL_ID) {
+            ArrayList<GameObject> objects = Game.sphereCollide(x, z, sightRange);
+            for (GameObject go : objects) {
+                if (go.getType() == enemyTypeId) {
+                    setTarget((StatObject) go);
+                }
+            }
+        }
     }
 
     protected void chase() {
@@ -125,6 +138,11 @@ public abstract class Mob extends StatObject {
 
     protected void die() {
         remove();
+    }
+
+    @Override
+    public boolean isResetting() {
+        return resetting;
     }
 
     public void setTarget(StatObject target) {

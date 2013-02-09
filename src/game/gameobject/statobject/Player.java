@@ -207,6 +207,17 @@ public class Player extends StatObject {
         }
     }
 
+    @Override
+    public boolean isResetting() {
+        // player is never resetting
+        return false;
+    }
+
+    @Override
+    protected void die() {
+        remove();
+    }
+
     private class stopJumping implements Runnable {
 
         @Override
