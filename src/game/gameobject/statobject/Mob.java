@@ -94,7 +94,10 @@ public abstract class Mob extends StatObject {
                 maxEntry = entry;
             }
         }
-        return maxEntry.getKey();
+        if (maxEntry != null) {
+            return maxEntry.getKey();
+        }
+        return null;
     }
 
     protected void idle() {
