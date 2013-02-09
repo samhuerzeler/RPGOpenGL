@@ -161,9 +161,15 @@ public class Player extends StatObject {
                 }
             }
             // attack enemy
-            target.damage(attackDamage);
-            target.extendFleeRange();
-            System.out.println(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
+            if (!target.isResetting()) {
+                setInCombat(this, target);
+                target.updateThreatMap(this, attackDamage);
+                target.extendFleeRange();
+                target.damage(attackDamage);
+                System.out.println(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
+            } else {
+                System.out.println(name + " : Target is resetting");
+            }
         } else {
             System.out.println(name + " : No Target");
         }
@@ -216,6 +222,10 @@ public class Player extends StatObject {
     @Override
     protected void die() {
         remove();
+    }
+
+    @Override
+    public void updateThreatMap(StatObject so, int amt) {
     }
 
     private class stopJumping implements Runnable {

@@ -8,6 +8,8 @@ import game.Time;
 import game.Util;
 import game.gameobject.StatObject;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Mob extends StatObject {
 
@@ -18,6 +20,7 @@ public abstract class Mob extends StatObject {
     protected boolean resetting;
     protected StatObject target;
     protected int enemyTypeId;
+    protected Map<StatObject, Integer> threatMap = new HashMap<StatObject, Integer>();
 
     public Mob(int level) {
         stats = new Stats(level, false);
@@ -33,55 +36,65 @@ public abstract class Mob extends StatObject {
 
     @Override
     public void update() {
+        if (isInCombat()) {
+            setTarget(getHighestTreatTarget());
+        }
         if (target == null) {
-            idle();
+            if (Math.abs(x - spawnX) > (getStats().getSpeed()) || Math.abs(z - spawnZ) > (getStats().getSpeed())) {
+                resetPosition();
+                resetting = true;
+            } else {
+                resetting = false;
+                idle();
+            }
         } else {
-            // if in line of sight
-            // if in attack range
             if (!target.isResetting() && target.isAlive() && Util.lineOfSight(this, target) && Util.dist(x, z, target.getX(), target.getZ()) <= attackRange) {
                 if (attackDelay.isOver()) {
                     attack();
                 }
             } else {
-                // if target not alive
-                // if not too far away from spawn point
-                if (target.isResetting() || !target.isAlive() || Util.dist(x, z, spawnX, spawnZ) > currentFleeRange) {
-                    // if not yet at spawn point
-                    if (Math.abs(x - spawnX) > (getStats().getSpeed()) || Math.abs(z - spawnZ) > (getStats().getSpeed())) {
-                        resetPosition();
-                        resetting = true;
-                    } else {
-                        // if at spawn point
-                        resetting = false;
-                        idle();
-                    }
-                } else if (!resetting && Util.dist(x, z, target.getX(), target.getZ()) <= chaseRange) {
-                    // if not resetting
-                    // if target not too far away
+                if (Util.dist(x, z, spawnX, spawnZ) > currentFleeRange || !target.isAlive()) {
+                    setOutOfCombat(this, target);
+                    setTarget(null);
+                } else if (isInCombat() || (!resetting && Util.dist(x, z, target.getX(), target.getZ()) <= chaseRange)) {
                     chase();
-                } else {
-                    // if not yet at spawn point
-                    if (Math.abs(x - spawnX) > (getStats().getSpeed()) || Math.abs(z - spawnZ) > (getStats().getSpeed())) {
-                        resetPosition();
-                        resetting = true;
-                    } else {
-                        // if at spawn point
-                        resetting = false;
-                        idle();
-                    }
                 }
             }
         }
 
         if (stats.getCurrentHealth() <= 0) {
             die();
+            resetThreatMap();
         }
     }
 
     protected void attack() {
         target.damage(getAttackDamage());
+        target.updateThreatMap(this, attackDamage);
         System.err.println(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
         attackDelay.restart();
+    }
+
+    @Override
+    public void updateThreatMap(StatObject so, int amt) {
+        if (threatMap.containsKey(so)) {
+            amt += threatMap.get(so).intValue();
+        }
+        threatMap.put(so, amt);
+    }
+
+    public void resetThreatMap() {
+        threatMap.clear();
+    }
+
+    private StatObject getHighestTreatTarget() {
+        Map.Entry<StatObject, Integer> maxEntry = null;
+        for (Map.Entry<StatObject, Integer> entry : threatMap.entrySet()) {
+            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
+                maxEntry = entry;
+            }
+        }
+        return maxEntry.getKey();
     }
 
     protected void idle() {
@@ -90,6 +103,8 @@ public abstract class Mob extends StatObject {
             for (GameObject go : objects) {
                 if (go.getType() == enemyTypeId) {
                     setTarget((StatObject) go);
+                    setInCombat(this, target);
+                    updateThreatMap(target, 0);
                 }
             }
         }
@@ -112,6 +127,7 @@ public abstract class Mob extends StatObject {
 
     protected void resetPosition() {
         resetFleeRange();
+        resetThreatMap();
         float startX = x;
         float startY = y;
         float startZ = z;
@@ -119,9 +135,9 @@ public abstract class Mob extends StatObject {
         float endY = spawnY;
         float endZ = spawnZ;
         float distance = (float) Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2) + Math.pow(endZ - startZ, 2));
-        dx = (endX - startX) / distance;
-        dy = (endY - startY) / distance;
-        dz = (endZ - startZ) / distance;
+        dx = (endX - startX) / distance / DAMPING;
+        dy = (endY - startY) / distance / DAMPING;
+        dz = (endZ - startZ) / distance / DAMPING;
         rotate();
         move();
     }
@@ -136,6 +152,7 @@ public abstract class Mob extends StatObject {
         ry = (float) -Math.toDegrees(Math.atan2(dx, dz));
     }
 
+    @Override
     protected void die() {
         remove();
     }
@@ -168,9 +185,5 @@ public abstract class Mob extends StatObject {
 
     public void setSightRange(float dist) {
         sightRange = dist;
-    }
-
-    @Override
-    protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz, int type) {
     }
 }

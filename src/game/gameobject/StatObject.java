@@ -3,6 +3,7 @@ package game.gameobject;
 import game.Delay;
 import game.GameObject;
 import game.Stats;
+import java.util.ArrayList;
 
 public abstract class StatObject extends GameObject {
 
@@ -12,6 +13,13 @@ public abstract class StatObject extends GameObject {
     protected int attackRange;
     protected float sightRange;
     protected Delay attackDelay = new Delay(1000);
+    protected ArrayList<StatObject> combatTargets = new ArrayList<StatObject>();
+
+    public abstract boolean isResetting();
+
+    public abstract void updateThreatMap(StatObject so, int amt);
+
+    protected abstract void die();
 
     public void damage(int amt) {
         stats.damage(amt);
@@ -65,7 +73,25 @@ public abstract class StatObject extends GameObject {
         return stats.getCurrentHealth() > 0;
     }
 
-    public abstract boolean isResetting();
+    protected void setInCombat(StatObject so1, StatObject so2) {
+        so1.addCombatTarget(so2);
+        so2.addCombatTarget(so1);
+    }
 
-    protected abstract void die();
+    protected void setOutOfCombat(StatObject so1, StatObject so2) {
+        so1.removeCombatTarget(so2);
+        so2.removeCombatTarget(so1);
+    }
+
+    protected void addCombatTarget(StatObject so) {
+        combatTargets.add(so);
+    }
+
+    protected void removeCombatTarget(StatObject so) {
+        combatTargets.remove(so);
+    }
+
+    protected boolean isInCombat() {
+        return combatTargets.size() > 0;
+    }
 }
