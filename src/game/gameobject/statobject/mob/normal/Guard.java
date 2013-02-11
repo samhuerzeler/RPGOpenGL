@@ -9,6 +9,6 @@ public class Guard extends NPC {
         name = "Guard";
         size = 32.0f;
         attackRange = size;
-        init(x, y, z, 0.1f, 1f, 1f, size, size, size, ENEMY_ID);
+        init(x, y, z, 0.1f, 1f, 1f, size, size, size);
     }
 }

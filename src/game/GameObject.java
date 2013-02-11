@@ -20,10 +20,10 @@ public abstract class GameObject {
     protected Delay attackDelay = new Delay(1000);
     protected boolean[] flags = new boolean[1];
     // object IDs
-    public static final int NULL_ID = 0;
-    public static final int PLAYER_ID = 1;
-    public static final int ENEMY_ID = 2;
-    public static final int NPC_ID = 3;
+    public static final int NULL = 0;
+    public static final int PLAYER = 1;
+    public static final int ENEMY = 2;
+    public static final int NPC = 3;
     // position
     protected float x;
     protected float y;
@@ -51,9 +51,9 @@ public abstract class GameObject {
             glRotatef(-ry, 0.0f, 1.0f, 0.0f);
             spr.render();
             glColor3f(1.0f, 1.0f, 1.0f);
-            if (type == ENEMY_ID || type == NPC_ID) {
+            if (type == ENEMY || type == NPC) {
                 renderCircle(0.0f, 0.0f, sightRange);
-            } else if (type == PLAYER_ID) {
+            } else if (type == PLAYER) {
                 renderCircle(0.0f, 0.0f, attackRange);
             }
             glColor3f(0.3f, 0.3f, 0.3f);
@@ -135,11 +135,10 @@ public abstract class GameObject {
         return type;
     }
 
-    protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz, int type) {
+    protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.type = type;
         this.spr = new Sprite(r, g, b, sx, sy, sz);
     }
 }

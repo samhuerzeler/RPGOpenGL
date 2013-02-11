@@ -7,18 +7,18 @@ public abstract class NPC extends Mob {
 
     public NPC(int level) {
         super(level);
-        enemyTypeId = ENEMY_ID;
+        enemyTypeId = ENEMY;
     }
 
     @Override
-    protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz, int type) {
+    protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.spawnX = x;
-        this.spawnY = y;
-        this.spawnZ = z;
-        this.type = NPC_ID;
-        this.spr = new Sprite(r, g, b, sx, sy, sz);
+        spawnX = x;
+        spawnY = y;
+        spawnZ = z;
+        type = NPC;
+        spr = new Sprite(r, g, b, sx, sy, sz);
     }
 }

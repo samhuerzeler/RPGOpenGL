@@ -31,12 +31,13 @@ public class Player extends StatObject {
         stats = new Stats(0, true);
         name = "Player";
         size = 32.0f;
-        init(x, y, z, 0.2f, 0.2f, 1.0f, size, size, size, PLAYER_ID);
+        type = PLAYER;
+        init(x, y, z, 0.2f, 0.2f, 1.0f, size, size, size);
         inventory = new Inventory(20);
         equipment = new Equipment(inventory);
         sightRange = 150.0f;
-        attackRange = 500;
-        attackDamage = 1;
+        attackRange = 42;
+        attackDamage = 20;
         attackDelay.start();
     }
 
@@ -126,7 +127,7 @@ public class Player extends StatObject {
     private ArrayList<Enemy> findEnemies(ArrayList<GameObject> objects) {
         ArrayList<Enemy> enemies = new ArrayList<Enemy>();
         for (GameObject go : objects) {
-            if (go.getType() == ENEMY_ID) {
+            if (go.getType() == ENEMY) {
                 enemies.add((Enemy) go);
             }
         }
@@ -199,11 +200,11 @@ public class Player extends StatObject {
         }
     }
 
-    private void addItem(Item item) {
+    public void addItem(Item item) {
         inventory.add(item);
     }
 
-    private void addXp(float amt) {
+    public void addXp(float amt) {
         stats.addXp(amt);
     }
 }

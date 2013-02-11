@@ -1,37 +1,51 @@
 package game.gameobject.statobject.mob;
 
+import game.Item;
 import game.Sprite;
 import game.gameobject.statobject.Mob;
+import game.gameobject.statobject.Player;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public abstract class Enemy extends Mob {
 
-    protected ArrayList<Integer> lootPool = new ArrayList<Integer>();
+    protected ArrayList<Item> lootPool = new ArrayList<Item>();
 
     public Enemy(int level) {
         super(level);
-        enemyTypeId = PLAYER_ID;
+        enemyTypeId = PLAYER;
     }
 
-    protected void addToLootPool(int id) {
-        this.lootPool.add(id);
+    protected void addToLootPool(Item item) {
+        this.lootPool.add(item);
     }
 
-    protected void addToLootPool(int[] ids) {
-        for (int id : ids) {
-            this.lootPool.add(id);
-        }
+    protected void addToLootPool(Item[] items) {
+        this.lootPool.addAll(Arrays.asList(items));
     }
 
     @Override
-    protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz, int type) {
+    protected void die() {
+        for (Item loot : lootPool) {
+            System.out.println(loot);
+            if (target.getType() == PLAYER) {
+                ((Player) target).addXp(20);
+                ((Player) target).addItem(loot);
+
+            }
+        }
+        remove();
+    }
+
+    @Override
+    protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.spawnX = x;
-        this.spawnY = y;
-        this.spawnZ = z;
-        this.type = ENEMY_ID;
-        this.spr = new Sprite(r, g, b, sx, sy, sz);
+        spawnX = x;
+        spawnY = y;
+        spawnZ = z;
+        type = ENEMY;
+        spr = new Sprite(r, g, b, sx, sy, sz);
     }
 }

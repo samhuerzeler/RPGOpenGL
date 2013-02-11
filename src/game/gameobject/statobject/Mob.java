@@ -89,9 +89,6 @@ public abstract class Mob extends StatObject {
 
     protected void idle() {
         // patrol
-        /**
-         * TODO refactor mob patrol
-         */
         patrolling = true;
         if (!waiting) {
             moveTo(dirX, 0, dirZ);
@@ -108,7 +105,7 @@ public abstract class Mob extends StatObject {
             }
         }
         // attack
-        if (enemyTypeId != NULL_ID) {
+        if (enemyTypeId != NULL) {
             ArrayList<GameObject> objects = Game.sphereCollide(x, z, sightRange);
             for (GameObject go : objects) {
                 if (go.getType() == enemyTypeId) {
@@ -222,7 +219,6 @@ public abstract class Mob extends StatObject {
                 running = true;
                 // sleep (walk) for 2.5 sec
                 int sleepTime = 2500;
-                System.out.println(sleepTime);
                 Thread.sleep(sleepTime);
                 running = false;
                 waiting = true;
@@ -248,7 +244,6 @@ public abstract class Mob extends StatObject {
                 running = true;
                 // sleep (wait) between 2 and 6 sec
                 int sleepTime = random.nextInt(6000) + 2000;
-                System.out.println(sleepTime);
                 Thread.sleep(sleepTime);
                 running = false;
                 waiting = false;
