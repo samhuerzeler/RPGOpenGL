@@ -9,6 +9,8 @@ public class Goblin extends Enemy {
         name = "Goblin";
         size = 32;
         attackRange = size;
+        int[] itemIds = new int[]{0, 1};
+        addToLootPool(itemIds);
         init(x, y, z, 0.1f, 1.0f, 0.25f, size, size, size, ENEMY_ID);
     }
 }

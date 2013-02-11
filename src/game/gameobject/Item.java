@@ -1,9 +1,6 @@
 package game.gameobject;
 
-import game.GameObject;
-import game.Sprite;
-
-public abstract class Item extends GameObject {
+public abstract class Item {
 
     public String name;
     public int id;
@@ -16,12 +13,7 @@ public abstract class Item extends GameObject {
         return id;
     }
 
-    protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz, String name) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.type = ITEM_ID;
+    protected void init(String name) {
         this.name = name;
-        this.spr = new Sprite(r, g, b, sx, sy, sz);
     }
 }

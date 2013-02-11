@@ -2,12 +2,25 @@ package game.gameobject.statobject.mob;
 
 import game.Sprite;
 import game.gameobject.statobject.Mob;
+import java.util.ArrayList;
 
 public abstract class Enemy extends Mob {
+
+    protected ArrayList<Integer> lootPool = new ArrayList<Integer>();
 
     public Enemy(int level) {
         super(level);
         enemyTypeId = PLAYER_ID;
+    }
+
+    protected void addToLootPool(int id) {
+        this.lootPool.add(id);
+    }
+
+    protected void addToLootPool(int[] ids) {
+        for (int id : ids) {
+            this.lootPool.add(id);
+        }
     }
 
     @Override

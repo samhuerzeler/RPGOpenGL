@@ -9,6 +9,8 @@ public class Orc extends Enemy {
         name = "Orc";
         size = 32;
         attackRange = size;
+        int[] itemIds = new int[]{2};
+        addToLootPool(itemIds);
         init(x, y, z, 1.0f, 0.1f, 0.1f, size, size, size, ENEMY_ID);
     }
 }

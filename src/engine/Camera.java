@@ -14,7 +14,7 @@ public class Camera {
     // distance
     private float distance;
     private float minDistance = 100.0f;
-    private float maxDistance = 1000.0f;
+    private float maxDistance = 2000.0f;
     // position
     private float x;
     private float y;
@@ -38,7 +38,7 @@ public class Camera {
         rx = 0;
         ry = 0;
         rz = 0;
-        distance = 300.0f;
+        distance = 800.0f;
         this.fov = fov;
         this.aspect = aspect;
         this.near = near;
@@ -148,7 +148,7 @@ public class Camera {
         if (Mouse.hasWheel()) {
             checkMouseWheel();
         }
-        glTranslatef(0.0f, -distance / 4, -distance);
+        glTranslatef(0.0f, -distance / 16, -distance);
         glRotatef(-target.getRX(), 1.0f, 0.0f, 0.0f);
         glRotatef(target.getRY(), 0.0f, 1.0f, 0.0f);
         glTranslatef(-target.getX(), -target.getY(), -target.getZ());

@@ -10,25 +10,29 @@ import game.gameobject.StatObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public abstract class Mob extends StatObject {
 
     public static final float DAMPING = 0.5f;
-    protected float basicFleeRange;
-    protected float currentFleeRange;
     protected float chaseRange;
     protected boolean resetting;
     protected StatObject target;
     protected int enemyTypeId;
     protected Map<StatObject, Integer> threatMap = new HashMap<StatObject, Integer>();
+    private Random random = new Random();
+    private boolean patrolling = false;
+    private boolean waiting = false;
+    private float dirX;
+    private float dirZ;
 
     public Mob(int level) {
         stats = new Stats(level, false);
         target = null;
         resetting = false;
         attackDamage = 1;
-        sightRange = 150.0f;
-        basicFleeRange = 300.0f;
+        sightRange = 500.0f;
+        basicFleeRange = 1000.0f;
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
         attackDelay.terminate();
@@ -41,20 +45,27 @@ public abstract class Mob extends StatObject {
         }
         if (target == null) {
             if (Math.abs(x - spawnX) > (getStats().getSpeed()) || Math.abs(z - spawnZ) > (getStats().getSpeed())) {
-                resetPosition();
-                resetting = true;
+                if (!patrolling) {
+                    resetPosition();
+                    resetting = true;
+                } else {
+                    resetting = false;
+                    idle();
+                }
             } else {
                 resetting = false;
                 idle();
             }
         } else {
             if (!target.isResetting() && target.isAlive() && Util.lineOfSight(this, target) && Util.dist(x, z, target.getX(), target.getZ()) <= attackRange) {
+                lookAt(target.getX(), target.getY(), target.getZ());
                 if (attackDelay.isOver()) {
                     attack();
                 }
             } else {
                 if (Util.dist(x, z, spawnX, spawnZ) > currentFleeRange || !target.isAlive()) {
                     setOutOfCombat(this, target);
+                    removeFromThreatMap(target);
                     setTarget(null);
                 } else if (isInCombat() || (!resetting && Util.dist(x, z, target.getX(), target.getZ()) <= chaseRange)) {
                     chase();
@@ -70,17 +81,22 @@ public abstract class Mob extends StatObject {
 
     protected void attack() {
         target.damage(getAttackDamage());
-        target.updateThreatMap(this, attackDamage);
+        target.addToThreatMap(this, attackDamage);
         System.err.println(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
         attackDelay.restart();
     }
 
     @Override
-    public void updateThreatMap(StatObject so, int amt) {
+    public void addToThreatMap(StatObject so, int amt) {
         if (threatMap.containsKey(so)) {
             amt += threatMap.get(so).intValue();
         }
         threatMap.put(so, amt);
+    }
+
+    @Override
+    public void removeFromThreatMap(StatObject so) {
+        threatMap.remove(so);
     }
 
     public void resetThreatMap() {
@@ -99,60 +115,127 @@ public abstract class Mob extends StatObject {
         }
         return null;
     }
+    private float targetX;
+    private float targetZ;
 
     protected void idle() {
+        // patrol
+        patrolling = true;
+        if (!waiting) {
+            moveTo(dirX, 0, dirZ);
+            if (targetX != 0 || targetZ != 0) {
+                targetX = 0;
+                targetZ = 0;
+            }
+            new Thread(new Mob.Patrol()).start();
+        } else {
+            if (targetX == 0 && targetZ == 0) {
+                targetX = x + random.nextInt(500) - 250;
+                targetZ = z + random.nextInt(500) - 250;
+                float distance = (float) Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetZ - z, 2));
+                dirX = (targetX - x) / distance * DAMPING;
+                dirZ = (targetZ - z) / distance * DAMPING;
+                System.out.println("-------------------");
+                int r = 30;
+                if (spawnX - x < -Math.sin(Math.toRadians(45)) * r) {
+                    System.out.println("zwit rächts");
+                    if (dirX > 0) {
+                        dirX *= -1;
+                    }
+                }
+                if (spawnX - x > Math.sin(Math.toRadians(45)) * r) {
+                    System.out.println("zwit lenks");
+                    if (dirX < 0) {
+                        dirX *= -1;
+                    }
+                }
+                if (spawnZ - z < -Math.sin(Math.toRadians(45)) * r) {
+                    System.out.println("zwit vore");
+                    if (dirZ > 0) {
+                        dirZ *= -1;
+                    }
+                }
+                if (spawnZ - z > Math.sin(Math.toRadians(45)) * r) {
+                    System.out.println("zwit hende");
+                    if (dirZ < 0) {
+                        dirZ *= -1;
+                    }
+                }
+            }
+        }
+        // attack
         if (enemyTypeId != NULL_ID) {
             ArrayList<GameObject> objects = Game.sphereCollide(x, z, sightRange);
             for (GameObject go : objects) {
                 if (go.getType() == enemyTypeId) {
                     setTarget((StatObject) go);
                     setInCombat(this, target);
-                    updateThreatMap(target, 0);
+                    addToThreatMap(target, 0);
+                    patrolling = false;
                 }
             }
         }
     }
 
+    private class Patrol implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(2500);
+                waiting = true;
+                new Thread(new Mob.PatrolWaiting()).start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class PatrolWaiting implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(5000);
+                waiting = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     protected void chase() {
-        float startX = x;
-        float startY = y;
-        float startZ = z;
-        float endX = target.getX();
-        float endY = target.getY();
-        float endZ = target.getZ();
-        float distance = (float) Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2) + Math.pow(endZ - startZ, 2));
-        dx = (endX - startX) / distance * DAMPING;
-        dy = (endY - startY) / distance * DAMPING;
-        dz = (endZ - startZ) / distance * DAMPING;
-        rotate();
-        move();
+        lookAt(target.getX(), target.getY(), target.getZ());
+        moveToTarget();
     }
 
     protected void resetPosition() {
         resetFleeRange();
         resetThreatMap();
-        float startX = x;
-        float startY = y;
-        float startZ = z;
-        float endX = spawnX;
-        float endY = spawnY;
-        float endZ = spawnZ;
-        float distance = (float) Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2) + Math.pow(endZ - startZ, 2));
-        dx = (endX - startX) / distance / DAMPING;
-        dy = (endY - startY) / distance / DAMPING;
-        dz = (endZ - startZ) / distance / DAMPING;
-        rotate();
-        move();
+        lookAt(spawnX, spawnY, spawnZ);
+        moveToTarget();
     }
 
-    protected void move() {
-        x += dx * getStats().getSpeed() * Time.getDelta();
-        y += dy * getStats().getSpeed() * Time.getDelta();
-        z += dz * getStats().getSpeed() * Time.getDelta();
+    protected void moveToTarget() {
+        moveTo(dx, dy, dz);
     }
 
-    protected void rotate() {
-        ry = (float) -Math.toDegrees(Math.atan2(dx, dz));
+    protected void moveTo(float dx, float dy, float dz) {
+        float speed = 1.0f;
+        if (resetting) {
+            speed = 3.0f;
+        }
+        x += dx * getStats().getSpeed() * Time.getDelta() * speed;
+        y += dy * getStats().getSpeed() * Time.getDelta() * speed;
+        z += dz * getStats().getSpeed() * Time.getDelta() * speed;
+    }
+
+    protected void lookAt(float targetX, float targetY, float targetZ) {
+        float distance = (float) Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetY - y, 2) + Math.pow(targetZ - z, 2));
+        dx = (targetX - x) / distance * DAMPING;
+        dy = (targetY - y) / distance * DAMPING;
+        dz = (targetZ - z) / distance * DAMPING;
+        ry = (float) -Math.toDegrees(Math.atan2(dx, dz)) - 180;
     }
 
     @Override

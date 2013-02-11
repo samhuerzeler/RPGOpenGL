@@ -7,14 +7,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Main {
-    
+
     private static final int DISPLAY_WIDTH = 800;
-    private static final int DISPLAY_HEIGHT = 600;
+    private static final int DISPLAY_HEIGHT = DISPLAY_WIDTH / 16 * 9;
 
     public static void main(String[] args) {
         initDisplay();
@@ -65,6 +66,7 @@ public class Main {
     private static void cleanUp() {
         Display.destroy();
         Keyboard.destroy();
+        Mouse.destroy();
     }
 
     private static void initDisplay() {
@@ -72,6 +74,7 @@ public class Main {
             Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT));
             Display.create();
             Keyboard.create();
+            Mouse.create();
             Display.setVSyncEnabled(true);
         } catch (LWJGLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

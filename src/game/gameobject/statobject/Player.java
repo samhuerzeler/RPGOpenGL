@@ -23,7 +23,8 @@ public class Player extends StatObject {
     private Inventory inventory;
     private Equipment equipment;
     public boolean jumping = false;
-    public long jumpingTime = 150;
+    public boolean falling = false;
+    public long jumpingTime = 180;
 
     public Player(float x, float y, float z) {
         stats = new Stats(0, true);
@@ -40,18 +41,12 @@ public class Player extends StatObject {
 
     @Override
     public void update() {
-        ArrayList<GameObject> objects = Game.rectangleCollide(x, z, x + size, z + size);
-        for (GameObject go : objects) {
-            if (go.getType() == ITEM_ID) {
-                System.out.println("Picked up " + ((Item) go).getName() + "!");
-                go.remove();
-                addItem((Item) go);
-            }
-        }
         if (jumping) {
             jump();
         } else if (!jumping && y > 0) {
             fall();
+        } else {
+            falling = false;
         }
     }
 
@@ -163,7 +158,7 @@ public class Player extends StatObject {
             // attack enemy
             if (!target.isResetting()) {
                 setInCombat(this, target);
-                target.updateThreatMap(this, attackDamage);
+                target.addToThreatMap(this, attackDamage);
                 target.extendFleeRange();
                 target.damage(attackDamage);
                 System.out.println(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
@@ -225,7 +220,11 @@ public class Player extends StatObject {
     }
 
     @Override
-    public void updateThreatMap(StatObject so, int amt) {
+    public void addToThreatMap(StatObject so, int amt) {
+    }
+
+    @Override
+    public void removeFromThreatMap(StatObject so) {
     }
 
     private class stopJumping implements Runnable {
@@ -235,6 +234,7 @@ public class Player extends StatObject {
             try {
                 Thread.sleep(jumpingTime);
                 jumping = false;
+                falling = true;
             } catch (Exception e) {
                 e.printStackTrace();
             }

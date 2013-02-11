@@ -4,10 +4,9 @@ import game.gameobject.item.equippableitem.Head;
 
 public class HelmOfCommand extends Head {
 
-    public HelmOfCommand(float x, float y, float z) {
+    public HelmOfCommand() {
         id = 2;
         armor = 200;
-        size = 32;
-        init(x, y, z, 1.0f, 0.5f, 0, size, size, size, "Helm of Command", HEAD_SLOT);
+        init("Helm of Command", HEAD_SLOT);
     }
 }

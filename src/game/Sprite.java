@@ -24,32 +24,38 @@ public class Sprite {
         glColor3f(r, g, b);
         glBegin(GL_QUADS);
         {
-            // front
-            glVertex3f(-sx / 2, -sy / 2, sz / 2);
-            glVertex3f(-sx / 2, sy / 2, sz / 2);
-            glVertex3f(sx / 2, sy / 2, sz / 2);
-            glVertex3f(sx / 2, -sy / 2, sz / 2);
             // back
+            glColor3f(0.0f, 1.0f, 0.0f);
+            glVertex3f(-sx / 2, -sy / 2, sz / 2);
+            glVertex3f(-sx / 2, sy / 2, sz / 2);
+            glVertex3f(sx / 2, sy / 2, sz / 2);
+            glVertex3f(sx / 2, -sy / 2, sz / 2);
+            // front
+            glColor3f(1.0f, 0.0f, 0.0f);
             glVertex3f(-sx / 2, -sy / 2, -sz / 2);
             glVertex3f(-sx / 2, sy / 2, -sz / 2);
             glVertex3f(sx / 2, sy / 2, -sz / 2);
             glVertex3f(sx / 2, -sy / 2, -sz / 2);
-            // bottom
+            // left
+            glColor3f(1.0f, 1.0f, 0.0f);
             glVertex3f(-sx / 2, -sy / 2, -sz / 2);
             glVertex3f(-sx / 2, -sy / 2, sz / 2);
             glVertex3f(-sx / 2, sy / 2, sz / 2);
             glVertex3f(-sx / 2, sy / 2, -sz / 2);
-            // top
+            // right
+            glColor3f(1.0f, 1.0f, 0.0f);
             glVertex3f(sx / 2, -sy / 2, -sz / 2);
             glVertex3f(sx / 2, -sy / 2, sz / 2);
             glVertex3f(sx / 2, sy / 2, sz / 2);
             glVertex3f(sx / 2, sy / 2, -sz / 2);
-            // left
-            glVertex3f(-sx / 2, -sy / 2, -sz / 2);
-            glVertex3f(sx / 2, -sy / 2, -sz / 2);
-            glVertex3f(sx / 2, -sy / 2, sz / 2);
-            glVertex3f(-sx / 2, -sy / 2, sz / 2);
-            // left
+            // top
+            glColor3f(1.0f, 1.0f, 1.0f);
+            glVertex3f(-sx / 2, sy / 2, -sz / 2);
+            glVertex3f(sx / 2, sy / 2, -sz / 2);
+            glVertex3f(sx / 2, sy / 2, sz / 2);
+            glVertex3f(-sx / 2, sy / 2, sz / 2);
+            // bottom
+            glColor3f(1.0f, 1.0f, 1.0f);
             glVertex3f(-sx / 2, -sy / 2, -sz / 2);
             glVertex3f(sx / 2, -sy / 2, -sz / 2);
             glVertex3f(sx / 2, -sy / 2, sz / 2);

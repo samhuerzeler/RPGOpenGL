@@ -1,9 +1,6 @@
 package game;
 
 import engine.Physics;
-import game.gameobject.item.equippableitem.head.HelmOfCommand;
-import game.gameobject.item.equippableitem.weapon.Bow;
-import game.gameobject.item.equippableitem.weapon.Sword;
 import game.gameobject.statobject.Player;
 import game.gameobject.statobject.mob.normal.Goblin;
 import game.gameobject.statobject.mob.normal.Guard;
@@ -21,15 +18,12 @@ public class Game {
     public Game() {
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
-        player = new Player(300, 0, 0);
+        player = new Player(0, 0, 0);
         objects.add(player);
-        objects.add(new Guard(400, 0, 0, 1));
-        objects.add(new Sword(200, 0, 80));
-        objects.add(new Bow(500, 0, 0));
-        objects.add(new HelmOfCommand(250, 0, 0));
-        objects.add(new Goblin(120, 0, -200, 2));
-        objects.add(new Goblin(300, 0, -300, 1));
-        objects.add(new Orc(120, 0, -300, 5));
+        objects.add(new Guard(0, 0, 0, 1));
+        objects.add(new Goblin(1500, 0, -1000, 2));
+        objects.add(new Goblin(-1500, 0, -1000, 1));
+        objects.add(new Orc(0, 0, -1000, 5));
     }
 
     public void getInput() {
