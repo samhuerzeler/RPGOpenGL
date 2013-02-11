@@ -22,16 +22,19 @@ public abstract class Mob extends StatObject {
     private float dirZ;
     private float targetX;
     private float targetZ;
+    private Patrol patrol = new Patrol();
+    private PatrolWaiting patrolWaiting = new PatrolWaiting();
 
     public Mob(int level) {
         stats = new Stats(level, false);
         target = null;
         resetting = false;
         attackDamage = 1;
-        sightRange = 500.0f;
-        basicFleeRange = 1000.0f;
+        sightRange = 300.0f;
+        basicFleeRange = 600.0f;
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
+        patrolRange = 30;
         attackDelay.start();
     }
 
@@ -64,6 +67,7 @@ public abstract class Mob extends StatObject {
                     setOutOfCombat(this, target);
                     removeFromThreatMap(target);
                     setTarget(null);
+                    patrolling = false;
                 } else if (isInCombat() || (!resetting && Util.dist(x, z, target.getX(), target.getZ()) <= chaseRange)) {
                     chase();
                 }
@@ -95,35 +99,12 @@ public abstract class Mob extends StatObject {
                 targetX = 0;
                 targetZ = 0;
             }
-            new Thread(new Mob.Patrol()).start();
+            if (!patrol.running) {
+                new Thread(patrol).start();
+            }
         } else {
             if (targetX == 0 && targetZ == 0) {
-                targetX = x + random.nextInt(500) - 250;
-                targetZ = z + random.nextInt(500) - 250;
-                float distance = (float) Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetZ - z, 2));
-                dirX = (targetX - x) / distance * DAMPING;
-                dirZ = (targetZ - z) / distance * DAMPING;
-                int r = 30;
-                if (spawnX - x < -Math.sin(Math.toRadians(45)) * r) {
-                    if (dirX > 0) {
-                        dirX *= -1;
-                    }
-                }
-                if (spawnX - x > Math.sin(Math.toRadians(45)) * r) {
-                    if (dirX < 0) {
-                        dirX *= -1;
-                    }
-                }
-                if (spawnZ - z < -Math.sin(Math.toRadians(45)) * r) {
-                    if (dirZ > 0) {
-                        dirZ *= -1;
-                    }
-                }
-                if (spawnZ - z > Math.sin(Math.toRadians(45)) * r) {
-                    if (dirZ < 0) {
-                        dirZ *= -1;
-                    }
-                }
+                calculateRandomPatrolPoint();
             }
         }
         // attack
@@ -136,6 +117,34 @@ public abstract class Mob extends StatObject {
                     addToThreatMap(target, 0);
                     patrolling = false;
                 }
+            }
+        }
+    }
+
+    protected void calculateRandomPatrolPoint() {
+        targetX = x + random.nextInt(500) - 250;
+        targetZ = z + random.nextInt(500) - 250;
+        float distance = (float) Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetZ - z, 2));
+        dirX = (targetX - x) / distance * DAMPING;
+        dirZ = (targetZ - z) / distance * DAMPING;
+        if (spawnX - x < -Math.sin(Math.toRadians(45)) * patrolRange) {
+            if (dirX > 0) {
+                dirX *= -1;
+            }
+        }
+        if (spawnX - x > Math.sin(Math.toRadians(45)) * patrolRange) {
+            if (dirX < 0) {
+                dirX *= -1;
+            }
+        }
+        if (spawnZ - z < -Math.sin(Math.toRadians(45)) * patrolRange) {
+            if (dirZ > 0) {
+                dirZ *= -1;
+            }
+        }
+        if (spawnZ - z > Math.sin(Math.toRadians(45)) * patrolRange) {
+            if (dirZ < 0) {
+                dirZ *= -1;
             }
         }
     }
@@ -201,12 +210,25 @@ public abstract class Mob extends StatObject {
 
     private class Patrol implements Runnable {
 
+        private boolean running = false;
+
+        public boolean isRunning() {
+            return running;
+        }
+
         @Override
         public void run() {
             try {
-                Thread.sleep(2500);
+                running = true;
+                // sleep (walk) for 2.5 sec
+                int sleepTime = 2500;
+                System.out.println(sleepTime);
+                Thread.sleep(sleepTime);
+                running = false;
                 waiting = true;
-                new Thread(new Mob.PatrolWaiting()).start();
+                if (!patrolWaiting.running) {
+                    new Thread(patrolWaiting).start();
+                }
             } catch (Exception e) {
             }
         }
@@ -214,10 +236,21 @@ public abstract class Mob extends StatObject {
 
     private class PatrolWaiting implements Runnable {
 
+        private boolean running = false;
+
+        public boolean isRunning() {
+            return running;
+        }
+
         @Override
         public void run() {
             try {
-                Thread.sleep(5000);
+                running = true;
+                // sleep (wait) between 2 and 6 sec
+                int sleepTime = random.nextInt(6000) + 2000;
+                System.out.println(sleepTime);
+                Thread.sleep(sleepTime);
+                running = false;
                 waiting = false;
             } catch (Exception e) {
             }

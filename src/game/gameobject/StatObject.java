@@ -70,7 +70,7 @@ public abstract class StatObject extends GameObject {
         return stats.getSpeed();
     }
 
-    public int getAttackRange() {
+    public float getAttackRange() {
         return attackRange;
     }
 

@@ -29,12 +29,12 @@ public class Player extends StatObject {
     public Player(float x, float y, float z) {
         stats = new Stats(0, true);
         name = "Player";
-        size = 32;
+        size = 32.0f;
         init(x, y, z, 0.2f, 0.2f, 1.0f, size, size, size, PLAYER_ID);
         inventory = new Inventory(20);
         equipment = new Equipment(inventory);
-        sightRange = 150f;
-        attackRange = 43;
+        sightRange = 150.0f;
+        attackRange = 500;
         attackDamage = 1;
         attackDelay.start();
     }

@@ -8,14 +8,15 @@ public abstract class GameObject {
 
     protected String name;
     protected int type;
-    protected int size;
+    protected float size;
     protected Sprite spr;
     protected Stats stats;
     protected int attackDamage;
-    protected int attackRange;
+    protected float attackRange;
     protected float sightRange;
     protected float basicFleeRange;
     protected float currentFleeRange;
+    protected float patrolRange;
     protected Delay attackDelay = new Delay(1000);
     protected boolean[] flags = new boolean[1];
     // object IDs
@@ -50,7 +51,11 @@ public abstract class GameObject {
             glRotatef(-ry, 0.0f, 1.0f, 0.0f);
             spr.render();
             glColor3f(1.0f, 1.0f, 1.0f);
-            renderCircle(0.0f, 0.0f, sightRange);
+            if (type == ENEMY_ID || type == NPC_ID) {
+                renderCircle(0.0f, 0.0f, sightRange);
+            } else if (type == PLAYER_ID) {
+                renderCircle(0.0f, 0.0f, attackRange);
+            }
             glColor3f(0.3f, 0.3f, 0.3f);
             renderSphere(0.0f, 0.0f, 0.0f);
         }

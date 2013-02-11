@@ -7,7 +7,7 @@ public class Orc extends Enemy {
     public Orc(float x, float y, float z, int level) {
         super(level);
         name = "Orc";
-        size = 32;
+        size = 32.0f;
         attackRange = size;
         int[] itemIds = new int[]{2};
         addToLootPool(itemIds);

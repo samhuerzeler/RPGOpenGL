@@ -7,7 +7,7 @@ public class Goblin extends Enemy {
     public Goblin(float x, float y, float z, int level) {
         super(level);
         name = "Goblin";
-        size = 32;
+        size = 32.0f;
         attackRange = size;
         int[] itemIds = new int[]{0, 1};
         addToLootPool(itemIds);
