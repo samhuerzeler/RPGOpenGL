@@ -4,9 +4,11 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Sprite {
 
+    // color
     private float r;
     private float g;
     private float b;
+    // size
     private float sx;
     private float sy;
     private float sz;

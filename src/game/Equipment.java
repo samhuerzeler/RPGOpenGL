@@ -1,7 +1,7 @@
 package game;
 
-import game.gameobject.item.EquippableItem;
-import game.gameobject.item.equippableitem.Weapon;
+import game.item.EquippableItem;
+import game.item.equippableitem.Weapon;
 
 public class Equipment {
 

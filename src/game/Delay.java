@@ -11,15 +11,9 @@ public class Delay {
         started = false;
     }
 
-    public boolean isOver() {
-        if (!started) {
-            return false;
-        }
-        return Time.getTime() >= endTime;
-    }
-
-    public boolean isActive() {
-        return started;
+    public void start() {
+        started = true;
+        endTime = 0;
     }
 
     public void restart() {
@@ -31,8 +25,14 @@ public class Delay {
         started = false;
     }
 
-    public void terminate() {
-        started = true;
-        endTime = 0;
+    public boolean isOver() {
+        if (!started) {
+            return false;
+        }
+        return Time.getTime() >= endTime;
+    }
+
+    public boolean isActive() {
+        return started;
     }
 }

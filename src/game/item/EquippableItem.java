@@ -1,6 +1,6 @@
-package game.gameobject.item;
+package game.item;
 
-import game.gameobject.Item;
+import game.Item;
 
 public abstract class EquippableItem extends Item {
 
@@ -12,8 +12,8 @@ public abstract class EquippableItem extends Item {
     private int slot;
 
     protected void init(String name, int slot) {
-        this.slot = slot;
         this.name = name;
+        this.slot = slot;
     }
 
     public int getSlot() {

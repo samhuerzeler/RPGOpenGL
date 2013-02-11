@@ -1,6 +1,6 @@
-package game.gameobject.item.equippableitem.weapon;
+package game.item.equippableitem.weapon;
 
-import game.gameobject.item.equippableitem.Weapon;
+import game.item.equippableitem.Weapon;
 
 public class Sword extends Weapon {
 

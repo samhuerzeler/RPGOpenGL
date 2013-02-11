@@ -1,4 +1,4 @@
-package game.gameobject;
+package game;
 
 public abstract class Item {
 

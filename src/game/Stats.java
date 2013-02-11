@@ -3,10 +3,10 @@ package game;
 public final class Stats {
 
     public static final double LEVEL_CONST = 25.0 * Math.pow(3.0, (3.0 / 2.0));
-    private boolean levelable;
     private int level;
     private float xp;
     private int health;
+    private boolean levelable;
 
     public Stats(float xp, boolean levelable) {
         this.levelable = levelable;

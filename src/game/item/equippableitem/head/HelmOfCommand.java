@@ -1,6 +1,6 @@
-package game.gameobject.item.equippableitem.head;
+package game.item.equippableitem.head;
 
-import game.gameobject.item.equippableitem.Head;
+import game.item.equippableitem.Head;
 
 public class HelmOfCommand extends Head {
 

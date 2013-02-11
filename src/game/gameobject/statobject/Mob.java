@@ -8,23 +8,20 @@ import game.Time;
 import game.Util;
 import game.gameobject.StatObject;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 public abstract class Mob extends StatObject {
 
     public static final float DAMPING = 0.5f;
     protected float chaseRange;
-    protected boolean resetting;
-    protected StatObject target;
     protected int enemyTypeId;
-    protected Map<StatObject, Integer> threatMap = new HashMap<StatObject, Integer>();
     private Random random = new Random();
     private boolean patrolling = false;
     private boolean waiting = false;
     private float dirX;
     private float dirZ;
+    private float targetX;
+    private float targetZ;
 
     public Mob(int level) {
         stats = new Stats(level, false);
@@ -35,7 +32,7 @@ public abstract class Mob extends StatObject {
         basicFleeRange = 1000.0f;
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
-        attackDelay.terminate();
+        attackDelay.start();
     }
 
     @Override
@@ -86,40 +83,11 @@ public abstract class Mob extends StatObject {
         attackDelay.restart();
     }
 
-    @Override
-    public void addToThreatMap(StatObject so, int amt) {
-        if (threatMap.containsKey(so)) {
-            amt += threatMap.get(so).intValue();
-        }
-        threatMap.put(so, amt);
-    }
-
-    @Override
-    public void removeFromThreatMap(StatObject so) {
-        threatMap.remove(so);
-    }
-
-    public void resetThreatMap() {
-        threatMap.clear();
-    }
-
-    private StatObject getHighestTreatTarget() {
-        Map.Entry<StatObject, Integer> maxEntry = null;
-        for (Map.Entry<StatObject, Integer> entry : threatMap.entrySet()) {
-            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
-                maxEntry = entry;
-            }
-        }
-        if (maxEntry != null) {
-            return maxEntry.getKey();
-        }
-        return null;
-    }
-    private float targetX;
-    private float targetZ;
-
     protected void idle() {
         // patrol
+        /**
+         * TODO refactor mob patrol
+         */
         patrolling = true;
         if (!waiting) {
             moveTo(dirX, 0, dirZ);
@@ -135,28 +103,23 @@ public abstract class Mob extends StatObject {
                 float distance = (float) Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetZ - z, 2));
                 dirX = (targetX - x) / distance * DAMPING;
                 dirZ = (targetZ - z) / distance * DAMPING;
-                System.out.println("-------------------");
                 int r = 30;
                 if (spawnX - x < -Math.sin(Math.toRadians(45)) * r) {
-                    System.out.println("zwit rächts");
                     if (dirX > 0) {
                         dirX *= -1;
                     }
                 }
                 if (spawnX - x > Math.sin(Math.toRadians(45)) * r) {
-                    System.out.println("zwit lenks");
                     if (dirX < 0) {
                         dirX *= -1;
                     }
                 }
                 if (spawnZ - z < -Math.sin(Math.toRadians(45)) * r) {
-                    System.out.println("zwit vore");
                     if (dirZ > 0) {
                         dirZ *= -1;
                     }
                 }
                 if (spawnZ - z > Math.sin(Math.toRadians(45)) * r) {
-                    System.out.println("zwit hende");
                     if (dirZ < 0) {
                         dirZ *= -1;
                     }
@@ -173,33 +136,6 @@ public abstract class Mob extends StatObject {
                     addToThreatMap(target, 0);
                     patrolling = false;
                 }
-            }
-        }
-    }
-
-    private class Patrol implements Runnable {
-
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(2500);
-                waiting = true;
-                new Thread(new Mob.PatrolWaiting()).start();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class PatrolWaiting implements Runnable {
-
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(5000);
-                waiting = false;
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
@@ -238,24 +174,6 @@ public abstract class Mob extends StatObject {
         ry = (float) -Math.toDegrees(Math.atan2(dx, dz)) - 180;
     }
 
-    @Override
-    protected void die() {
-        remove();
-    }
-
-    @Override
-    public boolean isResetting() {
-        return resetting;
-    }
-
-    public void setTarget(StatObject target) {
-        this.target = target;
-    }
-
-    public Stats getStats() {
-        return stats;
-    }
-
     public void extendFleeRange() {
         currentFleeRange = Util.dist(x, z, spawnX, spawnZ) + basicFleeRange;
     }
@@ -264,12 +182,45 @@ public abstract class Mob extends StatObject {
         currentFleeRange = basicFleeRange;
     }
 
+    public Stats getStats() {
+        return stats;
+    }
+
+    public void setTarget(StatObject target) {
+        this.target = target;
+    }
+
     public void setAttackDelay(int time) {
         attackDelay = new Delay(time);
-        attackDelay.terminate();
+        attackDelay.start();
     }
 
     public void setSightRange(float dist) {
         sightRange = dist;
+    }
+
+    private class Patrol implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(2500);
+                waiting = true;
+                new Thread(new Mob.PatrolWaiting()).start();
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    private class PatrolWaiting implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(5000);
+                waiting = false;
+            } catch (Exception e) {
+            }
+        }
     }
 }

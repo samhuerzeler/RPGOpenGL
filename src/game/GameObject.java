@@ -6,10 +6,18 @@ import org.lwjgl.util.glu.Sphere;
 
 public abstract class GameObject {
 
+    protected String name;
     protected int type;
-    protected Sprite spr;
-    protected boolean[] flags = new boolean[1];
     protected int size;
+    protected Sprite spr;
+    protected Stats stats;
+    protected int attackDamage;
+    protected int attackRange;
+    protected float sightRange;
+    protected float basicFleeRange;
+    protected float currentFleeRange;
+    protected Delay attackDelay = new Delay(1000);
+    protected boolean[] flags = new boolean[1];
     // object IDs
     public static final int NULL_ID = 0;
     public static final int PLAYER_ID = 1;
@@ -31,14 +39,6 @@ public abstract class GameObject {
     protected float rx;
     protected float ry;
     protected float rz;
-    protected Stats stats;
-    protected String name;
-    protected int attackDamage;
-    protected int attackRange;
-    protected float sightRange;
-    protected float basicFleeRange;
-    protected float currentFleeRange;
-    protected Delay attackDelay = new Delay(1000);
 
     public void update() {
     }
@@ -70,16 +70,24 @@ public abstract class GameObject {
         float c = (float) Math.cos(theta);
         float s = (float) Math.sin(theta);
         float t;
-        float x = r;
-        float z = 0;
+        float xx = r;
+        float zz = 0;
         glBegin(GL_LINE_LOOP);
         for (int i = 0; i < numSegments; i++) {
-            glVertex3f(x + cx, 0.0f, z + cz);
-            t = x;
-            x = c * x - s * z;
-            z = s * t + c * z;
+            glVertex3f(xx + cx, 0.0f, zz + cz);
+            t = xx;
+            xx = c * xx - s * zz;
+            zz = s * t + c * zz;
         }
         glEnd();
+    }
+
+    public void remove() {
+        flags[0] = true;
+    }
+
+    public boolean getRemove() {
+        return flags[0];
     }
 
     public float getX() {
@@ -120,14 +128,6 @@ public abstract class GameObject {
 
     public int getType() {
         return type;
-    }
-
-    public boolean getRemove() {
-        return flags[0];
-    }
-
-    public void remove() {
-        flags[0] = true;
     }
 
     protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz, int type) {

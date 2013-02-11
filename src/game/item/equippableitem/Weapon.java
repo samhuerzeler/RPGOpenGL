@@ -1,6 +1,6 @@
-package game.gameobject.item.equippableitem;
+package game.item.equippableitem;
 
-import game.gameobject.item.EquippableItem;
+import game.item.EquippableItem;
 
 public abstract class Weapon extends EquippableItem {
 
@@ -14,16 +14,8 @@ public abstract class Weapon extends EquippableItem {
         return damage;
     }
 
-    public void setDamage(int amt) {
-        damage = amt;
-    }
-
     public int getRange() {
         return range;
-    }
-
-    public void setRange(int amt) {
-        range = amt;
     }
 
     public int getSpeed() {

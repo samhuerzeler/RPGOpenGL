@@ -1,7 +1,5 @@
 package game;
 
-import game.gameobject.Item;
-
 public class Inventory {
 
     private Item[] items;
@@ -29,6 +27,22 @@ public class Inventory {
         return true;
     }
 
+    public void remove(int index) {
+        items[index] = null;
+        if (index < firstFree) {
+            firstFree = index;
+        }
+    }
+
+    public void remove(Item item) {
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] == item) {
+                remove(i);
+                return;
+            }
+        }
+    }
+
     public Item get(int index) {
         return items[index];
     }
@@ -49,21 +63,5 @@ public class Inventory {
             }
         }
         return null;
-    }
-
-    public void remove(int index) {
-        items[index] = null;
-        if (index < firstFree) {
-            firstFree = index;
-        }
-    }
-
-    public void remove(Item item) {
-        for (int i = 0; i < items.length; i++) {
-            if (items[i] == item) {
-                remove(i);
-                return;
-            }
-        }
     }
 }

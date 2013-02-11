@@ -1,6 +1,6 @@
-package game.gameobject.item.equippableitem;
+package game.item.equippableitem;
 
-import game.gameobject.item.EquippableItem;
+import game.item.EquippableItem;
 
 public abstract class Head extends EquippableItem {
 

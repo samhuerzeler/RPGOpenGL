@@ -4,14 +4,14 @@ import game.Equipment;
 import game.Game;
 import game.GameObject;
 import game.Inventory;
+import game.Item;
 import game.Stats;
 import game.Time;
 import game.Util;
-import game.gameobject.Item;
 import game.gameobject.StatObject;
-import game.gameobject.item.EquippableItem;
-import game.gameobject.item.equippableitem.Weapon;
 import game.gameobject.statobject.mob.Enemy;
+import game.item.EquippableItem;
+import game.item.equippableitem.Weapon;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -36,7 +36,7 @@ public class Player extends StatObject {
         sightRange = 150f;
         attackRange = 43;
         attackDamage = 1;
-        attackDelay.terminate();
+        attackDelay.start();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class Player extends StatObject {
     public void getInput() {
         // Mouse Input
         if (Mouse.isButtonDown(MOUSEB_RIGHT)) {
-            rotate();
+            mouseRotate();
             Mouse.setGrabbed(true);
         } else {
             Mouse.setGrabbed(false);
@@ -107,15 +107,6 @@ public class Player extends StatObject {
         }
     }
 
-    private void equipWeapon(Weapon weapon) {
-        if (weapon != null) {
-            equipment.equip((EquippableItem) weapon);
-            setAttackDamage(((Weapon) weapon).getDamage());
-            setAttackRange(((Weapon) weapon).getRange());
-            System.out.println(weapon.getName() + " equipped");
-        }
-    }
-
     private void attack() {
         ArrayList<GameObject> objects = Game.sphereCollide(x, z, attackRange);
         removeEnemiesInBack(objects);
@@ -126,7 +117,7 @@ public class Player extends StatObject {
 
     private void removeEnemiesInBack(ArrayList<GameObject> objects) {
         /**
-         * ToDo
+         * TODO remove enemies in back
          */
 //        for (int i = 0; i < objects.size(); i++) {
 //            if (objects.get(i).getZ() + size / 2 < z + size / 2) {
@@ -147,21 +138,22 @@ public class Player extends StatObject {
 
     private void attackClosestEnemy(ArrayList<Enemy> enemies) {
         if (enemies.size() > 0) {
-            Enemy target = enemies.get(0);
+            // find closest target
+            Enemy closestTarget = enemies.get(0);
             if (enemies.size() > 1) {
                 for (Enemy e : enemies) {
-                    if (Util.dist(x, z, e.getX(), e.getZ()) < Util.dist(x, z, target.getX(), target.getZ())) {
-                        target = e;
+                    if (Util.dist(x, z, e.getX(), e.getZ()) < Util.dist(x, z, closestTarget.getX(), closestTarget.getZ())) {
+                        closestTarget = e;
                     }
                 }
             }
-            // attack enemy
-            if (!target.isResetting()) {
-                setInCombat(this, target);
-                target.addToThreatMap(this, attackDamage);
-                target.extendFleeRange();
-                target.damage(attackDamage);
-                System.out.println(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
+            // attack closest target
+            if (!closestTarget.isResetting()) {
+                setInCombat(this, closestTarget);
+                closestTarget.addToThreatMap(this, attackDamage);
+                closestTarget.extendFleeRange();
+                closestTarget.damage(attackDamage);
+                System.out.println(name + " attacking " + closestTarget.getName() + " : " + closestTarget.getCurrentHealth() + "/" + closestTarget.getMaxHealth());
             } else {
                 System.out.println(name + " : Target is resetting");
             }
@@ -179,23 +171,7 @@ public class Player extends StatObject {
         ry += amt;
     }
 
-    private void jump() {
-        y += getSpeed() * Time.getDelta();
-    }
-
-    private void fall() {
-        y -= getSpeed() * Time.getDelta();
-    }
-
-    private void addItem(Item item) {
-        inventory.add(item);
-    }
-
-    private void addXp(float amt) {
-        stats.addXp(amt);
-    }
-
-    private void rotate() {
+    private void mouseRotate() {
         dx = Mouse.getDX();
         dy = Mouse.getDY();
         ry += (dx * 0.1f);
@@ -208,23 +184,29 @@ public class Player extends StatObject {
         }
     }
 
-    @Override
-    public boolean isResetting() {
-        // player is never resetting
-        return false;
+    private void jump() {
+        y += getSpeed() * Time.getDelta();
     }
 
-    @Override
-    protected void die() {
-        remove();
+    private void fall() {
+        y -= getSpeed() * Time.getDelta();
     }
 
-    @Override
-    public void addToThreatMap(StatObject so, int amt) {
+    private void equipWeapon(Weapon weapon) {
+        if (weapon != null) {
+            equipment.equip((EquippableItem) weapon);
+            setAttackDamage(((Weapon) weapon).getDamage());
+            setAttackRange(((Weapon) weapon).getRange());
+            System.out.println(weapon.getName() + " equipped");
+        }
     }
 
-    @Override
-    public void removeFromThreatMap(StatObject so) {
+    private void addItem(Item item) {
+        inventory.add(item);
+    }
+
+    private void addXp(float amt) {
+        stats.addXp(amt);
     }
 
     private class stopJumping implements Runnable {
@@ -236,7 +218,6 @@ public class Player extends StatObject {
                 jumping = false;
                 falling = true;
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }

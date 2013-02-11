@@ -26,10 +26,6 @@ public class Game {
         objects.add(new Orc(0, 0, -1000, 5));
     }
 
-    public void getInput() {
-        player.getInput();
-    }
-
     public void update() {
         for (GameObject go : objects) {
             if (!go.getRemove()) {
@@ -47,6 +43,10 @@ public class Game {
         for (GameObject go : objects) {
             go.render();
         }
+    }
+
+    public void getInput() {
+        player.getInput();
     }
 
     public ArrayList<GameObject> getObjects() {

@@ -6,15 +6,16 @@ import org.lwjgl.input.Mouse;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.*;
 
-public class Camera {
+public class OrbitCamera {
 
-    public static Camera camera;
-    public static final int MOUSEB_LEFT = 0;
+    public static OrbitCamera camera;
+    // target to follow
     private GameObject target;
     // distance
-    private float distance;
+    private float currentDistance;
     private float minDistance = 100.0f;
     private float maxDistance = 2000.0f;
+    private float zoomingSpeed = 10.0f;
     // position
     private float x;
     private float y;
@@ -31,20 +32,65 @@ public class Camera {
     private float near;
     private float far;
 
-    public Camera(float fov, float aspect, float near, float far, GameObject target) {
+    public OrbitCamera(float fov, float aspect, float near, float far, GameObject target) {
         x = 0;
         y = 0;
         z = 0;
         rx = 0;
         ry = 0;
         rz = 0;
-        distance = 800.0f;
+        currentDistance = 800.0f;
         this.fov = fov;
         this.aspect = aspect;
         this.near = near;
         this.far = far;
         this.target = target;
         initProjection();
+    }
+
+    public void update() {
+        if (Mouse.hasWheel()) {
+            checkMouseWheel();
+        }
+        glTranslatef(0.0f, -currentDistance / 16, -currentDistance);
+        glRotatef(-target.getRX(), 1.0f, 0.0f, 0.0f);
+        glRotatef(target.getRY(), 0.0f, 1.0f, 0.0f);
+        glTranslatef(-target.getX(), -target.getY(), -target.getZ());
+    }
+
+    public void rotateY(float amt) {
+        ry += amt;
+    }
+
+    public void zoomIn() {
+        if (currentDistance > minDistance) {
+            currentDistance -= zoomingSpeed;
+        }
+    }
+
+    public void zoomOut() {
+        if (currentDistance < maxDistance) {
+            currentDistance += zoomingSpeed;
+        }
+    }
+
+    void getInput() {
+        if (Keyboard.isKeyDown(Keyboard.KEY_ADD)) {
+            zoomIn();
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT)) {
+            zoomOut();
+        }
+    }
+
+    public void checkMouseWheel() {
+        // doesn't work in GL11?
+        int dWheel = Mouse.getDWheel();
+        if (dWheel < 0) {
+            System.out.println("DOWN");
+        } else if (dWheel > 0) {
+            System.out.println("UP");
+        }
     }
 
     private void initProjection() {
@@ -86,6 +132,10 @@ public class Camera {
         return rz;
     }
 
+    public float getZoomingSpeed() {
+        return zoomingSpeed;
+    }
+
     public void setX(float x) {
         this.x = x;
     }
@@ -110,47 +160,7 @@ public class Camera {
         this.rz = rz;
     }
 
-    public void rotateY(float amt) {
-        ry += amt;
-    }
-
-    public void zoomIn() {
-        if (distance > minDistance) {
-            distance -= 10.0f;
-        }
-    }
-
-    public void zoomOut() {
-        if (distance < maxDistance) {
-            distance += 10.0f;
-        }
-    }
-
-    void getInput() {
-        if (Keyboard.isKeyDown(Keyboard.KEY_ADD)) {
-            zoomIn();
-        }
-        if (Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT)) {
-            zoomOut();
-        }
-    }
-
-    public void checkMouseWheel() {
-        int dWheel = Mouse.getDWheel();
-        if (dWheel < 0) {
-            System.out.println("DOWN");
-        } else if (dWheel > 0) {
-            System.out.println("UP");
-        }
-    }
-
-    public void update() {
-        if (Mouse.hasWheel()) {
-            checkMouseWheel();
-        }
-        glTranslatef(0.0f, -distance / 16, -distance);
-        glRotatef(-target.getRX(), 1.0f, 0.0f, 0.0f);
-        glRotatef(target.getRY(), 0.0f, 1.0f, 0.0f);
-        glTranslatef(-target.getX(), -target.getY(), -target.getZ());
+    public void setZoomingSpeed(float amt) {
+        this.zoomingSpeed = amt;
     }
 }
