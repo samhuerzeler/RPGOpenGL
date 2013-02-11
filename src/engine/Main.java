@@ -31,7 +31,7 @@ public class Main {
 
     private static void initCamera() {
         GameObject cameraTarget = Game.game.player;
-        OrbitCamera.camera = new OrbitCamera(70, (float) Display.getWidth() / (float) Display.getHeight(), 0.3f, 5000.0f, cameraTarget);
+        OrbitCamera.camera = new OrbitCamera(70, (float) Display.getWidth() / (float) Display.getHeight(), 0.3f, 10000f, cameraTarget);
     }
 
     private static void getInput() {
