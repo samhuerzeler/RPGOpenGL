@@ -3,7 +3,6 @@ package game.gameobject.statobject.mob.normal;
 import game.Item;
 import game.gameobject.statobject.mob.Enemy;
 import game.item.equippableitem.weapon.Bow;
-import game.item.equippableitem.weapon.Sword;
 
 public class Goblin extends Enemy {
 
@@ -13,7 +12,6 @@ public class Goblin extends Enemy {
         size = 32.0f;
         attackRange = size;
         Item[] items = new Item[]{
-            new Sword(),
             new Bow()
         };
         addToLootPool(items);
