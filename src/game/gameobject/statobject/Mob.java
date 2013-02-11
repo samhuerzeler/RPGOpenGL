@@ -177,9 +177,9 @@ public abstract class Mob extends StatObject {
 
     protected void lookAt(float targetX, float targetY, float targetZ) {
         float distance = (float) Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetY - y, 2) + Math.pow(targetZ - z, 2));
-        dx = (targetX - x) / distance * DAMPING;
-        dy = (targetY - y) / distance * DAMPING;
-        dz = (targetZ - z) / distance * DAMPING;
+        dx = (targetX - x) / distance;
+        dy = (targetY - y) / distance;
+        dz = (targetZ - z) / distance;
         ry = (float) -Math.toDegrees(Math.atan2(dx, dz)) - 180;
     }
 

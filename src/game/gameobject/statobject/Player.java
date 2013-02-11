@@ -18,13 +18,14 @@ import org.lwjgl.input.Mouse;
 
 public class Player extends StatObject {
 
+    public static final float DAMPING = 0.5f;
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
+    private final float TERMINAL_VELOCITY = 9.8f;
+    private float yVelocity = TERMINAL_VELOCITY;
     private Inventory inventory;
     private Equipment equipment;
     public boolean jumping = false;
-    public boolean falling = false;
-    public long jumpingTime = 180;
 
     public Player(float x, float y, float z) {
         stats = new Stats(0, true);
@@ -43,10 +44,6 @@ public class Player extends StatObject {
     public void update() {
         if (jumping) {
             jump();
-        } else if (!jumping && y > 0) {
-            fall();
-        } else {
-            falling = false;
         }
     }
 
@@ -68,12 +65,13 @@ public class Player extends StatObject {
         boolean movingRight = Keyboard.isKeyDown(Keyboard.KEY_E);
 
         if ((movingForward && (movingLeft || movingRight)) || (movingBackward && (movingLeft || movingRight))) {
-            movementSpeed = movementSpeed * 2 - (float) Math.sqrt(movementSpeed * movementSpeed + movementSpeed * movementSpeed);
+            movementSpeed = (float) (movementSpeed / Math.sqrt(2));
         }
         if (movingForward) {
             move(-movementSpeed, 1);
         }
         if (movingBackward) {
+            movementSpeed *= DAMPING;
             move(movementSpeed, 1);
         }
         if (movingLeft) {
@@ -94,7 +92,6 @@ public class Player extends StatObject {
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
             if (!jumping && y <= 0) {
                 jumping = true;
-                new Thread(new stopJumping()).start();
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
@@ -185,11 +182,12 @@ public class Player extends StatObject {
     }
 
     private void jump() {
-        y += getSpeed() * Time.getDelta();
-    }
-
-    private void fall() {
-        y -= getSpeed() * Time.getDelta();
+        y += yVelocity;
+        yVelocity = yVelocity * 0.98f - 0.5f;
+        if (y <= 0) {
+            jumping = false;
+            yVelocity = TERMINAL_VELOCITY;
+        }
     }
 
     private void equipWeapon(Weapon weapon) {
@@ -207,18 +205,5 @@ public class Player extends StatObject {
 
     private void addXp(float amt) {
         stats.addXp(amt);
-    }
-
-    private class stopJumping implements Runnable {
-
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(jumpingTime);
-                jumping = false;
-                falling = true;
-            } catch (Exception e) {
-            }
-        }
     }
 }
