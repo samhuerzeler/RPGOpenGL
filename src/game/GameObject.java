@@ -134,6 +134,14 @@ public abstract class GameObject {
     public int getType() {
         return type;
     }
+    
+    public float getSpawnX(){
+        return spawnX;
+    }
+    
+    public float getSpawnZ(){
+        return spawnZ;
+    }
 
     protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz) {
         this.x = x;

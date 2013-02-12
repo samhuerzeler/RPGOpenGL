@@ -159,7 +159,7 @@ public abstract class Mob extends StatObject {
     protected void resetPosition() {
         resetFleeRange();
         resetThreatMap();
-        moveTo(spawnX, 0, spawnZ);
+        moveTo(spawnX, spawnY, spawnZ);
     }
 
     protected void moveToTarget() {

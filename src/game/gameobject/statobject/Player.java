@@ -31,6 +31,9 @@ public class Player extends StatObject {
         stats = new Stats(100000, true);
         name = "Player";
         size = 32.0f;
+        spawnX = x;
+        spawnY = y;
+        spawnZ = z;
         type = PLAYER;
         init(x, y, z, 0.2f, 0.2f, 1.0f, size, size, size);
         inventory = new Inventory(20);

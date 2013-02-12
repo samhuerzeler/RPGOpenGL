@@ -7,25 +7,26 @@ import game.gameobject.statobject.mob.normal.Guard;
 import game.gameobject.statobject.mob.normal.Orc;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import static org.lwjgl.opengl.GL11.*;
 
 public class Game {
-
+    
     public static Game game;
     private ArrayList<GameObject> objects;
     private ArrayList<GameObject> objectsToRemove;
     public Player player;
-
+    
     public Game() {
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
-        player = new Player(0, 0, 0);
+        player = new Player(-200, 0, 200);
         objects.add(player);
         objects.add(new Guard(0, 0, 0, 1));
         objects.add(new Goblin(1000, 0, -500, 2));
         objects.add(new Goblin(-1000, 0, -500, 1));
         objects.add(new Orc(0, 0, -1000, 5));
     }
-
+    
     public void update() {
         for (GameObject go : objects) {
             if (!go.getRemove()) {
@@ -38,21 +39,47 @@ public class Game {
             objects.remove(go);
         }
     }
-
+    
     public void render() {
         for (GameObject go : objects) {
+            if (go.getType() == 1) {
+                glColor3f(0.0f, 1.0f, 0.0f);
+            } else if (go.getType() == 2) {
+                glColor3f(0.3f, 0.3f, 1.0f);
+            } else {
+                glColor3f(1.0f, 0.0f, 0.0f);
+            }
+            renderSpawnPoint(go.getSpawnX(), go.getSpawnZ(), 200.0f);
             go.render();
         }
     }
-
+    
+    private void renderSpawnPoint(float cx, float cz, float r) {
+        int numSegments = 50;
+        float theta = (float) (2 * 3.1415926 / numSegments);
+        float c = (float) Math.cos(theta);
+        float s = (float) Math.sin(theta);
+        float t;
+        float xx = r;
+        float zz = 0;
+        glBegin(GL_LINE_LOOP);
+        for (int i = 0; i < numSegments; i++) {
+            glVertex3f(xx + cx, 0.0f, zz + cz);
+            t = xx;
+            xx = c * xx - s * zz;
+            zz = s * t + c * zz;
+        }
+        glEnd();
+    }
+    
     public void getInput() {
         player.getInput();
     }
-
+    
     public ArrayList<GameObject> getObjects() {
         return objects;
     }
-
+    
     public static ArrayList<GameObject> sphereCollide(float x, float z, float radius) {
         ArrayList<GameObject> res = new ArrayList<GameObject>();
         for (GameObject go : game.getObjects()) {
@@ -62,7 +89,7 @@ public class Game {
         }
         return res;
     }
-
+    
     public static ArrayList<GameObject> rectangleCollide(float x1, float z1, float x2, float z2) {
         ArrayList<GameObject> res = new ArrayList<GameObject>();
         float sx = x2 - x1;
