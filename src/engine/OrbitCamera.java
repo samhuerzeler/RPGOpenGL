@@ -68,9 +68,21 @@ public class OrbitCamera {
         }
     }
 
+    public void zoomIn(int amt) {
+        if (currentDistance - amt >= minDistance) {
+            currentDistance -= amt;
+        }
+    }
+
     public void zoomOut() {
         if (currentDistance < maxDistance) {
             currentDistance += zoomingSpeed;
+        }
+    }
+
+    public void zoomOut(int amt) {
+        if (currentDistance + amt <= maxDistance) {
+            currentDistance += amt;
         }
     }
 
@@ -84,12 +96,11 @@ public class OrbitCamera {
     }
 
     public void checkMouseWheel() {
-        // doesn't work in GL11?
         int dWheel = Mouse.getDWheel();
         if (dWheel < 0) {
-            System.out.println("DOWN");
+            zoomOut(80);
         } else if (dWheel > 0) {
-            System.out.println("UP");
+            zoomIn(80);
         }
     }
 

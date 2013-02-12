@@ -53,14 +53,15 @@ public class Player extends StatObject {
 
     public void getInput() {
         // Mouse Input
+        // TODO mouse grabbed conflicts with mwheel
         if (Mouse.isButtonDown(MOUSEB_RIGHT)) {
             mouseRotate();
-            Mouse.setGrabbed(true);
+            //Mouse.setGrabbed(true);
         } else {
-            Mouse.setGrabbed(false);
+            //Mouse.setGrabbed(false);
         }
         // Keyboard Input
-        float movementSpeed = 1.0f;
+        float movementSpeed = 5.0f;
         float rotationSpeed = 2.0f;
 
         boolean movingForward = Keyboard.isKeyDown(Keyboard.KEY_W);
@@ -182,7 +183,7 @@ public class Player extends StatObject {
 
     private void jump() {
         y += yVelocity;
-        yVelocity = yVelocity * 0.98f - 0.5f;
+        yVelocity = yVelocity * 0.98f - 0.4f;
         if (y <= 0) {
             jumping = false;
             yVelocity = TERMINAL_VELOCITY;

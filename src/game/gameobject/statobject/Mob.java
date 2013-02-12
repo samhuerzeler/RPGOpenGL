@@ -9,6 +9,8 @@ import game.Util;
 import game.gameobject.StatObject;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public abstract class Mob extends StatObject {
 
@@ -245,6 +247,7 @@ public abstract class Mob extends StatObject {
                     new Thread(patrolWaiting).start();
                 }
             } catch (Exception e) {
+                Logger.getLogger(Mob.class.getName()).log(Level.SEVERE, null, e);
             }
         }
     }
@@ -267,6 +270,7 @@ public abstract class Mob extends StatObject {
                 running = false;
                 waiting = false;
             } catch (Exception e) {
+                Logger.getLogger(Mob.class.getName()).log(Level.SEVERE, null, e);
             }
         }
     }
