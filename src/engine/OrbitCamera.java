@@ -39,7 +39,7 @@ public class OrbitCamera {
         rx = 0;
         ry = 0;
         rz = 0;
-        currentDistance = 800.0f;
+        currentDistance = 500.0f;
         this.fov = fov;
         this.aspect = aspect;
         this.near = near;

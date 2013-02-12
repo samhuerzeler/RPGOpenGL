@@ -28,7 +28,7 @@ public class Player extends StatObject {
     public boolean jumping = false;
 
     public Player(float x, float y, float z) {
-        stats = new Stats(0, true);
+        stats = new Stats(100000, true);
         name = "Player";
         size = 32.0f;
         type = PLAYER;
@@ -117,11 +117,6 @@ public class Player extends StatObject {
         /**
          * TODO remove enemies in back
          */
-//        for (int i = 0; i < objects.size(); i++) {
-//            if (objects.get(i).getZ() + size / 2 < z + size / 2) {
-//                objects.remove(objects.get(i--));
-//            }
-//        }
     }
 
     private ArrayList<Enemy> findEnemies(ArrayList<GameObject> objects) {

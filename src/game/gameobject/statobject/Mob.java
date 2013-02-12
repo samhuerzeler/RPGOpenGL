@@ -18,10 +18,9 @@ public abstract class Mob extends StatObject {
     private Random random = new Random();
     private boolean patrolling = false;
     private boolean waiting = false;
-    private float dirX;
-    private float dirZ;
-    private float targetX;
-    private float targetZ;
+    private float patrolX;
+    private float patrolZ;
+    private boolean calculated = false;
     private Patrol patrol = new Patrol();
     private PatrolWaiting patrolWaiting = new PatrolWaiting();
 
@@ -31,7 +30,7 @@ public abstract class Mob extends StatObject {
         resetting = false;
         attackDamage = 1;
         sightRange = 300.0f;
-        basicFleeRange = 600.0f;
+        basicFleeRange = 900.0f;
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
         patrolRange = 30;
@@ -57,6 +56,7 @@ public abstract class Mob extends StatObject {
                 idle();
             }
         } else {
+            patrolling = false;
             if (!target.isResetting() && target.isAlive() && Util.lineOfSight(this, target) && Util.dist(x, z, target.getX(), target.getZ()) <= attackRange) {
                 lookAt(target.getX(), target.getY(), target.getZ());
                 if (attackDelay.isOver()) {
@@ -67,7 +67,6 @@ public abstract class Mob extends StatObject {
                     setOutOfCombat(this, target);
                     removeFromThreatMap(target);
                     setTarget(null);
-                    patrolling = false;
                 } else if (isInCombat() || (!resetting && Util.dist(x, z, target.getX(), target.getZ()) <= chaseRange)) {
                     chase();
                 }
@@ -91,16 +90,16 @@ public abstract class Mob extends StatObject {
         // patrol
         patrolling = true;
         if (!waiting) {
-            moveTo(dirX, 0, dirZ);
-            if (targetX != 0 || targetZ != 0) {
-                targetX = 0;
-                targetZ = 0;
+            if (patrolX == 0 || patrolZ == 0) {
+                calculateRandomPatrolPoint();
             }
+            moveTo(patrolX, 0, patrolZ);
+            calculated = false;
             if (!patrol.running) {
                 new Thread(patrol).start();
             }
         } else {
-            if (targetX == 0 && targetZ == 0) {
+            if (!calculated) {
                 calculateRandomPatrolPoint();
             }
         }
@@ -119,65 +118,82 @@ public abstract class Mob extends StatObject {
     }
 
     protected void calculateRandomPatrolPoint() {
-        targetX = x + random.nextInt(500) - 250;
-        targetZ = z + random.nextInt(500) - 250;
-        float distance = (float) Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetZ - z, 2));
-        dirX = (targetX - x) / distance * DAMPING;
-        dirZ = (targetZ - z) / distance * DAMPING;
-        if (spawnX - x < -Math.sin(Math.toRadians(45)) * patrolRange) {
-            if (dirX > 0) {
-                dirX *= -1;
+        int maxDistance = 5000;
+        float newX = random.nextInt(maxDistance) - maxDistance / 2;
+        float newZ = random.nextInt(maxDistance) - maxDistance / 2;
+
+        if (spawnX - x < (float) -Math.sin(Math.toRadians(45)) * patrolRange) {
+            // too far to the east
+            if (newX > 0) {
+                newX *= -1;
             }
         }
-        if (spawnX - x > Math.sin(Math.toRadians(45)) * patrolRange) {
-            if (dirX < 0) {
-                dirX *= -1;
+        if (spawnX - x > (float) Math.sin(Math.toRadians(45)) * patrolRange) {
+            // too far to the west
+            if (newX < 0) {
+                newX *= -1;
             }
         }
-        if (spawnZ - z < -Math.sin(Math.toRadians(45)) * patrolRange) {
-            if (dirZ > 0) {
-                dirZ *= -1;
+        if (spawnZ - z < (float) -Math.sin(Math.toRadians(45)) * patrolRange) {
+            // too far to the south
+            if (newZ > 0) {
+                newZ *= -1;
             }
         }
-        if (spawnZ - z > Math.sin(Math.toRadians(45)) * patrolRange) {
-            if (dirZ < 0) {
-                dirZ *= -1;
+        if (spawnZ - z > (float) Math.sin(Math.toRadians(45)) * patrolRange) {
+            // too far to the north
+            if (newZ < 0) {
+                newZ *= -1;
             }
         }
+
+        patrolX = x + newX;
+        patrolZ = z + newZ;
+        calculated = true;
     }
 
     protected void chase() {
-        lookAt(target.getX(), target.getY(), target.getZ());
         moveToTarget();
     }
 
     protected void resetPosition() {
         resetFleeRange();
         resetThreatMap();
-        lookAt(spawnX, spawnY, spawnZ);
-        moveToTarget();
+        moveTo(spawnX, 0, spawnZ);
     }
 
     protected void moveToTarget() {
-        moveTo(dx, dy, dz);
+        moveTo(target.getX(), target.getY(), target.getZ());
     }
 
-    protected void moveTo(float dx, float dy, float dz) {
-        float speed = 1.0f;
-        if (resetting) {
-            speed = 3.0f;
+    protected void moveTo(float x, float y, float z) {
+        float distance = Util.dist(this.x, this.z, x, z);
+        if (distance == 0) {
+            return;
         }
-        x += dx * getStats().getSpeed() * Time.getDelta() * speed;
-        y += dy * getStats().getSpeed() * Time.getDelta() * speed;
-        z += dz * getStats().getSpeed() * Time.getDelta() * speed;
+        float dirX = (x - this.x) / distance;
+        float dirY = (y - this.y) / distance;
+        float dirZ = (z - this.z) / distance;
+        float speedMultiplier = 1.0f;
+        if (resetting) {
+            speedMultiplier = 2.0f;
+        }
+        if (patrolling) {
+            speedMultiplier = 0.5f;
+        }
+        if (Math.abs(x - this.x) > Math.abs(dirX * 2) && Math.abs(z - this.z) > Math.abs(dirZ * 2)) {
+            this.x += dirX * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
+            this.y += dirY * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
+            this.z += dirZ * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
+            lookAt(x, y, z);
+        }
     }
 
-    protected void lookAt(float targetX, float targetY, float targetZ) {
-        float distance = (float) Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetY - y, 2) + Math.pow(targetZ - z, 2));
-        dx = (targetX - x) / distance;
-        dy = (targetY - y) / distance;
-        dz = (targetZ - z) / distance;
-        ry = (float) -Math.toDegrees(Math.atan2(dx, dz)) - 180;
+    protected void lookAt(float x, float y, float z) {
+        float dirX = (x - this.x);
+        float dirY = (y - this.y);
+        float dirZ = (z - this.z);
+        ry = (float) -Math.toDegrees(Math.atan2(dirX, dirZ)) - 180;
     }
 
     public void extendFleeRange() {
@@ -217,8 +233,8 @@ public abstract class Mob extends StatObject {
         public void run() {
             try {
                 running = true;
-                // sleep (walk) for 2.5 sec
-                int sleepTime = 2500;
+                // move between 1.5 and 3.5 sec
+                int sleepTime = random.nextInt(2000) + 1500;
                 Thread.sleep(sleepTime);
                 running = false;
                 waiting = true;
@@ -242,7 +258,7 @@ public abstract class Mob extends StatObject {
         public void run() {
             try {
                 running = true;
-                // sleep (wait) between 2 and 6 sec
+                // wait between 2 and 6 sec
                 int sleepTime = random.nextInt(6000) + 2000;
                 Thread.sleep(sleepTime);
                 running = false;

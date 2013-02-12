@@ -3,6 +3,7 @@ package engine;
 import game.Game;
 import game.GameObject;
 import game.Time;
+import game.World;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
@@ -27,6 +28,7 @@ public class Main {
 
     private static void initGame() {
         Game.game = new Game();
+        World.world = new World();
     }
 
     private static void initCamera() {
@@ -48,6 +50,7 @@ public class Main {
         glLoadIdentity();
         OrbitCamera.camera.useView();
         OrbitCamera.camera.update();
+        World.world.render();
         Game.game.render();
         Display.update();
         Display.sync(60);

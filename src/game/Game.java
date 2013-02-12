@@ -21,8 +21,8 @@ public class Game {
         player = new Player(0, 0, 0);
         objects.add(player);
         objects.add(new Guard(0, 0, 0, 1));
-        objects.add(new Goblin(1500, 0, -1000, 2));
-        objects.add(new Goblin(-1500, 0, -1000, 1));
+        objects.add(new Goblin(1000, 0, -500, 2));
+        objects.add(new Goblin(-1000, 0, -500, 1));
         objects.add(new Orc(0, 0, -1000, 5));
     }
 
