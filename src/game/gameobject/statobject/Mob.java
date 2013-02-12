@@ -9,8 +9,7 @@ import game.Util;
 import game.gameobject.StatObject;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import util.Log;
 
 public abstract class Mob extends StatObject {
 
@@ -18,15 +17,15 @@ public abstract class Mob extends StatObject {
     protected float chaseRange;
     protected int enemyTypeId;
     private Random random = new Random();
-    private boolean patrolling = false;
-    private boolean waiting = false;
     private float patrolX;
     private float patrolZ;
     private float lastPatrolX;
     private float lastPatrolZ;
     private boolean calculated = false;
-    private Patrol patrol = new Patrol();
-    private PatrolWaiting patrolWaiting = new PatrolWaiting();
+    private boolean patrolling = false;
+    private boolean waiting = true;
+    protected Delay patrolWaitingDelay = new Delay(2000, 13000);
+    protected Delay patrolMovingDelay = new Delay(2000, 2500);
 
     public Mob(int level) {
         stats = new Stats(level, false);
@@ -38,7 +37,8 @@ public abstract class Mob extends StatObject {
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
         patrolRange = 150.0f;
-        attackDelay.start();
+        patrolWaitingDelay.init();
+        patrolWaitingDelay.start();
     }
 
     @Override
@@ -86,24 +86,28 @@ public abstract class Mob extends StatObject {
     protected void attack() {
         target.damage(getAttackDamage());
         target.addToThreatMap(this, attackDamage);
-        System.err.println(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
-        attackDelay.restart();
+        Log.p(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
+        attackDelay.start();
     }
 
     protected void idle() {
         // patrol
+        if (patrolMovingDelay.isOver()) {
+            patrolMovingDelay.stop();
+            patrolWaitingDelay.start();
+            waiting = true;
+        }
+        if (patrolWaitingDelay.isOver()) {
+            waiting = false;
+            patrolWaitingDelay.stop();
+            patrolMovingDelay.start();
+        }
         patrolling = true;
         if (!waiting) {
-            if (patrolX == 0 || patrolZ == 0) {
-                calculateRandomPatrolPoint();
-            }
             moveTo(patrolX, 0, patrolZ);
             lastPatrolX = x;
             lastPatrolZ = z;
             calculated = false;
-            if (!patrol.running) {
-                new Thread(patrol).start();
-            }
         } else {
             if (!calculated) {
                 calculateRandomPatrolPoint();
@@ -219,59 +223,10 @@ public abstract class Mob extends StatObject {
 
     public void setAttackDelay(int time) {
         attackDelay = new Delay(time);
-        attackDelay.start();
+        attackDelay.init();
     }
 
     public void setSightRange(float dist) {
         sightRange = dist;
-    }
-
-    private class Patrol implements Runnable {
-
-        private boolean running = false;
-
-        public boolean isRunning() {
-            return running;
-        }
-
-        @Override
-        public void run() {
-            try {
-                running = true;
-                // move between 2 and 4 sec
-                int sleepTime = random.nextInt(2000) + 2000;
-                Thread.sleep(sleepTime);
-                running = false;
-                waiting = true;
-                if (!patrolWaiting.running) {
-                    new Thread(patrolWaiting).start();
-                }
-            } catch (Exception e) {
-                Logger.getLogger(Mob.class.getName()).log(Level.SEVERE, null, e);
-            }
-        }
-    }
-
-    private class PatrolWaiting implements Runnable {
-
-        private boolean running = false;
-
-        public boolean isRunning() {
-            return running;
-        }
-
-        @Override
-        public void run() {
-            try {
-                running = true;
-                // wait between 3 and 15 sec
-                int sleepTime = random.nextInt(12000) + 3000;
-                Thread.sleep(sleepTime);
-                running = false;
-                waiting = false;
-            } catch (Exception e) {
-                Logger.getLogger(Mob.class.getName()).log(Level.SEVERE, null, e);
-            }
-        }
     }
 }

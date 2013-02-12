@@ -1,24 +1,45 @@
 package game;
 
+import java.util.Random;
+
 public class Delay {
 
     private int length;
-    private long endTime;
+    private int min;
+    private int max;
+    private double endTime;
     private boolean started;
+    private Random random = new Random();
+    private boolean randomized = false;
 
     public Delay(int length) {
-        this.length = length;
         started = false;
+        this.length = length;
     }
 
-    public void start() {
+    public Delay(int min, int max) {
+        started = false;
+        randomized = true;
+        this.min = min;
+        this.max = max;
+        this.length = getRandomLength();
+    }
+
+    private int getRandomLength() {
+        return random.nextInt(max) + min;
+    }
+
+    public void init() {
         started = true;
         endTime = 0;
     }
 
-    public void restart() {
+    public void start() {
         started = true;
-        endTime = length * 1000000 + Time.getTime();
+        if (randomized) {
+            this.length = getRandomLength();
+        }
+        endTime = length * 1000000.0d + Time.getTime();
     }
 
     public void stop() {
@@ -29,7 +50,7 @@ public class Delay {
         if (!started) {
             return false;
         }
-        return Time.getTime() >= endTime;
+        return Time.getTime() > endTime;
     }
 
     public boolean isActive() {

@@ -17,7 +17,7 @@ public abstract class GameObject {
     protected float basicFleeRange;
     protected float currentFleeRange;
     protected float patrolRange;
-    protected Delay attackDelay = new Delay(1000);
+    protected Delay attackDelay = new Delay(1500);
     protected boolean[] flags = new boolean[1];
     // object IDs
     public static final int NULL = 0;
@@ -134,12 +134,12 @@ public abstract class GameObject {
     public int getType() {
         return type;
     }
-    
-    public float getSpawnX(){
+
+    public float getSpawnX() {
         return spawnX;
     }
-    
-    public float getSpawnZ(){
+
+    public float getSpawnZ() {
         return spawnZ;
     }
 

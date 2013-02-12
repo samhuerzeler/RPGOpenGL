@@ -15,6 +15,7 @@ import game.item.equippableitem.Weapon;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import util.Log;
 
 public class Player extends StatObject {
 
@@ -41,11 +42,12 @@ public class Player extends StatObject {
         sightRange = 150.0f;
         attackRange = 42;
         attackDamage = 20;
-        attackDelay.start();
+        attackDelay.init();
     }
 
     @Override
     public void update() {
+
         if (jumping) {
             jump();
         }
@@ -110,11 +112,11 @@ public class Player extends StatObject {
     }
 
     private void attack() {
+        attackDelay.start();
         ArrayList<GameObject> objects = Game.sphereCollide(x, z, attackRange);
         removeEnemiesInBack(objects);
         ArrayList<Enemy> enemies = findEnemies(objects);
         attackClosestEnemy(enemies);
-        attackDelay.restart();
     }
 
     private void removeEnemiesInBack(ArrayList<GameObject> objects) {
@@ -150,12 +152,12 @@ public class Player extends StatObject {
                 closestTarget.addToThreatMap(this, attackDamage);
                 closestTarget.extendFleeRange();
                 closestTarget.damage(attackDamage);
-                System.out.println(name + " attacking " + closestTarget.getName() + " : " + closestTarget.getCurrentHealth() + "/" + closestTarget.getMaxHealth());
+                Log.p(name + " attacking " + closestTarget.getName() + " : " + closestTarget.getCurrentHealth() + "/" + closestTarget.getMaxHealth());
             } else {
-                System.out.println(name + " : Target is resetting");
+                Log.p(name + " : Target is resetting");
             }
         } else {
-            System.out.println(name + " : No Target");
+            Log.p(name + " : No Target");
         }
     }
 
@@ -195,7 +197,7 @@ public class Player extends StatObject {
             equipment.equip((EquippableItem) weapon);
             setAttackDamage(((Weapon) weapon).getDamage());
             setAttackRange(((Weapon) weapon).getRange());
-            System.out.println(weapon.getName() + " equipped");
+            Log.p(weapon.getName() + " equipped");
         }
     }
 
