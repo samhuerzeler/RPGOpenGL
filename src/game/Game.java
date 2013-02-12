@@ -19,7 +19,7 @@ public class Game {
     public Game() {
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
-        player = new Player(-200, 0, 200);
+        player = new Player(-400, 0, 400);
         objects.add(player);
         objects.add(new Guard(0, 0, 0, 1));
         objects.add(new Goblin(1000, 0, -500, 2));
@@ -49,7 +49,7 @@ public class Game {
             } else {
                 glColor3f(1.0f, 0.0f, 0.0f);
             }
-            renderSpawnPoint(go.getSpawnX(), go.getSpawnZ(), 200.0f);
+            renderSpawnPoint(go.getSpawnX(), go.getSpawnZ(), 32.0f);
             go.render();
         }
     }

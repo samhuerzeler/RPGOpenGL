@@ -20,6 +20,8 @@ public abstract class Mob extends StatObject {
     private boolean waiting = false;
     private float patrolX;
     private float patrolZ;
+    private float lastPatrolX;
+    private float lastPatrolZ;
     private boolean calculated = false;
     private Patrol patrol = new Patrol();
     private PatrolWaiting patrolWaiting = new PatrolWaiting();
@@ -30,10 +32,10 @@ public abstract class Mob extends StatObject {
         resetting = false;
         attackDamage = 1;
         sightRange = 300.0f;
-        basicFleeRange = 900.0f;
+        basicFleeRange = 800.0f;
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
-        patrolRange = 30;
+        patrolRange = 150.0f;
         attackDelay.start();
     }
 
@@ -43,8 +45,8 @@ public abstract class Mob extends StatObject {
             setTarget(getHighestTreatTarget());
         }
         if (target == null) {
-            if (Math.abs(x - spawnX) > (getStats().getSpeed()) || Math.abs(z - spawnZ) > (getStats().getSpeed())) {
-                if (!patrolling) {
+            if (Util.dist(x, z, lastPatrolX, lastPatrolZ) > (getStats().getSpeed())) {
+                if (!patrolling && lastPatrolX != 0 && lastPatrolZ != 0) {
                     resetPosition();
                     resetting = true;
                 } else {
@@ -94,6 +96,8 @@ public abstract class Mob extends StatObject {
                 calculateRandomPatrolPoint();
             }
             moveTo(patrolX, 0, patrolZ);
+            lastPatrolX = x;
+            lastPatrolZ = z;
             calculated = false;
             if (!patrol.running) {
                 new Thread(patrol).start();
@@ -118,10 +122,9 @@ public abstract class Mob extends StatObject {
     }
 
     protected void calculateRandomPatrolPoint() {
-        int maxDistance = 5000;
+        int maxDistance = 2000;
         float newX = random.nextInt(maxDistance) - maxDistance / 2;
         float newZ = random.nextInt(maxDistance) - maxDistance / 2;
-
         if (spawnX - x < (float) -Math.sin(Math.toRadians(45)) * patrolRange) {
             // too far to the east
             if (newX > 0) {
@@ -159,7 +162,7 @@ public abstract class Mob extends StatObject {
     protected void resetPosition() {
         resetFleeRange();
         resetThreatMap();
-        moveTo(spawnX, spawnY, spawnZ);
+        moveTo(lastPatrolX, 0, lastPatrolZ);
     }
 
     protected void moveToTarget() {
@@ -233,8 +236,8 @@ public abstract class Mob extends StatObject {
         public void run() {
             try {
                 running = true;
-                // move between 1.5 and 3.5 sec
-                int sleepTime = random.nextInt(2000) + 1500;
+                // move between 2 and 4 sec
+                int sleepTime = random.nextInt(2000) + 2000;
                 Thread.sleep(sleepTime);
                 running = false;
                 waiting = true;
@@ -258,8 +261,8 @@ public abstract class Mob extends StatObject {
         public void run() {
             try {
                 running = true;
-                // wait between 2 and 6 sec
-                int sleepTime = random.nextInt(6000) + 2000;
+                // wait between 3 and 15 sec
+                int sleepTime = random.nextInt(12000) + 3000;
                 Thread.sleep(sleepTime);
                 running = false;
                 waiting = false;
