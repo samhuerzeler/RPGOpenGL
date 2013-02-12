@@ -27,8 +27,8 @@ public class Main {
     }
 
     private static void initGame() {
-        Game.game = new Game();
         World.world = new World();
+        Game.game = new Game();
     }
 
     private static void initCamera() {
@@ -67,6 +67,7 @@ public class Main {
     }
 
     private static void cleanUp() {
+        World.world.cleanUp();
         Display.destroy();
         Keyboard.destroy();
         Mouse.destroy();

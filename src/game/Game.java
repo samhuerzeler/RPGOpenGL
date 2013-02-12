@@ -8,14 +8,15 @@ import game.gameobject.statobject.mob.normal.Orc;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 
 public class Game {
-    
+
     public static Game game;
     private ArrayList<GameObject> objects;
     private ArrayList<GameObject> objectsToRemove;
     public Player player;
-    
+
     public Game() {
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
@@ -26,7 +27,7 @@ public class Game {
         objects.add(new Goblin(-1000, 0, -500, 1));
         objects.add(new Orc(0, 0, -1000, 5));
     }
-    
+
     public void update() {
         for (GameObject go : objects) {
             if (!go.getRemove()) {
@@ -39,8 +40,10 @@ public class Game {
             objects.remove(go);
         }
     }
-    
+
     public void render() {
+        glDisable(GL_CULL_FACE);
+        glUseProgram(0);
         for (GameObject go : objects) {
             if (go.getType() == 1) {
                 glColor3f(0.0f, 1.0f, 0.0f);
@@ -53,7 +56,7 @@ public class Game {
             go.render();
         }
     }
-    
+
     private void renderSpawnPoint(float cx, float cz, float r) {
         int numSegments = 50;
         float theta = (float) (2 * 3.1415926 / numSegments);
@@ -71,15 +74,15 @@ public class Game {
         }
         glEnd();
     }
-    
+
     public void getInput() {
         player.getInput();
     }
-    
+
     public ArrayList<GameObject> getObjects() {
         return objects;
     }
-    
+
     public static ArrayList<GameObject> sphereCollide(float x, float z, float radius) {
         ArrayList<GameObject> res = new ArrayList<GameObject>();
         for (GameObject go : game.getObjects()) {
@@ -89,7 +92,7 @@ public class Game {
         }
         return res;
     }
-    
+
     public static ArrayList<GameObject> rectangleCollide(float x1, float z1, float x2, float z2) {
         ArrayList<GameObject> res = new ArrayList<GameObject>();
         float sx = x2 - x1;
