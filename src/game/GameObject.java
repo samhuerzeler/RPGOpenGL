@@ -56,8 +56,6 @@ public abstract class GameObject {
             } else if (type == PLAYER) {
                 renderCircle(0.0f, 0.0f, attackRange);
             }
-            glColor3f(0.3f, 0.3f, 0.3f);
-            renderSphere(0.0f, 0.0f, 0.0f);
         }
         glPopMatrix();
     }

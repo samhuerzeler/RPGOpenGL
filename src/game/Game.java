@@ -20,7 +20,7 @@ public class Game {
     public Game() {
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
-        player = new Player(-400, 0, 400);
+        player = new Player(-400, 500, 400);
         objects.add(player);
         objects.add(new Guard(0, 0, 0, 1));
         objects.add(new Goblin(1000, 0, -500, 2));
@@ -47,7 +47,7 @@ public class Game {
         for (GameObject go : objects) {
             if (go.getType() == 1) {
                 glColor3f(0.0f, 1.0f, 0.0f);
-            } else if (go.getType() == 2) {
+            } else if (go.getType() == 3) {
                 glColor3f(0.3f, 0.3f, 1.0f);
             } else {
                 glColor3f(1.0f, 0.0f, 0.0f);

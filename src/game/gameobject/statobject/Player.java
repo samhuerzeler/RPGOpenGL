@@ -22,8 +22,9 @@ public class Player extends StatObject {
     public static final float DAMPING = 0.5f;
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
+    // TODO move gravity stuff to physics class
     private final float GRAVITY = -9.8f;
-    private float fallingVelocity = -1.0f;
+    private float fallingVelocity = 0.0f;
     private float newVelocity;
     private float jumpingSpeed = 8.0f;
     private boolean jumping = false;
@@ -56,9 +57,13 @@ public class Player extends StatObject {
             fall();
         } else {
             y = 0;
-            fallingVelocity = -1.0f;
+            resetFallingVelocity();
             jumping = false;
         }
+    }
+
+    private void resetFallingVelocity() {
+        fallingVelocity = 0.0f;
     }
 
     public void getInput() {
@@ -129,9 +134,7 @@ public class Player extends StatObject {
     }
 
     private void removeEnemiesInBack(ArrayList<GameObject> objects) {
-        /**
-         * TODO remove enemies in back
-         */
+        // TODO remove enemies in back
     }
 
     private ArrayList<Enemy> findEnemies(ArrayList<GameObject> objects) {
