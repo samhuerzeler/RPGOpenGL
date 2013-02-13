@@ -22,11 +22,13 @@ public class Player extends StatObject {
     public static final float DAMPING = 0.5f;
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
-    private final float TERMINAL_VELOCITY = 9.8f;
-    private float yVelocity = TERMINAL_VELOCITY;
+    private final float GRAVITY = -9.8f;
+    private float fallingVelocity = -1.0f;
+    private float newVelocity;
+    private float jumpingSpeed = 8.0f;
+    private boolean jumping = false;
     private Inventory inventory;
     private Equipment equipment;
-    public boolean jumping = false;
 
     public Player(float x, float y, float z) {
         stats = new Stats(100000, true);
@@ -47,9 +49,15 @@ public class Player extends StatObject {
 
     @Override
     public void update() {
-
         if (jumping) {
             jump();
+        }
+        if (y > 0) {
+            fall();
+        } else {
+            y = 0;
+            fallingVelocity = -1.0f;
+            jumping = false;
         }
     }
 
@@ -97,7 +105,8 @@ public class Player extends StatObject {
             attack();
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            if (!jumping && y <= 0) {
+            if (!jumping && y < 2) {
+                y += jumpingSpeed;
                 jumping = true;
             }
         }
@@ -183,12 +192,20 @@ public class Player extends StatObject {
         }
     }
 
+    public void fall() {
+        newVelocity = fallingVelocity + 0.3f * Time.getDelta();
+        if (newVelocity < GRAVITY) {
+            newVelocity = GRAVITY * Time.getDelta();
+        }
+        y -= Time.getDelta() * (fallingVelocity + newVelocity) / 2;
+        fallingVelocity = newVelocity;
+    }
+
     private void jump() {
-        y += yVelocity;
-        yVelocity = yVelocity * 0.98f - 0.4f;
-        if (y <= 0) {
+        if (y >= 0) {
+            y += jumpingSpeed * Time.getDelta();
+        } else {
             jumping = false;
-            yVelocity = TERMINAL_VELOCITY;
         }
     }
 
