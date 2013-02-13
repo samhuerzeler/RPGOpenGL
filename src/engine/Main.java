@@ -37,6 +37,10 @@ public class Main {
     }
 
     private static void getInput() {
+        if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+            cleanUp();
+            System.exit(0);
+        }
         Game.game.getInput();
         OrbitCamera.camera.getInput();
     }
@@ -76,6 +80,7 @@ public class Main {
     private static void initDisplay() {
         try {
             Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT));
+            //Display.setFullscreen(true);
             Display.create();
             Keyboard.create();
             Mouse.create();
