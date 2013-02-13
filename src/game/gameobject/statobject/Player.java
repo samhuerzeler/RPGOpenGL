@@ -179,7 +179,7 @@ public class Player extends StatObject {
     }
 
     public void rotateY(float amt) {
-        ry += amt;
+        ry += amt * Time.getDelta();
     }
 
     private void mouseRotate() {

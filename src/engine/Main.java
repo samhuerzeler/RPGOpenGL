@@ -27,7 +27,7 @@ public class Main {
     }
 
     private static void initGame() {
-        World.world = new World();
+        //World.world = new World();
         Game.game = new Game();
     }
 
@@ -54,7 +54,7 @@ public class Main {
         glLoadIdentity();
         OrbitCamera.camera.useView();
         OrbitCamera.camera.update();
-        World.world.render();
+        //World.world.render();
         Game.game.render();
         Display.update();
         Display.sync(60);
@@ -71,7 +71,7 @@ public class Main {
     }
 
     private static void cleanUp() {
-        World.world.cleanUp();
+        //World.world.cleanUp();
         Display.destroy();
         Keyboard.destroy();
         Mouse.destroy();
