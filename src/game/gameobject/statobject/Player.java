@@ -1,5 +1,6 @@
 package game.gameobject.statobject;
 
+import engine.Physics;
 import game.Equipment;
 import game.Game;
 import game.GameObject;
@@ -22,11 +23,7 @@ public class Player extends StatObject {
     public static final float DAMPING = 0.5f;
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
-    // TODO move gravity stuff to physics class
-    private final float GRAVITY = -9.8f;
-    private float fallingVelocity = 0.0f;
-    private float newVelocity;
-    private float jumpingSpeed = 8.0f;
+    private float jumpingSpeed = 7.0f;
     private boolean jumping = false;
     private Inventory inventory;
     private Equipment equipment;
@@ -57,13 +54,9 @@ public class Player extends StatObject {
             fall();
         } else {
             y = 0;
-            resetFallingVelocity();
+            Physics.resetFallingVelocity();
             jumping = false;
         }
-    }
-
-    private void resetFallingVelocity() {
-        fallingVelocity = 0.0f;
     }
 
     public void getInput() {
@@ -196,12 +189,7 @@ public class Player extends StatObject {
     }
 
     public void fall() {
-        newVelocity = fallingVelocity + 0.3f * Time.getDelta();
-        if (newVelocity < GRAVITY) {
-            newVelocity = GRAVITY * Time.getDelta();
-        }
-        y -= Time.getDelta() * (fallingVelocity + newVelocity) / 2;
-        fallingVelocity = newVelocity;
+        y -= Physics.getFallingDistance() * Time.getDelta();
     }
 
     private void jump() {

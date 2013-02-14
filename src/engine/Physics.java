@@ -1,9 +1,29 @@
 package engine;
 
 import game.GameObject;
+import game.Time;
 import java.awt.Rectangle;
 
 public class Physics {
+
+    private static final float GRAVITY = -9.8f;
+    private static float fallingVelocity = 0.0f;
+    private static float newVelocity;
+    private static float newY;
+
+    public static float getFallingDistance() {
+        newVelocity = fallingVelocity + 0.3f * Time.getDelta();
+        if (newVelocity < GRAVITY) {
+            newVelocity = GRAVITY * Time.getDelta();
+        }
+        newY = (fallingVelocity + newVelocity) / 2;
+        fallingVelocity = newVelocity;
+        return newY;
+    }
+    
+    public static void resetFallingVelocity() {
+        fallingVelocity = 0.0f;
+    }
 
     public static GameObject checkCollision(GameObject go1, GameObject go2) {
         return checkCollision(new Rectangle((int) go1.getX(), (int) go1.getZ(), (int) go1.getSX(), (int) go1.getSZ()), go2);
