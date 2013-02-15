@@ -19,7 +19,7 @@ public class Main {
     private static final int DISPLAY_HEIGHT = DISPLAY_WIDTH / 16 * 9;
 
     public static void main(String[] args) {
-        System.setProperty("org.lwjgl.librarypath",System.getProperty("user.dir") + "/natives/");
+        System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/natives/");
         initDisplay();
         initGame();
         initCamera();
@@ -28,7 +28,7 @@ public class Main {
     }
 
     private static void initGame() {
-        //World.world = new World();
+        World.world = new World();
         Game.game = new Game();
     }
 
@@ -55,7 +55,8 @@ public class Main {
         glLoadIdentity();
         OrbitCamera.camera.useView();
         OrbitCamera.camera.update();
-        //World.world.render();
+        // TODO Use VertexBufferObjects for faster rendering
+        World.world.render();
         Game.game.render();
         Display.update();
         Display.sync(60);
@@ -72,7 +73,7 @@ public class Main {
     }
 
     private static void cleanUp() {
-        //World.world.cleanUp();
+        World.world.cleanUp();
         Display.destroy();
         Keyboard.destroy();
         Mouse.destroy();
