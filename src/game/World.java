@@ -43,17 +43,21 @@ public class World {
 
     private void setUpStates() {
         glPointSize(1);
+        glPolygonMode(GL_FRONT, GL_LINE);
     }
 
     private void setUpHeightMap() {
         int texWidth = 1;
         int texHeight = 1;
-        float texScaleX = 10.0f;
-        float texScaleZ = 10.0f;
+        int texScaleX = 10;
+        int texScaleY = 3;
+        int texScaleZ = 10;
 
         try {
             BufferedImage heightmapImage = ImageIO.read(new File("res/images/heightmap.png"));
-            data = new float[heightmapImage.getWidth()][heightmapImage.getHeight()];
+            texWidth = heightmapImage.getWidth();
+            texHeight = heightmapImage.getHeight();
+            data = new float[texWidth][texHeight];
             Color color;
             for (int z = 0; z < data.length; z++) {
                 for (int x = 0; x < data[z].length; x++) {
@@ -69,9 +73,7 @@ public class World {
             heightmapLookupInputStream.close();
             lookupTexture = glGenTextures();
             glBindTexture(GL_TEXTURE_2D, lookupTexture);
-            texWidth = decoder.getWidth();
-            texHeight = decoder.getHeight();
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, decoder.getWidth(), decoder.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
         } catch (IOException e) {
             Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -79,7 +81,8 @@ public class World {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         heightmapDisplayList = glGenLists(1);
         glNewList(heightmapDisplayList, GL_COMPILE);
-        glScalef(texScaleX, 3.0f, texScaleZ);
+        glScalef(texScaleX, texScaleY, texScaleZ);
+        //glTranslatef(-texWidth / 2, -0.0f, -texHeight / 2);
         glTranslatef(200.0f, -100.0f, -200.0f);
         for (int z = 0; z < data.length - 1; z++) {
             glBegin(GL_TRIANGLE_STRIP);

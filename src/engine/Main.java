@@ -17,6 +17,7 @@ public class Main {
 
     private static final int DISPLAY_WIDTH = 800;
     private static final int DISPLAY_HEIGHT = DISPLAY_WIDTH / 16 * 9;
+    private static final float RENDER_DISTANCE = 10000.0f;
 
     public static void main(String[] args) {
         System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/natives/");
@@ -34,13 +35,25 @@ public class Main {
 
     private static void initCamera() {
         GameObject cameraTarget = Game.game.player;
-        OrbitCamera.camera = new OrbitCamera(70, (float) Display.getWidth() / (float) Display.getHeight(), 0.3f, 5000.0f, cameraTarget);
+        OrbitCamera.camera = new OrbitCamera(70, (float) Display.getWidth() / (float) Display.getHeight(), 0.3f, RENDER_DISTANCE, cameraTarget);
     }
 
     private static void getInput() {
-        if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
-            cleanUp();
-            System.exit(0);
+        if (Keyboard.next()) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
+                cleanUp();
+                System.exit(0);
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
+                int polygonMode = glGetInteger(GL_POLYGON_MODE);
+                if (polygonMode == GL_LINE) {
+                    glPolygonMode(GL_FRONT, GL_POINT);
+                } else if (polygonMode == GL_POINT) {
+                    glPolygonMode(GL_FRONT, GL_FILL);
+                } else if (polygonMode == GL_FILL) {
+                    glPolygonMode(GL_FRONT, GL_LINE);
+                }
+            }
         }
         Game.game.getInput();
         OrbitCamera.camera.getInput();
