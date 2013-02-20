@@ -43,7 +43,7 @@ public class World {
 
     private void setUpStates() {
         glPointSize(1);
-        glPolygonMode(GL_FRONT, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
     private void setUpHeightMap() {
