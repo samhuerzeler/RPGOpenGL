@@ -12,7 +12,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
-import util.Log;
 
 public class Main {
 
@@ -21,7 +20,6 @@ public class Main {
     private static final float RENDER_DISTANCE = 10000.0f;
 
     public static void main(String[] args) {
-        Log.p("test");
         System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/natives/");
         initDisplay();
         initGame();
