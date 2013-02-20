@@ -39,6 +39,7 @@ public class Main {
     }
 
     private static void getInput() {
+        // standard / debug input
         if (Keyboard.next()) {
             if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
                 cleanUp();
@@ -55,6 +56,7 @@ public class Main {
                 }
             }
         }
+        // game (player) and camera input
         Game.game.getInput();
         OrbitCamera.camera.getInput();
     }
