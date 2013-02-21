@@ -50,6 +50,7 @@ public class Player extends StatObject {
         if (jumping) {
             jump();
         }
+        // TODO check collision with heightnmap (TRIANGLE_STRIPS)
         if (y > 0) {
             fall();
         } else {
@@ -64,9 +65,9 @@ public class Player extends StatObject {
         // TODO mouse grabbed conflicts with mwheel
         if (Mouse.isButtonDown(MOUSEB_RIGHT)) {
             mouseRotate();
-            //Mouse.setGrabbed(true);
+            Mouse.setGrabbed(true);
         } else {
-            //Mouse.setGrabbed(false);
+            Mouse.setGrabbed(false);
         }
         // Keyboard Input
         float movementSpeed = 5.0f;

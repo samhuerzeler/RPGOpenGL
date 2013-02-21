@@ -133,25 +133,25 @@ public abstract class Mob extends StatObject {
         float newX = random.nextInt(maxDistance) - maxDistance / 2;
         float newZ = random.nextInt(maxDistance) - maxDistance / 2;
         if (spawnX - x < (float) -Math.sin(Math.toRadians(45)) * patrolRange) {
-            // too far to the east
+            // too far to the east (positive x-axis)
             if (newX > 0) {
                 newX *= -1;
             }
         }
         if (spawnX - x > (float) Math.sin(Math.toRadians(45)) * patrolRange) {
-            // too far to the west
+            // too far to the west (negative x-axis)
             if (newX < 0) {
                 newX *= -1;
             }
         }
         if (spawnZ - z < (float) -Math.sin(Math.toRadians(45)) * patrolRange) {
-            // too far to the south
+            // too far to the south (positive z-axis)
             if (newZ > 0) {
                 newZ *= -1;
             }
         }
         if (spawnZ - z > (float) Math.sin(Math.toRadians(45)) * patrolRange) {
-            // too far to the north
+            // too far to the north (negative z-axis)
             if (newZ < 0) {
                 newZ *= -1;
             }
@@ -204,6 +204,7 @@ public abstract class Mob extends StatObject {
         float dirY = (y - this.y);
         float dirZ = (z - this.z);
         ry = (float) -Math.toDegrees(Math.atan2(dirX, dirZ)) - 180;
+        rz = (float) -Math.toDegrees(Math.atan2(dirY, dirZ)) - 180;
     }
 
     public void extendFleeRange() {
