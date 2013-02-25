@@ -47,17 +47,17 @@ public class World {
     }
 
     private void setUpHeightMap() {
-        int texWidth = 1;
-        int texHeight = 1;
-        int texScaleX = 10;
-        int texScaleY = 3;
-        int texScaleZ = 10;
+        int mapWidth = 1;
+        int mapHeight = 1;
+        int mapScaleX = 10;
+        int mapScaleY = 3;
+        int mapScaleZ = 10;
 
         try {
             BufferedImage heightmapImage = ImageIO.read(new File("res/images/heightmap.png"));
-            texWidth = heightmapImage.getWidth();
-            texHeight = heightmapImage.getHeight();
-            data = new float[texWidth][texHeight];
+            mapWidth = heightmapImage.getWidth();
+            mapHeight = heightmapImage.getHeight();
+            data = new float[mapWidth][mapHeight];
             Color color;
             for (int z = 0; z < data.length; z++) {
                 for (int x = 0; x < data[z].length; x++) {
@@ -68,7 +68,7 @@ public class World {
             FileInputStream heightmapLookupInputStream = new FileInputStream("res/images/heightmap_lookup.png");
             PNGDecoder decoder = new PNGDecoder(heightmapLookupInputStream);
             ByteBuffer buffer = BufferUtils.createByteBuffer(4 * decoder.getWidth() * decoder.getHeight());
-            decoder.decode(buffer, decoder.getWidth() * 4, PNGDecoder.Format.RGBA);
+            decoder.decode(buffer, 4 * decoder.getWidth(), PNGDecoder.Format.RGBA);
             buffer.flip();
             heightmapLookupInputStream.close();
             lookupTexture = glGenTextures();
@@ -77,12 +77,12 @@ public class World {
         } catch (IOException e) {
             Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, e);
         }
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // LINEAR OR NEAREST
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // LINEAR OR NEAREST
         heightmapDisplayList = glGenLists(1);
         glNewList(heightmapDisplayList, GL_COMPILE);
-        glScalef(texScaleX, texScaleY, texScaleZ);
-        //glTranslatef(-texWidth / 2, -0.0f, -texHeight / 2);
+        glScalef(mapScaleX, mapScaleY, mapScaleZ);
+        //glTranslatef(-mapWidth / 2, -0.0f, -mapHeight / 2);
         glTranslatef(200.0f, -100.0f, -200.0f);
         for (int z = 0; z < data.length - 1; z++) {
             glBegin(GL_TRIANGLE_STRIP);
