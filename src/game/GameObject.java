@@ -37,7 +37,7 @@ public abstract class GameObject {
     protected float dy;
     protected float dz;
     // rotation
-    protected float rx;
+    protected float rx = -33;
     protected float ry;
     protected float rz;
 

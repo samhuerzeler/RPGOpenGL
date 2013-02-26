@@ -110,12 +110,12 @@ public class Player extends StatObject {
             }
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
-            Item sword = inventory.findByName("Sword");
-            equipWeapon((Weapon) sword);
+            EquippableItem sword = inventory.findByName("Sword");
+            equipItem(sword);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
-            Item bow = inventory.findByName("Bow");
-            equipWeapon((Weapon) bow);
+            EquippableItem bow = inventory.findByName("Bow");
+            equipItem(bow);
         }
     }
 
@@ -201,12 +201,14 @@ public class Player extends StatObject {
         }
     }
 
-    private void equipWeapon(Weapon weapon) {
-        if (weapon != null) {
-            equipment.equip((EquippableItem) weapon);
-            setAttackDamage(((Weapon) weapon).getDamage());
-            setAttackRange(((Weapon) weapon).getRange());
-            Log.p(weapon.getName() + " equipped");
+    private void equipItem(EquippableItem item) {
+        if (item != null) {
+            equipment.equip(item);
+            if (item.getSlot() == EquippableItem.WEAPON_SLOT) {
+                setAttackDamage(((Weapon) item).getDamage());
+                setAttackRange(((Weapon) item).getRange());
+            }
+            Log.p(item.getName() + " equipped");
         }
     }
 

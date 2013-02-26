@@ -1,5 +1,7 @@
 package game;
 
+import game.item.EquippableItem;
+
 public class Inventory {
 
     private Item[] items;
@@ -47,10 +49,10 @@ public class Inventory {
         return items[index];
     }
 
-    public Item findByName(String name) {
+    public EquippableItem findByName(String name) {
         for (int i = 0; i < items.length; i++) {
             if (items[i] != null && name.equals(items[i].getName())) {
-                return items[i];
+                return (EquippableItem) items[i];
             }
         }
         return null;
