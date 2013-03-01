@@ -16,6 +16,7 @@ public class OrbitCamera {
     private float minDistance = 100.0f;
     private float maxDistance = 2000.0f;
     private float zoomingSpeed = 25.0f;
+    private int zoomingStep = 80;
     // position
     private float x;
     private float y;
@@ -98,9 +99,9 @@ public class OrbitCamera {
     public void checkMouseWheel() {
         int dWheel = Mouse.getDWheel();
         if (dWheel < 0) {
-            zoomOut(80);
+            zoomOut(zoomingStep);
         } else if (dWheel > 0) {
-            zoomIn(80);
+            zoomIn(zoomingStep);
         }
     }
     

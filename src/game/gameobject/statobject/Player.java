@@ -117,6 +117,9 @@ public class Player extends StatObject {
             EquippableItem bow = inventory.findByName("Bow");
             equipItem(bow);
         }
+        if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
+            listEquippedItems();
+        }
     }
 
     private void attack() {
@@ -214,6 +217,14 @@ public class Player extends StatObject {
 
     public void addItem(Item item) {
         inventory.add(item);
+    }
+
+    private void listEquippedItems() {
+        EquippableItem[] equippedItems = equipment.getItems();
+        Log.p("Equipped items:");
+        for (EquippableItem equippedItem : equippedItems) {
+            Log.p(equippedItem.getName());
+        }
     }
 
     public void addXp(float amt) {

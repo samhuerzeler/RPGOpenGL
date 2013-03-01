@@ -8,10 +8,10 @@ public class Physics {
 
     private static final float GRAVITY = -9.8f;
     private static float fallingVelocity = 0.0f;
-    private static float newVelocity;
-    private static float newY;
 
     public static float getFallingDistance() {
+        float newVelocity;
+        float newY;
         newVelocity = fallingVelocity + 0.3f * Time.getDelta();
         if (newVelocity < GRAVITY) {
             newVelocity = GRAVITY * Time.getDelta();

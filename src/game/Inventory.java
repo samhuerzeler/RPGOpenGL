@@ -48,6 +48,10 @@ public class Inventory {
     public Item get(int index) {
         return items[index];
     }
+    
+    public Item[] getItems() {
+        return items;
+    }
 
     public EquippableItem findByName(String name) {
         for (int i = 0; i < items.length; i++) {
