@@ -11,14 +11,14 @@ public class Physics {
 
     public static float getFallingDistance() {
         float newVelocity;
-        float newY;
+        float yDistance;
         newVelocity = fallingVelocity + 0.3f * Time.getDelta();
         if (newVelocity < GRAVITY) {
             newVelocity = GRAVITY * Time.getDelta();
         }
-        newY = (fallingVelocity + newVelocity) / 2;
+        yDistance = (fallingVelocity + newVelocity) / 2;
         fallingVelocity = newVelocity;
-        return newY;
+        return yDistance;
     }
     
     public static void resetFallingVelocity() {
