@@ -17,24 +17,20 @@ import util.ShaderLoader;
 
 public class World {
 
-    public static World world;
-    private float size;
     private float[][] data;
     private int lookupTexture;
     private int heightmapDisplayList;
     private int shaderProgram;
 
     public World() {
-        size = 4000.0f;
         setUpStates();
         setUpHeightMap();
-        setUpShaders();
+        //setUpShaders();
     }
 
     public void render() {
         glPushMatrix();
         {
-            glEnable(GL_CULL_FACE);
             glUseProgram(shaderProgram);
             glCallList(heightmapDisplayList);
         }
@@ -77,8 +73,8 @@ public class World {
         } catch (IOException e) {
             Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, e);
         }
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // LINEAR OR NEAREST
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // LINEAR OR NEAREST
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // LINEAR (smooth) OR NEAREST
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         heightmapDisplayList = glGenLists(1);
         glNewList(heightmapDisplayList, GL_COMPILE);
         glScalef(mapScaleX, mapScaleY, mapScaleZ);

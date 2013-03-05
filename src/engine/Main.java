@@ -29,7 +29,6 @@ public class Main {
     }
 
     private static void initGame() {
-        World.world = new World();
         Game.game = new Game();
     }
 
@@ -71,7 +70,6 @@ public class Main {
         OrbitCamera.camera.useView();
         OrbitCamera.camera.update();
         // TODO Use VertexBufferObjects for faster rendering
-        World.world.render();
         Game.game.render();
         Display.update();
         Display.sync(60);
@@ -88,7 +86,7 @@ public class Main {
     }
 
     private static void cleanUp() {
-        World.world.cleanUp();
+        Game.cleanUp();
         Display.destroy();
         Keyboard.destroy();
         Mouse.destroy();
