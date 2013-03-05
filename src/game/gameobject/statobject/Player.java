@@ -229,5 +229,6 @@ public class Player extends StatObject {
 
     public void addXp(float amt) {
         stats.addXp(amt);
+        Log.p("experience added" + amt);
     }
 }
