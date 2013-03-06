@@ -9,6 +9,7 @@ import game.Item;
 import game.Stats;
 import game.Time;
 import game.Util;
+import game.World;
 import game.gameobject.StatObject;
 import game.gameobject.statobject.mob.Enemy;
 import game.item.EquippableItem;
@@ -20,6 +21,7 @@ import util.Log;
 
 public class Player extends StatObject {
 
+    private World world = Game.world;
     public static final float DAMPING = 0.5f;
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
@@ -50,11 +52,10 @@ public class Player extends StatObject {
         if (jumping) {
             jump();
         }
-        // TODO check collision with heightnmap (TRIANGLE_STRIPS)
-        if (y > 0) {
+        if (y > world.getHeight(x, z)) {
             fall();
         } else {
-            y = 0;
+            y = world.getHeight(x, z);
             Physics.resetFallingVelocity();
             jumping = false;
         }
@@ -104,7 +105,7 @@ public class Player extends StatObject {
             attack();
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            if (!jumping && y < 2) {
+            if (!jumping && y < world.getHeight(x, z) + 1) {
                 y += jumpingSpeed;
                 jumping = true;
             }
@@ -197,7 +198,7 @@ public class Player extends StatObject {
     }
 
     private void jump() {
-        if (y >= 0) {
+        if (y >= world.getHeight(x, z)) {
             y += jumpingSpeed * Time.getDelta();
         } else {
             jumping = false;

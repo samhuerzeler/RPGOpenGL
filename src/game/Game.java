@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class Game {
 
     public static Game game;
-    private static World world;
+    public static World world;
     private ArrayList<GameObject> objects;
     private ArrayList<GameObject> objectsToRemove;
     public Player player;
@@ -52,12 +52,12 @@ public class Game {
         renderWorld();
         renderGameObjects();
     }
-    
+
     public void renderWorld() {
         glEnable(GL_CULL_FACE);
         world.render();
     }
-    
+
     public void renderGameObjects() {
         // render gameobjects
         // use vertexbufferobjects for faster rendering
@@ -87,12 +87,12 @@ public class Game {
         float xx = r;
         float zz = 0;
         glBegin(GL_LINE_LOOP);
-            for (int i = 0; i < numSegments; i++) {
-                glVertex3f(xx + cx, 0.0f, zz + cz);
-                t = xx;
-                xx = c * xx - s * zz;
-                zz = s * t + c * zz;
-            }
+        for (int i = 0; i < numSegments; i++) {
+            glVertex3f(xx + cx, 0.0f, zz + cz);
+            t = xx;
+            xx = c * xx - s * zz;
+            zz = s * t + c * zz;
+        }
         glEnd();
     }
 
@@ -103,7 +103,7 @@ public class Game {
     public ArrayList<GameObject> getObjects() {
         return objects;
     }
-    
+
     public static void cleanUp() {
         world.cleanUp();
     }

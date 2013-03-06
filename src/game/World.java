@@ -21,11 +21,16 @@ public class World {
     private int lookupTexture;
     private int heightmapDisplayList;
     private int shaderProgram;
+    private int mapWidth;
+    private int mapHeight;
+    private int mapScaleX = 25;
+    private int mapScaleY = 5;
+    private int mapScaleZ = 25;
 
     public World() {
         setUpStates();
         setUpHeightMap();
-        //setUpShaders();
+        setUpShaders();
     }
 
     public void render() {
@@ -42,12 +47,17 @@ public class World {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
+    public float getHeight(float x, float z) {
+        try {
+            x /= mapScaleX;
+            z /= mapScaleZ;
+            return data[(int) z][(int) x] * mapScaleY;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
     private void setUpHeightMap() {
-        int mapWidth = 1;
-        int mapHeight = 1;
-        int mapScaleX = 10;
-        int mapScaleY = 3;
-        int mapScaleZ = 10;
 
         try {
             BufferedImage heightmapImage = ImageIO.read(new File("res/images/heightmap.png"));
@@ -73,13 +83,13 @@ public class World {
         } catch (IOException e) {
             Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, e);
         }
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // LINEAR (smooth) OR NEAREST
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // GL_LINEAR (smooth) OR GL_NEAREST
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         heightmapDisplayList = glGenLists(1);
         glNewList(heightmapDisplayList, GL_COMPILE);
         glScalef(mapScaleX, mapScaleY, mapScaleZ);
         //glTranslatef(-mapWidth / 2, -0.0f, -mapHeight / 2);
-        glTranslatef(200.0f, -100.0f, -200.0f);
+        //glTranslatef(200.0f, -100.0f, -200.0f);
         for (int z = 0; z < data.length - 1; z++) {
             glBegin(GL_TRIANGLE_STRIP);
             for (int x = 0; x < data[z].length; x++) {
