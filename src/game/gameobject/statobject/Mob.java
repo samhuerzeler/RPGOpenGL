@@ -1,5 +1,6 @@
 package game.gameobject.statobject;
 
+import engine.Physics;
 import game.Delay;
 import game.Game;
 import game.GameObject;
@@ -14,6 +15,7 @@ import util.Log;
 public abstract class Mob extends StatObject {
 
     public static final float DAMPING = 0.5f;
+    private Physics physics;
     protected float chaseRange;
     protected int enemyTypeId;
     private Random random = new Random();
@@ -28,6 +30,7 @@ public abstract class Mob extends StatObject {
     protected Delay patrolMovingDelay = new Delay(2000, 2500);
 
     public Mob(int level) {
+        physics = new Physics();
         stats = new Stats(level, false);
         target = null;
         resetting = false;
@@ -44,6 +47,13 @@ public abstract class Mob extends StatObject {
 
     @Override
     public void update() {
+        if (y > world.getHeight(x, z)) {
+            applyGravity();
+        } else {
+            y = world.getHeight(x, z);
+            physics.resetFallingVelocity();
+        }
+
         if (isInCombat()) {
             setTarget(getHighestTreatTarget());
         }
@@ -182,7 +192,7 @@ public abstract class Mob extends StatObject {
             return;
         }
         float dirX = (x - this.x) / distance;
-        float dirY = (y - this.y) / distance;
+        //float dirY = (y - this.y) / distance;
         float dirZ = (z - this.z) / distance;
         float speedMultiplier = 1.0f;
         if (resetting) {
@@ -193,7 +203,7 @@ public abstract class Mob extends StatObject {
         }
         if (Math.abs(x - this.x) > Math.abs(dirX * 2) && Math.abs(z - this.z) > Math.abs(dirZ * 2)) {
             this.x += dirX * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
-            this.y += dirY * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
+            //this.y += dirY * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
             this.z += dirZ * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
             lookAt(x, y, z);
         }
@@ -205,6 +215,10 @@ public abstract class Mob extends StatObject {
         float dirZ = (z - this.z);
         ry = (float) -Math.toDegrees(Math.atan2(dirX, dirZ)) - 180;
         rz = (float) -Math.toDegrees(Math.atan2(dirY, dirZ)) - 180;
+    }
+
+    protected void applyGravity() {
+        y -= physics.getFallingDistance() * Time.getDelta();
     }
 
     public void extendFleeRange() {

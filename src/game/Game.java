@@ -23,7 +23,7 @@ public class Game {
         world = new World();
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
-        player = new Player(-400, 500, 400);
+        player = new Player(-400, 1000, 400);
         objects.add(player);
         objects.add(new Guard(0, 0, 0, 1));
         objects.add(new Goblin(1000, 0, -500, 2));

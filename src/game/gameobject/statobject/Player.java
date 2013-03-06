@@ -9,7 +9,6 @@ import game.Item;
 import game.Stats;
 import game.Time;
 import game.Util;
-import game.World;
 import game.gameobject.StatObject;
 import game.gameobject.statobject.mob.Enemy;
 import game.item.EquippableItem;
@@ -21,16 +20,17 @@ import util.Log;
 
 public class Player extends StatObject {
 
-    private World world = Game.world;
     public static final float DAMPING = 0.5f;
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
+    private Physics physics;
     private float jumpingSpeed = 7.0f;
     private boolean jumping = false;
     private Inventory inventory;
     private Equipment equipment;
 
     public Player(float x, float y, float z) {
+        physics = new Physics();
         stats = new Stats(100000, true);
         name = "Player";
         size = 32.0f;
@@ -53,10 +53,10 @@ public class Player extends StatObject {
             jump();
         }
         if (y > world.getHeight(x, z)) {
-            fall();
+            applyGravity();
         } else {
             y = world.getHeight(x, z);
-            Physics.resetFallingVelocity();
+            physics.resetFallingVelocity();
             jumping = false;
         }
     }
@@ -176,7 +176,7 @@ public class Player extends StatObject {
         z += getSpeed() * Time.getDelta() * amt * Math.sin(Math.toRadians(ry + 90 * dir));
     }
 
-    public void rotateY(float amt) {
+    private void rotateY(float amt) {
         ry += amt * Time.getDelta();
     }
 
@@ -193,16 +193,16 @@ public class Player extends StatObject {
         }
     }
 
-    public void fall() {
-        y -= Physics.getFallingDistance() * Time.getDelta();
-    }
-
     private void jump() {
         if (y >= world.getHeight(x, z)) {
             y += jumpingSpeed * Time.getDelta();
         } else {
             jumping = false;
         }
+    }
+
+    protected void applyGravity() {
+        y -= physics.getFallingDistance() * Time.getDelta();
     }
 
     private void equipItem(EquippableItem item) {
@@ -216,16 +216,16 @@ public class Player extends StatObject {
         }
     }
 
-    public void addItem(Item item) {
-        inventory.add(item);
-    }
-
     private void listEquippedItems() {
         EquippableItem[] equippedItems = equipment.getItems();
         Log.p("Equipped items:");
         for (EquippableItem equippedItem : equippedItems) {
             Log.p(equippedItem.getName());
         }
+    }
+
+    public void addItem(Item item) {
+        inventory.add(item);
     }
 
     public void addXp(float amt) {

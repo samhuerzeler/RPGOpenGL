@@ -1,12 +1,15 @@
 package game.gameobject;
 
+import game.Game;
 import game.GameObject;
+import game.World;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class StatObject extends GameObject {
 
+    protected World world = Game.world;
     protected ArrayList<StatObject> combatTargets = new ArrayList<StatObject>();
     protected Map<StatObject, Integer> threatMap = new HashMap<StatObject, Integer>();
     protected boolean resetting;

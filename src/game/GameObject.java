@@ -45,6 +45,7 @@ public abstract class GameObject {
     }
 
     public void render() {
+        // render sprite and range circles
         glPushMatrix();
         {
             glTranslatef(x, y, z);
@@ -58,6 +59,32 @@ public abstract class GameObject {
             }
         }
         glPopMatrix();
+
+        // render healthbar
+        glPushMatrix();
+        {
+            glTranslatef(x, y, z);
+            // TODO rotate healthbar with player camera and fix size
+            glRotatef(-ry, 0.0f, 1.0f, 0.0f);
+            renderHealthBar();
+        }
+        glPopMatrix();
+    }
+
+    private void renderHealthBar() {
+        int currentHealth = stats.getCurrentHealth();
+        int maxHealth = stats.getMaxHealth();
+        float healthPercentage = (float) currentHealth / (float) maxHealth * 100.0f;
+        glTranslatef(-50, 0, 0);
+        glBegin(GL_QUADS);
+        {
+            glVertex2f(0, 40);
+            glVertex2f(healthPercentage, 40);
+            glVertex2f(healthPercentage, 30);
+            glVertex2f(0, 30);
+        }
+        glEnd();
+        glTranslatef(50, 0, 0);
     }
 
     private void renderSphere(float x, float y, float z) {

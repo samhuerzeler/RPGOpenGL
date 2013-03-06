@@ -23,12 +23,12 @@ public class World {
     private int shaderProgram;
     private int mapWidth;
     private int mapHeight;
-    private int mapScaleX = 25;
-    private int mapScaleY = 5;
-    private int mapScaleZ = 25;
-    private float mapTranslateX = 200.0f;
+    private int mapScaleX = 24;
+    private int mapScaleY = mapScaleX / 8;
+    private int mapScaleZ = mapScaleX;
+    private float mapTranslateX = 0.0f;
     private float mapTranslateY = 0.0f;
-    private float mapTranslateZ = -200.0f;
+    private float mapTranslateZ = 0.0f;
 
     public World() {
         setUpStates();
@@ -68,6 +68,8 @@ public class World {
             BufferedImage heightmapImage = ImageIO.read(new File("res/images/heightmap.png"));
             mapWidth = heightmapImage.getWidth();
             mapHeight = heightmapImage.getHeight();
+            mapTranslateX = -(mapWidth * mapScaleX / 2);
+            mapTranslateZ = -(mapHeight * mapScaleZ / 2);
             data = new float[mapWidth][mapHeight];
             Color color;
             for (int z = 0; z < data.length; z++) {
@@ -92,7 +94,6 @@ public class World {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         heightmapDisplayList = glGenLists(1);
         glNewList(heightmapDisplayList, GL_COMPILE);
-        //glTranslatef(-mapWidth / 2, -0.0f, -mapHeight / 2);
         glTranslatef(mapTranslateX, mapTranslateY, mapTranslateZ);
         glScalef(mapScaleX, mapScaleY, mapScaleZ);
         for (int z = 0; z < data.length - 1; z++) {

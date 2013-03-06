@@ -3,7 +3,6 @@ package engine;
 import game.Game;
 import game.GameObject;
 import game.Time;
-import game.World;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.lwjgl.LWJGLException;
@@ -15,9 +14,9 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Main {
 
-    private static final int DISPLAY_WIDTH = 600;
+    private static final int DISPLAY_WIDTH = 800;
     private static final int DISPLAY_HEIGHT = DISPLAY_WIDTH / 16 * 9;
-    private static final float RENDER_DISTANCE = 10000.0f;
+    private static final float RENDER_DISTANCE = 20000.0f;
 
     public static void main(String[] args) {
         System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/natives/");

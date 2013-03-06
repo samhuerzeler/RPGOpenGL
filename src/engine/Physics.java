@@ -7,9 +7,13 @@ import java.awt.Rectangle;
 public class Physics {
 
     private static final float GRAVITY = -9.8f;
-    private static float fallingVelocity = 0.0f;
+    private float fallingVelocity = 0.0f;
 
-    public static float getFallingDistance() {
+    public Physics() {
+        fallingVelocity = 0.0f;
+    }
+
+    public float getFallingDistance() {
         float newVelocity;
         float yDistance;
         newVelocity = fallingVelocity + 0.3f * Time.getDelta();
@@ -21,7 +25,7 @@ public class Physics {
         return yDistance;
     }
 
-    public static void resetFallingVelocity() {
+    public void resetFallingVelocity() {
         fallingVelocity = 0.0f;
     }
 
