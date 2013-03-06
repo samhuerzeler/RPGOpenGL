@@ -26,6 +26,9 @@ public class World {
     private int mapScaleX = 25;
     private int mapScaleY = 5;
     private int mapScaleZ = 25;
+    private float mapTranslateX = 200.0f;
+    private float mapTranslateY = 0.0f;
+    private float mapTranslateZ = -200.0f;
 
     public World() {
         setUpStates();
@@ -49,6 +52,8 @@ public class World {
 
     public float getHeight(float x, float z) {
         try {
+            x -= mapTranslateX;
+            z -= mapTranslateZ;
             x /= mapScaleX;
             z /= mapScaleZ;
             return data[(int) z][(int) x] * mapScaleY;
@@ -87,9 +92,9 @@ public class World {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         heightmapDisplayList = glGenLists(1);
         glNewList(heightmapDisplayList, GL_COMPILE);
-        glScalef(mapScaleX, mapScaleY, mapScaleZ);
         //glTranslatef(-mapWidth / 2, -0.0f, -mapHeight / 2);
-        //glTranslatef(200.0f, -100.0f, -200.0f);
+        glTranslatef(mapTranslateX, mapTranslateY, mapTranslateZ);
+        glScalef(mapScaleX, mapScaleY, mapScaleZ);
         for (int z = 0; z < data.length - 1; z++) {
             glBegin(GL_TRIANGLE_STRIP);
             for (int x = 0; x < data[z].length; x++) {
