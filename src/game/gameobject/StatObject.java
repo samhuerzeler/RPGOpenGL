@@ -10,6 +10,7 @@ import java.util.Map;
 public abstract class StatObject extends GameObject {
 
     protected World world = Game.world;
+    protected World currentFloor = world;
     protected ArrayList<StatObject> combatTargets = new ArrayList<StatObject>();
     protected Map<StatObject, Integer> threatMap = new HashMap<StatObject, Integer>();
     protected boolean resetting;

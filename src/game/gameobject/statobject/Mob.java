@@ -47,10 +47,10 @@ public abstract class Mob extends StatObject {
 
     @Override
     public void update() {
-        if (y > world.getHeight(x, z)) {
+        if (y > currentFloor.getHeight(x, z)) {
             applyGravity();
         } else {
-            y = world.getHeight(x, z);
+            y = currentFloor.getHeight(x, z);
             physics.resetFallingVelocity();
         }
 

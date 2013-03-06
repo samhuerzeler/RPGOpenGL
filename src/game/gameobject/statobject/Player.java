@@ -50,17 +50,17 @@ public class Player extends StatObject {
 
     @Override
     public void update() {
-        if(tick.isOver()) {
+        if (tick.isOver()) {
             tick.start();
             replenishHealth();
         }
         if (jumping) {
             jump();
         }
-        if (y > world.getHeight(x, z)) {
+        if (y > currentFloor.getHeight(x, z)) {
             applyGravity();
         } else {
-            y = world.getHeight(x, z);
+            y = currentFloor.getHeight(x, z);
             physics.resetFallingVelocity();
             jumping = false;
         }
@@ -110,7 +110,7 @@ public class Player extends StatObject {
             attack();
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            if (!jumping && y < world.getHeight(x, z) + 1) {
+            if (!jumping && y < currentFloor.getHeight(x, z) + 1) {
                 y += jumpingSpeed;
                 jumping = true;
             }
@@ -199,7 +199,7 @@ public class Player extends StatObject {
     }
 
     private void jump() {
-        if (y >= world.getHeight(x, z)) {
+        if (y >= currentFloor.getHeight(x, z)) {
             y += jumpingSpeed * Time.getDelta();
         } else {
             jumping = false;
