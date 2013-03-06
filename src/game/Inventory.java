@@ -48,7 +48,7 @@ public class Inventory {
     public Item get(int index) {
         return items[index];
     }
-    
+
     public Item[] getItems() {
         return items;
     }

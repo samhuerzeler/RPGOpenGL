@@ -20,7 +20,7 @@ public class Physics {
         fallingVelocity = newVelocity;
         return yDistance;
     }
-    
+
     public static void resetFallingVelocity() {
         fallingVelocity = 0.0f;
     }

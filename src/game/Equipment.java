@@ -35,7 +35,7 @@ public class Equipment {
     public EquippableItem[] getItems() {
         return items;
     }
-    
+
     public Weapon getEquippedWeapon() {
         return (Weapon) items[EquippableItem.WEAPON_SLOT];
     }
