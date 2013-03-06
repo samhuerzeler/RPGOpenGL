@@ -18,6 +18,7 @@ public abstract class GameObject {
     protected float currentFleeRange;
     protected float patrolRange;
     protected Delay attackDelay = new Delay(1500);
+    protected Delay tick = new Delay(3000);
     protected boolean[] flags = new boolean[1];
     // object IDs
     public static final int NULL = 0;

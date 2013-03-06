@@ -45,10 +45,15 @@ public class Player extends StatObject {
         attackRange = 42;
         attackDamage = 20;
         attackDelay.init();
+        tick.init();
     }
 
     @Override
     public void update() {
+        if(tick.isOver()) {
+            tick.start();
+            replenishHealth();
+        }
         if (jumping) {
             jump();
         }
@@ -230,6 +235,6 @@ public class Player extends StatObject {
 
     public void addXp(float amt) {
         stats.addXp(amt);
-        Log.p("experience added" + amt);
+        Log.p("experience added: " + amt);
     }
 }

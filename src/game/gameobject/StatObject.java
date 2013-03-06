@@ -40,6 +40,12 @@ public abstract class StatObject extends GameObject {
     protected boolean isInCombat() {
         return combatTargets.size() > 0;
     }
+    
+    protected void replenishHealth() {
+        if(!isInCombat() && isAlive() && getCurrentHealth() < getMaxHealth()) {
+            stats.replenishHealth();
+        }
+    }
 
     public boolean isAlive() {
         return stats.getCurrentHealth() > 0;

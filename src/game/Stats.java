@@ -50,6 +50,17 @@ public final class Stats {
         return health;
     }
 
+    public void replenishHealth() {
+        int amt = 5;
+        int healthBefore = health;
+        health += amt;
+        int maxHealth = getMaxHealth();
+        if (health > maxHealth) {
+            health = maxHealth;
+        }
+        System.out.println("replenishing health... " + health + " (+" + (health - healthBefore) + ")");
+    }
+
     public float getStrength() {
         return getLevel() * 4f;
     }
