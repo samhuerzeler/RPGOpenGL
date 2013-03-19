@@ -34,9 +34,9 @@ public class Player extends StatObject {
         stats = new Stats(100000, true);
         name = "Player";
         size = 32.0f;
-        spawnX = x;
-        spawnY = y;
-        spawnZ = z;
+        spawnPosition.x = x;
+        spawnPosition.y = y;
+        spawnPosition.z = z;
         type = PLAYER;
         init(x, y, z, 0.2f, 0.2f, 1.0f, size, size, size);
         inventory = new Inventory(20);
@@ -57,10 +57,10 @@ public class Player extends StatObject {
         if (jumping) {
             jump();
         }
-        if (y > currentFloor.getHeight(x, z)) {
+        if (position.y > currentFloor.getHeight(position.x, position.z)) {
             applyGravity();
         } else {
-            y = currentFloor.getHeight(x, z);
+            position.y = currentFloor.getHeight(position.x, position.z);
             physics.resetFallingVelocity();
             jumping = false;
         }
@@ -110,8 +110,8 @@ public class Player extends StatObject {
             attack();
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            if (!jumping && y < currentFloor.getHeight(x, z) + 1) {
-                y += jumpingSpeed;
+            if (!jumping && position.y < currentFloor.getHeight(position.x, position.z) + 1) {
+                position.y += jumpingSpeed;
                 jumping = true;
             }
         }
@@ -130,7 +130,7 @@ public class Player extends StatObject {
 
     private void attack() {
         attackDelay.start();
-        ArrayList<GameObject> objects = Game.sphereCollide(x, z, attackRange);
+        ArrayList<GameObject> objects = Game.sphereCollide(position.x, position.z, attackRange);
         removeEnemiesInBack(objects);
         ArrayList<Enemy> enemies = findEnemies(objects);
         attackClosestEnemy(enemies);
@@ -156,7 +156,7 @@ public class Player extends StatObject {
             Enemy closestTarget = enemies.get(0);
             if (enemies.size() > 1) {
                 for (Enemy e : enemies) {
-                    if (Util.dist(x, z, e.getX(), e.getZ()) < Util.dist(x, z, closestTarget.getX(), closestTarget.getZ())) {
+                    if (Util.dist(position.x, position.z, e.getX(), e.getZ()) < Util.dist(position.x, position.z, closestTarget.getX(), closestTarget.getZ())) {
                         closestTarget = e;
                     }
                 }
@@ -177,37 +177,37 @@ public class Player extends StatObject {
     }
 
     private void move(float amt, float dir) {
-        x += getSpeed() * Time.getDelta() * amt * Math.cos(Math.toRadians(ry + 90 * dir));
-        z += getSpeed() * Time.getDelta() * amt * Math.sin(Math.toRadians(ry + 90 * dir));
+        position.x += getSpeed() * Time.getDelta() * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir));
+        position.z += getSpeed() * Time.getDelta() * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir));
     }
 
     private void rotateY(float amt) {
-        ry += amt * Time.getDelta();
+        rotation.y += amt * Time.getDelta();
     }
 
     private void mouseRotate() {
-        dx = Mouse.getDX();
-        dy = Mouse.getDY();
-        ry += (dx * 0.1f);
-        rx += (dy * 0.1f);
-        if (rx > 90) {
-            rx = 90;
+        direction.x = Mouse.getDX();
+        direction.y = Mouse.getDY();
+        rotation.y += (direction.x * 0.1f);
+        rotation.x += (direction.y * 0.1f);
+        if (rotation.x > 90) {
+            rotation.x = 90;
         }
-        if (rx < -90) {
-            rx = -90;
+        if (rotation.x < -90) {
+            rotation.x = -90;
         }
     }
 
     private void jump() {
-        if (y >= currentFloor.getHeight(x, z)) {
-            y += jumpingSpeed * Time.getDelta();
+        if (position.y >= currentFloor.getHeight(position.x, position.z)) {
+            position.y += jumpingSpeed * Time.getDelta();
         } else {
             jumping = false;
         }
     }
 
     protected void applyGravity() {
-        y -= physics.getFallingDistance() * Time.getDelta();
+        position.y -= physics.getFallingDistance() * Time.getDelta();
     }
 
     private void equipItem(EquippableItem item) {

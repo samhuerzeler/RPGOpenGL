@@ -47,10 +47,10 @@ public abstract class Mob extends StatObject {
 
     @Override
     public void update() {
-        if (y > currentFloor.getHeight(x, z)) {
+        if (position.y > currentFloor.getHeight(position.x, position.z)) {
             applyGravity();
         } else {
-            y = currentFloor.getHeight(x, z);
+            position.y = currentFloor.getHeight(position.x, position.z);
             physics.resetFallingVelocity();
         }
 
@@ -58,7 +58,7 @@ public abstract class Mob extends StatObject {
             setTarget(getHighestTreatTarget());
         }
         if (target == null) {
-            if (Util.dist(x, z, lastPatrolX, lastPatrolZ) > (getStats().getSpeed())) {
+            if (Util.dist(position.x, position.z, lastPatrolX, lastPatrolZ) > (getStats().getSpeed())) {
                 if (!patrolling && lastPatrolX != 0 && lastPatrolZ != 0) {
                     resetPosition();
                     resetting = true;
@@ -72,17 +72,17 @@ public abstract class Mob extends StatObject {
             }
         } else {
             patrolling = false;
-            if (!target.isResetting() && target.isAlive() && Util.lineOfSight(this, target) && Util.dist(x, z, target.getX(), target.getZ()) <= attackRange) {
+            if (!target.isResetting() && target.isAlive() && Util.lineOfSight(this, target) && Util.dist(position.x, position.z, target.getX(), target.getZ()) <= attackRange) {
                 lookAt(target.getX(), target.getY(), target.getZ());
                 if (attackDelay.isOver()) {
                     attack();
                 }
             } else {
-                if (Util.dist(x, z, spawnX, spawnZ) > currentFleeRange || !target.isAlive()) {
+                if (Util.dist(position.x, position.z, spawnPosition.x, spawnPosition.z) > currentFleeRange || !target.isAlive()) {
                     setOutOfCombat(this, target);
                     removeFromThreatMap(target);
                     setTarget(null);
-                } else if (isInCombat() || (!resetting && Util.dist(x, z, target.getX(), target.getZ()) <= chaseRange)) {
+                } else if (isInCombat() || (!resetting && Util.dist(position.x, position.z, target.getX(), target.getZ()) <= chaseRange)) {
                     chase();
                 }
             }
@@ -116,8 +116,8 @@ public abstract class Mob extends StatObject {
         patrolling = true;
         if (!waiting) {
             moveTo(patrolX, 0, patrolZ);
-            lastPatrolX = x;
-            lastPatrolZ = z;
+            lastPatrolX = position.x;
+            lastPatrolZ = position.z;
             calculated = false;
         } else {
             if (!calculated) {
@@ -126,7 +126,7 @@ public abstract class Mob extends StatObject {
         }
         // attack
         if (enemyTypeId != NULL) {
-            ArrayList<GameObject> objects = Game.sphereCollide(x, z, sightRange);
+            ArrayList<GameObject> objects = Game.sphereCollide(position.x, position.z, sightRange);
             for (GameObject go : objects) {
                 if (go.getType() == enemyTypeId) {
                     setTarget((StatObject) go);
@@ -142,33 +142,33 @@ public abstract class Mob extends StatObject {
         int maxDistance = 2000;
         float newX = random.nextInt(maxDistance) - maxDistance / 2;
         float newZ = random.nextInt(maxDistance) - maxDistance / 2;
-        if (spawnX - x < (float) -Math.sin(Math.toRadians(45)) * patrolRange) {
+        if (spawnPosition.x - position.x < (float) -Math.sin(Math.toRadians(45)) * patrolRange) {
             // too far to the east (positive x-axis)
             if (newX > 0) {
                 newX *= -1;
             }
         }
-        if (spawnX - x > (float) Math.sin(Math.toRadians(45)) * patrolRange) {
+        if (spawnPosition.x - position.x > (float) Math.sin(Math.toRadians(45)) * patrolRange) {
             // too far to the west (negative x-axis)
             if (newX < 0) {
                 newX *= -1;
             }
         }
-        if (spawnZ - z < (float) -Math.sin(Math.toRadians(45)) * patrolRange) {
+        if (spawnPosition.z - position.z < (float) -Math.sin(Math.toRadians(45)) * patrolRange) {
             // too far to the south (positive z-axis)
             if (newZ > 0) {
                 newZ *= -1;
             }
         }
-        if (spawnZ - z > (float) Math.sin(Math.toRadians(45)) * patrolRange) {
+        if (spawnPosition.z - position.z > (float) Math.sin(Math.toRadians(45)) * patrolRange) {
             // too far to the north (negative z-axis)
             if (newZ < 0) {
                 newZ *= -1;
             }
         }
 
-        patrolX = x + newX;
-        patrolZ = z + newZ;
+        patrolX = position.x + newX;
+        patrolZ = position.z + newZ;
         calculated = true;
     }
 
@@ -187,13 +187,13 @@ public abstract class Mob extends StatObject {
     }
 
     protected void moveTo(float x, float y, float z) {
-        float distance = Util.dist(this.x, this.z, x, z);
+        float distance = Util.dist(this.position.x, this.position.z, x, z);
         if (distance == 0) {
             return;
         }
-        float dirX = (x - this.x) / distance;
+        float dirX = (x - this.position.x) / distance;
         //float dirY = (y - this.y) / distance;
-        float dirZ = (z - this.z) / distance;
+        float dirZ = (z - this.position.z) / distance;
         float speedMultiplier = 1.0f;
         if (resetting) {
             speedMultiplier = 2.0f;
@@ -201,28 +201,28 @@ public abstract class Mob extends StatObject {
         if (patrolling) {
             speedMultiplier = 0.5f;
         }
-        if (Math.abs(x - this.x) > Math.abs(dirX * 2) && Math.abs(z - this.z) > Math.abs(dirZ * 2)) {
-            this.x += dirX * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
+        if (Math.abs(x - this.position.x) > Math.abs(dirX * 2) && Math.abs(z - this.position.z) > Math.abs(dirZ * 2)) {
+            this.position.x += dirX * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
             //this.y += dirY * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
-            this.z += dirZ * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
+            this.position.z += dirZ * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
             lookAt(x, y, z);
         }
     }
 
     protected void lookAt(float x, float y, float z) {
-        float dirX = (x - this.x);
-        float dirY = (y - this.y);
-        float dirZ = (z - this.z);
-        ry = (float) -Math.toDegrees(Math.atan2(dirX, dirZ)) - 180;
-        rz = (float) -Math.toDegrees(Math.atan2(dirY, dirZ)) - 180;
+        float dirX = (x - this.position.x);
+        float dirY = (y - this.position.y);
+        float dirZ = (z - this.position.z);
+        rotation.y = (float) -Math.toDegrees(Math.atan2(dirX, dirZ)) - 180;
+        rotation.z = (float) -Math.toDegrees(Math.atan2(dirY, dirZ)) - 180;
     }
 
     protected void applyGravity() {
-        y -= physics.getFallingDistance() * Time.getDelta();
+        position.y -= physics.getFallingDistance() * Time.getDelta();
     }
 
     public void extendFleeRange() {
-        currentFleeRange = Util.dist(x, z, spawnX, spawnZ) + basicFleeRange;
+        currentFleeRange = Util.dist(position.x, position.z, spawnPosition.x, spawnPosition.z) + basicFleeRange;
     }
 
     public void resetFleeRange() {

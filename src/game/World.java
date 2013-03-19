@@ -33,7 +33,7 @@ public class World {
     public World() {
         setUpStates();
         setUpHeightMap();
-        setUpShaders();
+        //setUpShaders();
     }
 
     public void render() {

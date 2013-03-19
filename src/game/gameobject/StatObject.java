@@ -1,20 +1,64 @@
 package game.gameobject;
 
-import game.Game;
+import game.Delay;
 import game.GameObject;
-import game.World;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import static org.lwjgl.opengl.GL11.*;
 
 public abstract class StatObject extends GameObject {
 
-    protected World world = Game.world;
-    protected World currentFloor = world;
     protected ArrayList<StatObject> combatTargets = new ArrayList<StatObject>();
     protected Map<StatObject, Integer> threatMap = new HashMap<StatObject, Integer>();
     protected boolean resetting;
     protected StatObject target;
+    protected int attackDamage;
+    protected float attackRange;
+    protected float sightRange;
+    protected float basicFleeRange;
+    protected float currentFleeRange;
+    protected float patrolRange;
+    protected Delay attackDelay = new Delay(1500);
+    protected Delay tick = new Delay(3000);
+
+    @Override
+    public void render() {
+        // render sprite and range circles
+        glPushMatrix();
+        {
+            glTranslatef(position.x, position.y, position.z);
+            glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
+            spr.render();
+        }
+        glPopMatrix();
+
+        // render healthbar
+        glPushMatrix();
+        {
+            glTranslatef(position.x, position.y, position.z);
+            // TODO rotate healthbar with player camera and fix size
+            glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
+            renderHealthBar();
+        }
+        glPopMatrix();
+    }
+
+    private void renderHealthBar() {
+        int currentHealth = stats.getCurrentHealth();
+        int maxHealth = stats.getMaxHealth();
+        float healthPercentage = (float) currentHealth / (float) maxHealth * 100.0f;
+        glTranslatef(-50, 0, 0);
+        glBegin(GL_QUADS);
+        {
+            glVertex2f(0, 40);
+            glVertex2f(healthPercentage, 40);
+            glVertex2f(healthPercentage, 30);
+            glVertex2f(0, 30);
+        }
+        glEnd();
+        glTranslatef(50, 0, 0);
+    }
 
     public void damage(int amt) {
         stats.damage(amt);
@@ -41,9 +85,9 @@ public abstract class StatObject extends GameObject {
     protected boolean isInCombat() {
         return combatTargets.size() > 0;
     }
-    
+
     protected void replenishHealth() {
-        if(!isInCombat() && isAlive() && getCurrentHealth() < getMaxHealth()) {
+        if (!isInCombat() && isAlive() && getCurrentHealth() < getMaxHealth()) {
             stats.replenishHealth();
         }
     }
