@@ -24,12 +24,12 @@ public abstract class StatObject extends GameObject {
 
     @Override
     public void render() {
-        // render sprite and range circles
+        // render sprite/texture
         glPushMatrix();
         {
             glTranslatef(position.x, position.y, position.z);
             glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
-            spr.render();
+            sprite.render();
         }
         glPopMatrix();
 

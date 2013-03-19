@@ -206,7 +206,7 @@ public class Player extends StatObject {
         }
     }
 
-    protected void applyGravity() {
+    private void applyGravity() {
         position.y -= physics.getFallingDistance() * Time.getDelta();
     }
 

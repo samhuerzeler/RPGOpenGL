@@ -19,9 +19,7 @@ public class Sprite {
         this.r = r;
         this.g = g;
         this.b = b;
-        this.size.x = sx;
-        this.size.y = sy;
-        this.size.z = sz;
+        setSize(sx, sy, sz);
     }
 
     public void render() {
@@ -97,6 +95,12 @@ public class Sprite {
     }
 
     public void setSZ(float sz) {
+        this.size.z = sz;
+    }
+    
+    private void setSize(float sx, float sy, float sz) {
+        this.size.x = sx;
+        this.size.y = sy;
         this.size.z = sz;
     }
 }

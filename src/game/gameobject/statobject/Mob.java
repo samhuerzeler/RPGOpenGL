@@ -16,7 +16,7 @@ public abstract class Mob extends StatObject {
 
     public static final float DAMPING = 0.5f;
     private Physics physics;
-    protected float chaseRange;
+    private float chaseRange;
     protected int enemyTypeId;
     private Random random = new Random();
     private float patrolX;
@@ -26,8 +26,8 @@ public abstract class Mob extends StatObject {
     private boolean calculated = false;
     private boolean patrolling = false;
     private boolean waiting = true;
-    protected Delay patrolWaitingDelay = new Delay(2000, 13000);
-    protected Delay patrolMovingDelay = new Delay(2000, 2500);
+    private Delay patrolWaitingDelay = new Delay(2000, 13000);
+    private Delay patrolMovingDelay = new Delay(2000, 2500);
 
     public Mob(int level) {
         physics = new Physics();
@@ -72,7 +72,7 @@ public abstract class Mob extends StatObject {
             }
         } else {
             patrolling = false;
-            if (!target.isResetting() && target.isAlive() && Util.lineOfSight(this, target) && Util.dist(position.x, position.z, target.getX(), target.getZ()) <= attackRange) {
+            if (!target.isResetting() && target.isAlive() && Util.isInLineOfSight(this, target) && Util.dist(position.x, position.z, target.getX(), target.getZ()) <= attackRange) {
                 lookAt(target.getX(), target.getY(), target.getZ());
                 if (attackDelay.isOver()) {
                     attack();
@@ -94,7 +94,7 @@ public abstract class Mob extends StatObject {
         }
     }
 
-    protected void attack() {
+    private void attack() {
         target.damage(getAttackDamage());
         target.addToThreatMap(this, attackDamage);
         Log.p(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
@@ -138,7 +138,7 @@ public abstract class Mob extends StatObject {
         }
     }
 
-    protected void calculateRandomPatrolPoint() {
+    private void calculateRandomPatrolPoint() {
         int maxDistance = 2000;
         float newX = random.nextInt(maxDistance) - maxDistance / 2;
         float newZ = random.nextInt(maxDistance) - maxDistance / 2;
@@ -172,21 +172,23 @@ public abstract class Mob extends StatObject {
         calculated = true;
     }
 
-    protected void chase() {
-        moveToTarget();
+    private void chase() {
+        if (Util.isInLineOfSight(this, target)) {
+            moveTo(target);
+        }
     }
 
-    protected void resetPosition() {
+    private void resetPosition() {
         resetFleeRange();
         resetThreatMap();
         moveTo(lastPatrolX, 0, lastPatrolZ);
     }
 
-    protected void moveToTarget() {
-        moveTo(target.getX(), target.getY(), target.getZ());
+    private void moveTo(GameObject go) {
+        moveTo(go.getX(), go.getY(), go.getZ());
     }
 
-    protected void moveTo(float x, float y, float z) {
+    private void moveTo(float x, float y, float z) {
         float distance = Util.dist(this.position.x, this.position.z, x, z);
         if (distance == 0) {
             return;
@@ -209,7 +211,7 @@ public abstract class Mob extends StatObject {
         }
     }
 
-    protected void lookAt(float x, float y, float z) {
+    private void lookAt(float x, float y, float z) {
         float dirX = (x - this.position.x);
         float dirY = (y - this.position.y);
         float dirZ = (z - this.position.z);
@@ -217,7 +219,7 @@ public abstract class Mob extends StatObject {
         rotation.z = (float) -Math.toDegrees(Math.atan2(dirY, dirZ)) - 180;
     }
 
-    protected void applyGravity() {
+    private void applyGravity() {
         position.y -= physics.getFallingDistance() * Time.getDelta();
     }
 

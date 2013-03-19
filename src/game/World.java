@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
+import org.lwjgl.util.vector.Vector3f;
 import util.ShaderLoader;
 
 public class World {
@@ -23,17 +24,27 @@ public class World {
     private int shaderProgram;
     private int mapWidth;
     private int mapHeight;
-    private int mapScaleX = 24;
-    private int mapScaleY = mapScaleX / 8;
-    private int mapScaleZ = mapScaleX;
-    private float mapTranslateX = 0.0f;
-    private float mapTranslateY = 0.0f;
-    private float mapTranslateZ = 0.0f;
+    private Vector3f mapScale = new Vector3f();
+    private Vector3f mapTranslate = new Vector3f();
 
     public World() {
+        setMapTranslate(0.0f, 0.0f, 0.0f);
+        setMapScale(24.0f, 24.0f / 8, 24.0f);
         setUpStates();
         setUpHeightMap();
         setUpShaders();
+    }
+
+    private void setMapTranslate(float x, float y, float z) {
+        mapTranslate.x = x;
+        mapTranslate.y = y;
+        mapTranslate.z = z;
+    }
+
+    private void setMapScale(float x, float y, float z) {
+        mapScale.x = x;
+        mapScale.y = y;
+        mapScale.z = z;
     }
 
     public void render() {
@@ -52,11 +63,9 @@ public class World {
 
     public float getHeight(float x, float z) {
         try {
-            x -= mapTranslateX;
-            z -= mapTranslateZ;
-            x /= mapScaleX;
-            z /= mapScaleZ;
-            return data[(int) z][(int) x] * mapScaleY;
+            x = (x - mapTranslate.x) / mapScale.x;
+            z = (z - mapTranslate.z) / mapScale.z;
+            return data[(int) z][(int) x] * mapScale.y;
         } catch (Exception e) {
             return 0;
         }
@@ -68,8 +77,8 @@ public class World {
             BufferedImage heightmapImage = ImageIO.read(new File("res/images/heightmap.png"));
             mapWidth = heightmapImage.getWidth();
             mapHeight = heightmapImage.getHeight();
-            mapTranslateX = -(mapWidth * mapScaleX / 2);
-            mapTranslateZ = -(mapHeight * mapScaleZ / 2);
+            mapTranslate.x = -(mapWidth * mapScale.x / 2);
+            mapTranslate.z = -(mapHeight * mapScale.z / 2);
             data = new float[mapWidth][mapHeight];
             Color color;
             for (int z = 0; z < data.length; z++) {
@@ -94,8 +103,8 @@ public class World {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         heightmapDisplayList = glGenLists(1);
         glNewList(heightmapDisplayList, GL_COMPILE);
-        glTranslatef(mapTranslateX, mapTranslateY, mapTranslateZ);
-        glScalef(mapScaleX, mapScaleY, mapScaleZ);
+        glTranslatef(mapTranslate.x, mapTranslate.y, mapTranslate.z);
+        glScalef(mapScale.x, mapScale.y, mapScale.z);
         for (int z = 0; z < data.length - 1; z++) {
             glBegin(GL_TRIANGLE_STRIP);
             for (int x = 0; x < data[z].length; x++) {
