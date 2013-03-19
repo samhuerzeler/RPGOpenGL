@@ -107,6 +107,7 @@ public class Player extends StatObject {
             rotateY(rotationSpeed);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_F) && attackDelay.isOver()) {
+            System.out.println(attackDelay.isOver());
             attack();
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
@@ -129,7 +130,7 @@ public class Player extends StatObject {
     }
 
     private void attack() {
-        attackDelay.start();
+        attackDelay.restart();
         ArrayList<GameObject> objects = Game.sphereCollide(position.x, position.z, attackRange);
         removeEnemiesInBack(objects);
         ArrayList<Enemy> enemies = findEnemies(objects);

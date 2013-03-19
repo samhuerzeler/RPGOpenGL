@@ -95,10 +95,10 @@ public abstract class Mob extends StatObject {
     }
 
     private void attack() {
+        attackDelay.restart();
         target.damage(getAttackDamage());
         target.addToThreatMap(this, attackDamage);
         Log.p(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
-        attackDelay.start();
     }
 
     protected void idle() {
