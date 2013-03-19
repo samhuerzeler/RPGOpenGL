@@ -16,11 +16,6 @@ public abstract class GameObject {
     protected Vector3f direction = new Vector3f();
     protected Vector3f rotation = new Vector3f();
     protected boolean[] flags = new boolean[1];
-    // object IDs
-    public static final int NULL = 0;
-    public static final int PLAYER = 1;
-    public static final int ENEMY = 2;
-    public static final int NPC = 3;
 
     public void update() {
     }
@@ -32,8 +27,8 @@ public abstract class GameObject {
         flags[0] = true;
     }
 
-    public boolean getRemove() {
-        return flags[0];
+    public boolean getFlag(int index) {
+        return flags[index];
     }
 
     public float getX() {

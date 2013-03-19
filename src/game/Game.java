@@ -13,6 +13,8 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class Game {
 
+    // flag ids
+    public static final int REMOVE = 0;
     public static Game game;
     public static World world;
     private ArrayList<GameObject> objects;
@@ -35,7 +37,7 @@ public class Game {
         Iterator it = objects.iterator();
         while (it.hasNext()) {
             GameObject go = (GameObject) it.next();
-            if (!go.getRemove()) {
+            if (!go.getFlag(REMOVE)) {
                 go.update();
             } else {
                 objectsToRemove.add(go);

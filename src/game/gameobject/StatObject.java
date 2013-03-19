@@ -21,6 +21,11 @@ public abstract class StatObject extends GameObject {
     protected float patrolRange;
     protected Delay attackDelay = new Delay(1500);
     protected Delay tick = new Delay(3000);
+    // object IDs
+    protected static final int NULL = 0;
+    protected static final int PLAYER = 1;
+    protected static final int ENEMY = 2;
+    protected static final int NPC = 3;
 
     @Override
     public void render() {
