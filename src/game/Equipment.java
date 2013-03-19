@@ -14,13 +14,13 @@ public class Equipment {
     }
 
     public boolean equip(EquippableItem item) {
-        int index = item.getSlot();
-        if (items[index] != null) {
-            if (!deEquip(index)) {
+        int slot = item.getSlot();
+        if (items[slot] != null) {
+            if (!deEquip(slot)) {
                 return false;
             }
         }
-        items[index] = item;
+        items[slot] = item;
         return true;
     }
 

@@ -44,8 +44,8 @@ public class Player extends StatObject {
         sightRange = 150.0f;
         attackRange = 42;
         attackDamage = 20;
-        attackDelay.init();
-        tick.init();
+        attackDelay.start();
+        tick.start();
     }
 
     @Override

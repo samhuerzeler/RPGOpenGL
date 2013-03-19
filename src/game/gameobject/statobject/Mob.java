@@ -40,8 +40,8 @@ public abstract class Mob extends StatObject {
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
         patrolRange = 150.0f;
-        attackDelay.init();
-        patrolWaitingDelay.init();
+        attackDelay.start();
+        patrolWaitingDelay.start();
         patrolWaitingDelay.start();
     }
 
@@ -241,7 +241,7 @@ public abstract class Mob extends StatObject {
 
     public void setAttackDelay(int time) {
         attackDelay = new Delay(time);
-        attackDelay.init();
+        attackDelay.start();
     }
 
     public void setSightRange(float dist) {

@@ -5,8 +5,8 @@ import java.util.Random;
 public class Delay {
 
     private int length;
-    private int min;
-    private int max;
+    private int minLength;
+    private int maxLength;
     private double endTime;
     private boolean started;
     private Random random = new Random();
@@ -17,24 +17,24 @@ public class Delay {
         this.length = length;
     }
 
-    public Delay(int min, int max) {
+    public Delay(int minLength, int maxLength) {
         started = false;
         randomized = true;
-        this.min = min;
-        this.max = max;
+        this.minLength = minLength;
+        this.maxLength = maxLength;
         this.length = getRandomLength();
     }
 
     private int getRandomLength() {
-        return random.nextInt(max) + min;
+        return random.nextInt(maxLength) + minLength;
     }
 
-    public void init() {
+    public void start() {
         started = true;
         endTime = 0;
     }
 
-    public void start() {
+    public void restart() {
         started = true;
         if (randomized) {
             this.length = getRandomLength();
