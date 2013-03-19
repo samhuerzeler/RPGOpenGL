@@ -9,7 +9,7 @@ public abstract class GameObject {
     protected String name;
     protected int type;
     protected float size;
-    protected Sprite spr;
+    protected Sprite sprite;
     protected Stats stats;
     protected Vector3f position = new Vector3f();
     protected Vector3f spawnPosition = new Vector3f();
@@ -61,15 +61,15 @@ public abstract class GameObject {
     }
 
     public float getSX() {
-        return spr.getSX();
+        return sprite.getSX();
     }
 
     public float getSY() {
-        return spr.getSY();
+        return sprite.getSY();
     }
 
     public float getSZ() {
-        return spr.getSZ();
+        return sprite.getSZ();
     }
 
     public int getType() {
@@ -89,6 +89,6 @@ public abstract class GameObject {
         this.position.y = y;
         this.position.z = z;
         this.rotation.x = -33;
-        this.spr = new Sprite(r, g, b, sx, sy, sz);
+        this.sprite = new Sprite(r, g, b, sx, sy, sz);
     }
 }

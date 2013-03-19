@@ -6,7 +6,7 @@ import org.lwjgl.util.glu.Sphere;
 
 public class Util {
 
-    public static boolean lineOfSight(GameObject go1, GameObject go2) {
+    public static boolean isInLineOfSight(GameObject go1, GameObject go2) {
         return true;
     }
 

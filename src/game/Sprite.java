@@ -25,6 +25,10 @@ public class Sprite {
     }
 
     public void render() {
+        texture = loadTexture();
+        if(texture != null) {
+            // apply texture
+        }
         glColor3f(r, g, b);
         glBegin(GL_QUADS);
         {
@@ -66,6 +70,10 @@ public class Sprite {
             glVertex3f(-size.x / 2, -size.y / 2, size.z / 2);
         }
         glEnd();
+    }
+    
+    private Texture loadTexture() {
+        return null;
     }
 
     public float getSX() {

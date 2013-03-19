@@ -19,6 +19,6 @@ public abstract class NPC extends Mob {
         spawnPosition.y = y;
         spawnPosition.z = z;
         type = NPC;
-        spr = new Sprite(r, g, b, sx, sy, sz);
+        sprite = new Sprite(r, g, b, sx, sy, sz);
     }
 }
