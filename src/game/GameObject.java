@@ -1,5 +1,6 @@
 package game;
 
+import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.vector.Vector3f;
 
 public abstract class GameObject {
@@ -21,6 +22,14 @@ public abstract class GameObject {
     }
 
     public void render() {
+        // render sprite/texture
+        glPushMatrix();
+        {
+            glTranslatef(position.x, position.y, position.z);
+            glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
+            sprite.render();
+        }
+        glPopMatrix();
     }
 
     public void remove() {

@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class Main {
 
-    private static final int DISPLAY_WIDTH = 500;
+    private static final int DISPLAY_WIDTH = 800;
     private static final int DISPLAY_HEIGHT = DISPLAY_WIDTH / 16 * 9;
     private static final float RENDER_DISTANCE = 20000.0f;
 

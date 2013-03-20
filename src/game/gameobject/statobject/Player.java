@@ -107,7 +107,6 @@ public class Player extends StatObject {
             rotateY(rotationSpeed);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_F) && attackDelay.isOver()) {
-            System.out.println(attackDelay.isOver());
             attack();
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
@@ -178,8 +177,9 @@ public class Player extends StatObject {
     }
 
     private void move(float amt, float dir) {
-        position.x += getSpeed() * Time.getDelta() * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir));
-        position.z += getSpeed() * Time.getDelta() * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir));
+        // TODO add speed based scaling
+        position.x += 4.0f * Time.getDelta() * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir));
+        position.z += 4.0f * Time.getDelta() * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir));
     }
 
     private void rotateY(float amt) {

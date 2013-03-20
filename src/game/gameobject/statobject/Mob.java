@@ -41,8 +41,7 @@ public abstract class Mob extends StatObject {
         chaseRange = sightRange * 1.5f;
         patrolRange = 150.0f;
         attackDelay.start();
-        patrolWaitingDelay.start();
-        patrolWaitingDelay.start();
+        patrolMovingDelay.start();
     }
 
     @Override
@@ -58,7 +57,7 @@ public abstract class Mob extends StatObject {
             setTarget(getHighestTreatTarget());
         }
         if (target == null) {
-            if (Util.dist(position.x, position.z, lastPatrolX, lastPatrolZ) > (getStats().getSpeed())) {
+            if (Util.dist(position.x, position.z, lastPatrolX, lastPatrolZ) > (stats.get(Stats.SPEED))) {
                 if (!patrolling && lastPatrolX != 0 && lastPatrolZ != 0) {
                     resetPosition();
                     resetting = true;
@@ -105,13 +104,13 @@ public abstract class Mob extends StatObject {
         // patrol
         if (patrolMovingDelay.isOver()) {
             patrolMovingDelay.stop();
-            patrolWaitingDelay.start();
+            patrolWaitingDelay.restart();
             waiting = true;
         }
         if (patrolWaitingDelay.isOver()) {
             waiting = false;
             patrolWaitingDelay.stop();
-            patrolMovingDelay.start();
+            patrolMovingDelay.restart();
         }
         patrolling = true;
         if (!waiting) {
@@ -204,9 +203,10 @@ public abstract class Mob extends StatObject {
             speedMultiplier = 0.5f;
         }
         if (Math.abs(x - this.position.x) > Math.abs(dirX * 2) && Math.abs(z - this.position.z) > Math.abs(dirZ * 2)) {
-            this.position.x += dirX * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
+            // TODO add speed based scaling
+            this.position.x += dirX * 4.0f * Time.getDelta() * speedMultiplier;
             //this.y += dirY * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
-            this.position.z += dirZ * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
+            this.position.z += dirZ * 4.0f * Time.getDelta() * speedMultiplier;
             lookAt(x, y, z);
         }
     }
@@ -229,10 +229,6 @@ public abstract class Mob extends StatObject {
 
     public void resetFleeRange() {
         currentFleeRange = basicFleeRange;
-    }
-
-    public Stats getStats() {
-        return stats;
     }
 
     public void setTarget(StatObject target) {

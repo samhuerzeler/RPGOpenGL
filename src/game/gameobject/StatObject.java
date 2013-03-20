@@ -2,6 +2,7 @@ package game.gameobject;
 
 import game.Delay;
 import game.GameObject;
+import game.Stats;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,14 +30,7 @@ public abstract class StatObject extends GameObject {
 
     @Override
     public void render() {
-        // render sprite/texture
-        glPushMatrix();
-        {
-            glTranslatef(position.x, position.y, position.z);
-            glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
-            sprite.render();
-        }
-        glPopMatrix();
+        super.render();
 
         // render healthbar
         glPushMatrix();
@@ -118,15 +112,15 @@ public abstract class StatObject extends GameObject {
     }
 
     public float getStrength() {
-        return stats.getStrength();
+        return stats.get(Stats.STRENGTH);
     }
 
-    public float getMana() {
-        return stats.getMana();
+    public float getIntelligence() {
+        return stats.get(Stats.INTELLIGENCE);
     }
 
     public float getSpeed() {
-        return stats.getSpeed();
+        return stats.get(Stats.SPEED);
     }
 
     public float getAttackRange() {

@@ -20,6 +20,7 @@ public class Equipment {
                 return false;
             }
         }
+        inventory.remove(item);
         items[slot] = item;
         return true;
     }
