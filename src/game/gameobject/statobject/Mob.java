@@ -46,6 +46,11 @@ public abstract class Mob extends StatObject {
 
     @Override
     public void update() {
+        if (stats.getCurrentHealth() <= 0) {
+            setOutOfCombat(this, target);
+            die();
+            resetThreatMap();
+        }
         if (position.y > currentFloor.getHeight(position.x, position.z)) {
             applyGravity();
         } else {
@@ -85,11 +90,6 @@ public abstract class Mob extends StatObject {
                     chase();
                 }
             }
-        }
-
-        if (stats.getCurrentHealth() <= 0) {
-            die();
-            resetThreatMap();
         }
     }
 

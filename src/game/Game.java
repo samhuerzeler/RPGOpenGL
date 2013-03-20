@@ -48,7 +48,9 @@ public class Game {
         while (it.hasNext()) {
             GameObject go = (GameObject) it.next();
             objects.remove(go);
+            go = null;
         }
+        objectsToRemove.clear();
     }
 
     public void render() {

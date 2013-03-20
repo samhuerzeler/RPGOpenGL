@@ -51,7 +51,7 @@ public class Player extends StatObject {
     @Override
     public void update() {
         if (tick.isOver()) {
-            tick.start();
+            tick.restart();
             replenishHealth();
         }
         if (jumping) {
