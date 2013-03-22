@@ -22,7 +22,7 @@ public class Delay {
         randomized = true;
         this.minLength = minLength;
         this.maxLength = maxLength;
-        this.length = getRandomLength();
+        length = getRandomLength();
     }
 
     private int getRandomLength() {
@@ -37,7 +37,7 @@ public class Delay {
     public void restart() {
         started = true;
         if (randomized) {
-            this.length = getRandomLength();
+            length = getRandomLength();
         }
         endTime = length * 1000000.0d + Time.getTime();
     }

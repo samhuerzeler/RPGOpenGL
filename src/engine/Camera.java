@@ -99,6 +99,6 @@ public abstract class Camera {
     }
 
     public void setZoomingSpeed(float amt) {
-        this.zoomingSpeed = amt;
+        zoomingSpeed = amt;
     }
 }

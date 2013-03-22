@@ -8,8 +8,8 @@ public class Equipment {
     private EquippableItem[] items;
     private Inventory inventory;
 
-    public Equipment(Inventory inv) {
-        this.inventory = inv;
+    public Equipment(Inventory inventory) {
+        this.inventory = inventory;
         items = new EquippableItem[EquippableItem.NUM_SLOTS];
     }
 

@@ -22,13 +22,13 @@ public class Physics {
         }
         yDistance = (fallingVelocity + newVelocity) / 2;
         fallingVelocity = newVelocity;
-        return yDistance;
+        return yDistance * Time.getDelta();
     }
 
     public void resetFallingVelocity() {
         fallingVelocity = 0.0f;
     }
-
+    
     public static GameObject checkCollision(GameObject go1, GameObject go2) {
         return checkCollision(new Rectangle((int) go1.getX(), (int) go1.getZ(), (int) go1.getSX(), (int) go1.getSZ()), go2);
     }

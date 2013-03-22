@@ -178,8 +178,8 @@ public class Player extends StatObject {
     }
 
     private void move(float amt, float dir) {
-        position.x += getSpeed() * Time.getDelta() * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir));
-        position.z += getSpeed() * Time.getDelta() * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir));
+        position.x += getSpeed() * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir));
+        position.z += getSpeed() * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir));
     }
 
     private void rotateY(float amt) {
@@ -208,7 +208,7 @@ public class Player extends StatObject {
     }
 
     private void applyGravity() {
-        position.y -= physics.getFallingDistance() * Time.getDelta();
+        position.y -= physics.getFallingDistance();
     }
 
     private void equipItem(EquippableItem item) {
