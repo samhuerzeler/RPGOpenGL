@@ -30,10 +30,10 @@ public final class Stats {
         // =====
         if (levelable) {
             this.xp = xp;
-            this.level = 1;
+            level = 1;
         } else {
-            this.xp = -1;
-            this.level = (int) xp;
+            xp = -1;
+            level = (int) xp;
         }
         health = getMaxHealth();
     }

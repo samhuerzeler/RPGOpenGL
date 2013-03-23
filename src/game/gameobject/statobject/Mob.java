@@ -188,39 +188,37 @@ public abstract class Mob extends StatObject {
     }
 
     private void moveTo(float x, float y, float z) {
-        float distance = Util.dist(this.position.x, this.position.z, x, z);
+        float distance = Util.dist(position.x, position.z, x, z);
         if (distance == 0) {
             return;
         }
-        float dirX = (x - this.position.x) / distance;
-        //float dirY = (y - this.y) / distance;
-        float dirZ = (z - this.position.z) / distance;
+        float dirX = (x - position.x) / distance;
+        //float dirY = (y - position.y) / distance;
+        float dirZ = (z - position.z) / distance;
         float speedMultiplier = 1.0f;
-        if (resetting) {
-            speedMultiplier = 2.0f;
-        }
         if (patrolling) {
             speedMultiplier = 0.5f;
+        } else if (resetting) {
+            speedMultiplier = 2.0f;
         }
-        if (Math.abs(x - this.position.x) > Math.abs(dirX * 2) && Math.abs(z - this.position.z) > Math.abs(dirZ * 2)) {
-            // TODO add speed based scaling
-            this.position.x += dirX * 4.0f * Time.getDelta() * speedMultiplier;
-            //this.y += dirY * getStats().getSpeed() * Time.getDelta() * speedMultiplier;
-            this.position.z += dirZ * 4.0f * Time.getDelta() * speedMultiplier;
+        if (Math.abs(x - position.x) > Math.abs(dirX * 2) && Math.abs(z - position.z) > Math.abs(dirZ * 2)) {
+            position.x += dirX * getStats().getSpeed() * speedMultiplier;
+            //position.y += dirY * getStats().getSpeed() * speedMultiplier;
+            position.z += dirZ * getStats().getSpeed() * speedMultiplier;
             lookAt(x, y, z);
         }
     }
 
     private void lookAt(float x, float y, float z) {
-        float dirX = (x - this.position.x);
-        float dirY = (y - this.position.y);
-        float dirZ = (z - this.position.z);
+        float dirX = (x - position.x);
+        float dirY = (y - position.y);
+        float dirZ = (z - position.z);
         rotation.y = (float) -Math.toDegrees(Math.atan2(dirX, dirZ)) - 180;
         rotation.z = (float) -Math.toDegrees(Math.atan2(dirY, dirZ)) - 180;
     }
 
     private void applyGravity() {
-        position.y -= physics.getFallingDistance() * Time.getDelta();
+        position.y -= physics.getFallingDistance();
     }
 
     public void extendFleeRange() {

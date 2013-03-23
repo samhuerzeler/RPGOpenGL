@@ -65,15 +65,15 @@ public abstract class GameObject {
     }
 
     public float getSX() {
-        return sprite.getSX();
+        return sprite.getSizeX();
     }
 
     public float getSY() {
-        return sprite.getSY();
+        return sprite.getSizeY();
     }
 
     public float getSZ() {
-        return sprite.getSZ();
+        return sprite.getSizeZ();
     }
 
     public int getType() {
@@ -89,10 +89,10 @@ public abstract class GameObject {
     }
 
     protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz) {
-        this.position.x = x;
-        this.position.y = y;
-        this.position.z = z;
-        this.rotation.x = -33;
-        this.sprite = new Sprite(r, g, b, sx, sy, sz);
+        position.x = x;
+        position.y = y;
+        position.z = z;
+        rotation.x = -33;
+        sprite = new Sprite(r, g, b, sx, sy, sz);
     }
 }

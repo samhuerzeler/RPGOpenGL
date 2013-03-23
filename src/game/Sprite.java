@@ -74,33 +74,33 @@ public class Sprite {
         return null;
     }
 
-    public float getSX() {
+    public float getSizeX() {
         return size.x;
     }
 
-    public float getSY() {
+    public float getSizeY() {
         return size.y;
     }
 
-    public float getSZ() {
+    public float getSizeZ() {
         return size.z;
     }
 
-    public void setSX(float sx) {
-        this.size.x = sx;
+    public void setSizeX(float sx) {
+        size.x = sx;
     }
 
-    public void setSY(float sy) {
-        this.size.y = sy;
+    public void setSizeY(float sy) {
+        size.y = sy;
     }
 
-    public void setSZ(float sz) {
-        this.size.z = sz;
+    public void setSizeZ(float sz) {
+        size.z = sz;
     }
     
     private void setSize(float sx, float sy, float sz) {
-        this.size.x = sx;
-        this.size.y = sy;
-        this.size.z = sz;
+        size.x = sx;
+        size.y = sy;
+        size.z = sz;
     }
 }

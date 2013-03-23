@@ -8,8 +8,8 @@ public class Frame {
     private Sprite sprite;
     private int numDisplayed;
 
-    public Frame(Sprite spr, int length) {
-        this.sprite = spr;
+    public Frame(Sprite sprite, int length) {
+        this.sprite = sprite;
         this.length = length;
         numDisplayed = 0;
     }

@@ -18,11 +18,11 @@ public abstract class Enemy extends Mob {
     }
 
     protected void addToLootPool(Item item) {
-        this.lootPool.add(item);
+        lootPool.add(item);
     }
 
     protected void addToLootPool(Item[] items) {
-        this.lootPool.addAll(Arrays.asList(items));
+        lootPool.addAll(Arrays.asList(items));
     }
 
     @Override
@@ -40,9 +40,9 @@ public abstract class Enemy extends Mob {
 
     @Override
     protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz) {
-        this.position.x = x;
-        this.position.y = y;
-        this.position.z = z;
+        position.x = x;
+        position.y = y;
+        position.z = z;
         spawnPosition.x = x;
         spawnPosition.y = y;
         spawnPosition.z = z;
