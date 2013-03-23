@@ -2,9 +2,9 @@ package game;
 
 import engine.Physics;
 import game.gameobject.statobject.Player;
-import game.gameobject.statobject.mob.normal.Goblin;
 import game.gameobject.statobject.mob.normal.Guard;
-import game.gameobject.statobject.mob.normal.Orc;
+import game.gameobject.statobject.mob.normal.Monkey;
+import game.gameobject.statobject.mob.normal.Tiger;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,9 +29,9 @@ public class Game {
         player = new Player(-400, 1000, 400);
         objects.add(player);
         objects.add(new Guard(0, 0, 0, 1));
-        objects.add(new Goblin(1000, 0, -500, 2));
-        objects.add(new Goblin(-1000, 0, -500, 1));
-        objects.add(new Orc(0, 0, -1000, 5));
+        objects.add(new Monkey(1000, 0, -500, 2));
+        objects.add(new Tiger(-1000, 0, -500, 1));
+        objects.add(new Tiger(0, 0, -1000, 5));
     }
 
     public void update() {
@@ -71,14 +71,6 @@ public class Game {
         Iterator it = objects.iterator();
         while (it.hasNext()) {
             GameObject go = (GameObject) it.next();
-            if (go.getType() == 1) {
-                glColor3f(0.0f, 1.0f, 0.0f);
-            } else if (go.getType() == 3) {
-                glColor3f(0.3f, 0.3f, 1.0f);
-            } else {
-                glColor3f(1.0f, 0.0f, 0.0f);
-            }
-            renderSpawnPoint(go.getSpawnX(), go.getSpawnZ(), 32.0f);
             go.render();
         }
     }

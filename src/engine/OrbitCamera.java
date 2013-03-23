@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class OrbitCamera extends Camera {
 
-    public static final float DEFAULT_DISTANCE = 500.0f;
+    public static final float DEFAULT_DISTANCE = 40.0f;
     public static OrbitCamera camera;
     // target to follow
     private GameObject target;

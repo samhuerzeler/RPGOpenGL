@@ -18,10 +18,9 @@ public class Util {
     }
 
     public static void renderSphere(float x, float y, float z) {
-        glTranslatef(x, y, z);
         Sphere s = new Sphere();
-        s.setDrawStyle(GLU_POINT);
-        s.draw(200, 50, 50);
+        s.setDrawStyle(GLU_FILL);
+        s.draw(50, 50, 50);
     }
 
     public static void renderCircle(float cx, float cz, float r) {

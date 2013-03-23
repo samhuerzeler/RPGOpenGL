@@ -24,7 +24,7 @@ public class Sprite {
 
     public void render() {
         texture = loadTexture();
-        if(texture != null) {
+        if (texture != null) {
             // apply texture
         }
         glColor3f(r, g, b);
@@ -69,7 +69,7 @@ public class Sprite {
         }
         glEnd();
     }
-    
+
     private Texture loadTexture() {
         return null;
     }
@@ -97,7 +97,7 @@ public class Sprite {
     public void setSizeZ(float sz) {
         size.z = sz;
     }
-    
+
     private void setSize(float sx, float sy, float sz) {
         size.x = sx;
         size.y = sy;

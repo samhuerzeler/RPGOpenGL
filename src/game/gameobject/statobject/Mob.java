@@ -201,10 +201,11 @@ public abstract class Mob extends StatObject {
         } else if (resetting) {
             speedMultiplier = 2.0f;
         }
-        if (Math.abs(x - position.x) > Math.abs(dirX * 2) && Math.abs(z - position.z) > Math.abs(dirZ * 2)) {
-            position.x += dirX * getStats().getSpeed() * speedMultiplier;
-            //position.y += dirY * getStats().getSpeed() * speedMultiplier;
-            position.z += dirZ * getStats().getSpeed() * speedMultiplier;
+        if (Math.abs(x - this.position.x) > Math.abs(dirX * 2) && Math.abs(z - this.position.z) > Math.abs(dirZ * 2)) {
+            // TODO add speed based scaling
+            this.position.x += dirX * MOVEMENT_SPEED * Time.getDelta() * speedMultiplier;
+            //this.y += dirY * MOVEMENT_SPEED * Time.getDelta() * speedMultiplier;
+            this.position.z += dirZ * MOVEMENT_SPEED * Time.getDelta() * speedMultiplier;
             lookAt(x, y, z);
         }
     }

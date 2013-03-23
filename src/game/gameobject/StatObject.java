@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 public abstract class StatObject extends GameObject {
 
+    protected static final float MOVEMENT_SPEED = 0.2f;
     protected ArrayList<StatObject> combatTargets = new ArrayList<StatObject>();
     protected Map<StatObject, Integer> threatMap = new HashMap<StatObject, Integer>();
     protected boolean resetting;
@@ -38,7 +39,7 @@ public abstract class StatObject extends GameObject {
             glTranslatef(position.x, position.y, position.z);
             // TODO rotate healthbar with player camera and fix size
             glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
-            renderHealthBar();
+            //renderHealthBar();
         }
         glPopMatrix();
     }

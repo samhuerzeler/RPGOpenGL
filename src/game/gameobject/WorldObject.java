@@ -2,5 +2,5 @@ package game.gameobject;
 
 import game.GameObject;
 
-public class WorldObject extends GameObject {
+public abstract class WorldObject extends GameObject {
 }

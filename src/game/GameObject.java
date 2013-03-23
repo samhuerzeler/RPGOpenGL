@@ -1,5 +1,13 @@
 package game;
 
+import engine.Model;
+import engine.ModelLoader;
+import game.gameobject.statobject.Player;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -11,6 +19,7 @@ public abstract class GameObject {
     protected int type;
     protected float size;
     protected Sprite sprite;
+    protected Model model;
     protected Stats stats;
     protected Vector3f position = new Vector3f();
     protected Vector3f spawnPosition = new Vector3f();
@@ -26,10 +35,23 @@ public abstract class GameObject {
         glPushMatrix();
         {
             glTranslatef(position.x, position.y, position.z);
-            glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
-            sprite.render();
+            glRotatef(-rotation.y - 180, 0.0f, 1.0f, 0.0f);
+            //sprite.render();
+            model.render();
         }
         glPopMatrix();
+    }
+
+    protected void loadModel(String path) {
+        model = null;
+        try {
+            model = ModelLoader.loadModel(new File(path));
+            model.init();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void remove() {

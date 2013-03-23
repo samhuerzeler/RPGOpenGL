@@ -8,10 +8,10 @@ import org.lwjgl.util.vector.Vector3f;
 public abstract class Camera {
 
     protected float currentDistance;
-    protected float minDistance = 100.0f;
-    protected float maxDistance = 2000.0f;
-    protected float zoomingSpeed = 25.0f;
-    protected int zoomingStep = 80;
+    protected float minDistance = 0.0f;
+    protected float maxDistance = 120.0f;
+    protected float zoomingSpeed = 1.0f;
+    protected int zoomingStep = 3;
     protected Vector3f position = new Vector3f();
     protected Vector3f rotation = new Vector3f();
     // field of view

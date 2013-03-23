@@ -16,7 +16,7 @@ public class Physics {
     public float getFallingDistance() {
         float newVelocity;
         float yDistance;
-        newVelocity = fallingVelocity + 0.3f * Time.getDelta();
+        newVelocity = fallingVelocity + 0.05f * Time.getDelta();
         if (newVelocity < GRAVITY) {
             newVelocity = GRAVITY * Time.getDelta();
         }

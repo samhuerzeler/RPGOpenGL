@@ -24,7 +24,7 @@ public class Player extends StatObject {
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
     private Physics physics;
-    private float jumpingSpeed = 7.0f;
+    private float jumpingSpeed = 1.0f;
     private boolean jumping = false;
     private Inventory inventory;
     private Equipment equipment;
@@ -39,6 +39,7 @@ public class Player extends StatObject {
         spawnPosition.z = z;
         type = PLAYER;
         init(x, y, z, 0.2f, 0.2f, 1.0f, size, size, size);
+        loadModel("res/models/monkey.obj");
         inventory = new Inventory(20);
         equipment = new Equipment(inventory);
         sightRange = 150.0f;
@@ -177,8 +178,9 @@ public class Player extends StatObject {
     }
 
     private void move(float amt, float dir) {
-        position.x += getSpeed() * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir));
-        position.z += getSpeed() * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir));
+        // TODO add speed based scaling
+        position.x += MOVEMENT_SPEED * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir));
+        position.z += MOVEMENT_SPEED * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir));
     }
 
     private void rotateY(float amt) {
