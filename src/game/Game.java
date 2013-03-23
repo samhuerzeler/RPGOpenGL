@@ -25,12 +25,13 @@ public class Game {
         world = new World();
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
-        player = new Player(-400, 1000, 400);
+        RPGRandom.initRandom();
+        player = new Player(0, 200, 100);
         objects.add(player);
-        objects.add(new Guard(0, 0, 0, 1));
-        objects.add(new Monkey(1000, 0, -500, 2));
-        objects.add(new Tiger(-1000, 0, -500, 1));
-        objects.add(new Tiger(0, 0, -1000, 5));
+        objects.add(new Guard(100, 0, 100, 7));
+        objects.add(new Tiger(-100, 0, 0, 2));
+        objects.add(new Tiger(100, 0, 0, 1));
+        objects.add(new Monkey(0, 0, 0, 5));
     }
 
     public void update() {
@@ -70,12 +71,20 @@ public class Game {
         Iterator it = objects.iterator();
         while (it.hasNext()) {
             GameObject go = (GameObject) it.next();
+            if (go.getType() == 1) {
+                glColor3f(0.0f, 1.0f, 0.0f);
+            } else if (go.getType() == 3) {
+                glColor3f(0.3f, 0.3f, 1.0f);
+            } else {
+                glColor3f(1.0f, 0.0f, 0.0f);
+            }
+            renderSpawnPoint(go.getSpawnX(), go.getSpawnZ(), 32.0f);
             go.render();
         }
     }
 
     private void renderSpawnPoint(float cx, float cz, float r) {
-        int numSegments = 50;
+        int numSegments = 100;
         float theta = (float) (2 * 3.1415926 / numSegments);
         float c = (float) Math.cos(theta);
         float s = (float) Math.sin(theta);

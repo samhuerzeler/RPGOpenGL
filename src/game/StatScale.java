@@ -17,7 +17,7 @@ public class StatScale {
     public void generateScale() {
         double sum = 0;
         for (int i = 0; i < NUM_STATS; i++) {
-            double value = random.nextDouble();
+            double value = RPGRandom.nextDouble(1);
             scales[i] = value;
             sum += value * value;
         }

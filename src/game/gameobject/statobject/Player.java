@@ -33,7 +33,7 @@ public class Player extends StatObject {
         physics = new Physics();
         stats = new Stats(100000, true);
         name = "Player";
-        size = 32.0f;
+        size = 5.0f;
         spawnPosition.x = x;
         spawnPosition.y = y;
         spawnPosition.z = z;
@@ -43,7 +43,7 @@ public class Player extends StatObject {
         inventory = new Inventory(20);
         equipment = new Equipment(inventory);
         sightRange = 150.0f;
-        attackRange = 42;
+        attackRange = size;
         attackDamage = 20;
         attackDelay.start();
         tick.start();

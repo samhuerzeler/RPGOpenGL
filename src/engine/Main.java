@@ -4,8 +4,6 @@ import game.Game;
 import game.GameObject;
 import game.Time;
 import java.nio.FloatBuffer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -13,6 +11,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
+import util.Log;
 
 public class Main {
 
@@ -66,31 +65,31 @@ public class Main {
 
     private static void initLightArrays() {
         matSpecular = BufferUtils.createFloatBuffer(4);
-        matSpecular     .put(1.0f)
-                        .put(1.0f)
-                        .put(1.0f)
-                        .put(20.0f);
+        matSpecular.put(1.0f)
+                .put(1.0f)
+                .put(1.0f)
+                .put(20.0f);
         matSpecular.flip();
-        
+
         lightPosition = BufferUtils.createFloatBuffer(4);
-        lightPosition   .put(1.0f)
-                        .put(1.0f)
-                        .put(1.0f)
-                        .put(1.0f);
+        lightPosition.put(1.0f)
+                .put(1.0f)
+                .put(1.0f)
+                .put(1.0f);
         lightPosition.flip();
-        
+
         whiteLight = BufferUtils.createFloatBuffer(4);
-        whiteLight      .put(2.0f)
-                        .put(2.0f)
-                        .put(4.0f)
-                        .put(1.0f);
+        whiteLight.put(2.0f)
+                .put(2.0f)
+                .put(4.0f)
+                .put(1.0f);
         whiteLight.flip();
-        
+
         lModelAmbient = BufferUtils.createFloatBuffer(4);
-        lModelAmbient   .put(0.1f)
-                        .put(0.1f)
-                        .put(0.1f)
-                        .put(0.1f);
+        lModelAmbient.put(0.1f)
+                .put(0.1f)
+                .put(0.1f)
+                .put(0.1f);
         lModelAmbient.flip();
     }
 
@@ -168,7 +167,8 @@ public class Main {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         } catch (LWJGLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Log.err("Could not set up the display!");
+            System.exit(1);
         }
     }
 }

@@ -125,7 +125,7 @@ public class World {
 
     private void setUpTexture() {
         try {
-            texture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/textures/grass2.png"));
+            texture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/textures/grass4.png"));
 
         } catch (IOException ex) {
             Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);

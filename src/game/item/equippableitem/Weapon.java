@@ -4,8 +4,8 @@ import game.item.EquippableItem;
 
 public abstract class Weapon extends EquippableItem {
 
-    protected static final int MELEE_RANGE = 42;
-    protected static final int CAST_RANGE = 500;
+    protected static final int MELEE_RANGE = 5;
+    protected static final int CAST_RANGE = 60;
     protected int damage;
     protected int range;
     protected int speed;

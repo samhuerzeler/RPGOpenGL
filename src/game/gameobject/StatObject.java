@@ -3,6 +3,7 @@ package game.gameobject;
 import game.Delay;
 import game.GameObject;
 import game.Stats;
+import game.Util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,14 +33,27 @@ public abstract class StatObject extends GameObject {
     @Override
     public void render() {
         super.render();
-
+        // render sprite and range circles
+        glPushMatrix();
+        {
+            glTranslatef(position.x, position.y, position.z);
+            glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
+            glColor3f(1.0f, 1.0f, 1.0f);
+            if (type == ENEMY || type == NPC) {
+                Util.renderCircle(0.0f, 0.0f, sightRange);
+                Util.renderCircle(0.0f, 0.0f, attackRange);
+            } else if (type == PLAYER) {
+                Util.renderCircle(0.0f, 0.0f, attackRange);
+            }
+        }
+        glPopMatrix();
         // render healthbar
         glPushMatrix();
         {
             glTranslatef(position.x, position.y, position.z);
             // TODO rotate healthbar with player camera and fix size
             glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
-            //renderHealthBar();
+            renderHealthBar();
         }
         glPopMatrix();
     }

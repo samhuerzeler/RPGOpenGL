@@ -35,11 +35,11 @@ public abstract class Mob extends StatObject {
         target = null;
         resetting = false;
         attackDamage = 1;
-        sightRange = 300.0f;
-        basicFleeRange = 800.0f;
+        sightRange = 50.0f;
+        basicFleeRange = 150.0f;
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
-        patrolRange = 150.0f;
+        patrolRange = 30.0f;
         attackDelay.start();
         patrolMovingDelay.start();
     }
