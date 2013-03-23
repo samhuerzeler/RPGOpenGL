@@ -25,7 +25,6 @@ public class Game {
         world = new World();
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
-        RPGRandom.initRandom();
         player = new Player(-400, 1000, 400);
         objects.add(player);
         objects.add(new Guard(0, 0, 0, 1));

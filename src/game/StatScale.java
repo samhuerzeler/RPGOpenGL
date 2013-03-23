@@ -7,6 +7,7 @@ public class StatScale {
     public static final double MAX_SCALE_BONUS = 0.25;
     private double[] scales;
     private double[] scaleBonus;
+    private RPGRandom random;
 
     public StatScale() {
         scales = new double[NUM_STATS];
@@ -16,7 +17,7 @@ public class StatScale {
     public void generateScale() {
         double sum = 0;
         for (int i = 0; i < NUM_STATS; i++) {
-            double value = RPGRandom.nextDouble(1);
+            double value = random.nextDouble();
             scales[i] = value;
             sum += value * value;
         }
