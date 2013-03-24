@@ -53,6 +53,13 @@ public abstract class StatObject extends GameObject {
             glTranslatef(position.x, position.y, position.z);
             // TODO rotate healthbar with player camera and fix size
             glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
+            if (type == ENEMY) {
+                glColor3f(1.0f, 0.0f, 0.0f);
+            } else if (type == NPC) {
+                glColor3f(1.0f, 1.0f, 0.0f);
+            } else if (type == PLAYER) {
+                glColor3f(0.0f, 1.0f, 0.0f);
+            }
             renderHealthBar();
         }
         glPopMatrix();
@@ -66,8 +73,8 @@ public abstract class StatObject extends GameObject {
         glBegin(GL_QUADS);
         {
             glVertex2f(0, 6);
-            glVertex2f(healthPercentage/10, 6);
-            glVertex2f(healthPercentage/10, 5);
+            glVertex2f(healthPercentage / 10, 6);
+            glVertex2f(healthPercentage / 10, 5);
             glVertex2f(0, 5);
         }
         glEnd();
