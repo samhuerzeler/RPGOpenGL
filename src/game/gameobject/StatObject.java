@@ -62,16 +62,16 @@ public abstract class StatObject extends GameObject {
         int currentHealth = stats.getCurrentHealth();
         int maxHealth = stats.getMaxHealth();
         float healthPercentage = (float) currentHealth / (float) maxHealth * 100.0f;
-        glTranslatef(-50, 0, 0);
+        glTranslatef(-5, 0, 0);
         glBegin(GL_QUADS);
         {
-            glVertex2f(0, 40);
-            glVertex2f(healthPercentage, 40);
-            glVertex2f(healthPercentage, 30);
-            glVertex2f(0, 30);
+            glVertex2f(0, 6);
+            glVertex2f(healthPercentage/10, 6);
+            glVertex2f(healthPercentage/10, 5);
+            glVertex2f(0, 5);
         }
         glEnd();
-        glTranslatef(50, 0, 0);
+        glTranslatef(5, 0, 0);
     }
 
     public void damage(int amt) {

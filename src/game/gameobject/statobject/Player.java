@@ -130,7 +130,6 @@ public class Player extends StatObject {
     }
 
     private void attack() {
-        attackDelay.restart();
         ArrayList<GameObject> objects = Game.sphereCollide(position.x, position.z, attackRange);
         removeEnemiesInBack(objects);
         ArrayList<Enemy> enemies = findEnemies(objects);
@@ -168,6 +167,7 @@ public class Player extends StatObject {
                 closestTarget.addToThreatMap(this, attackDamage);
                 closestTarget.extendFleeRange();
                 closestTarget.damage(attackDamage);
+                attackDelay.restart();
                 Log.p(name + " attacking " + closestTarget.getName() + " : " + closestTarget.getCurrentHealth() + "/" + closestTarget.getMaxHealth());
             } else {
                 Log.p(name + " : Target is resetting");
