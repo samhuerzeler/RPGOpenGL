@@ -61,6 +61,7 @@ public abstract class StatObject extends GameObject {
                 glColor3f(0.0f, 1.0f, 0.0f);
             }
             renderHealthBar();
+            glColor3f(1.0f, 1.0f, 1.0f);
         }
         glPopMatrix();
     }
