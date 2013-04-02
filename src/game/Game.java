@@ -17,12 +17,14 @@ public class Game {
     public static final int REMOVE = 0;
     public static Game game;
     public static World world;
+    public static Light light;
     private ArrayList<GameObject> objects;
     private ArrayList<GameObject> objectsToRemove;
     public Player player;
 
     public Game() {
         world = new World();
+        light = new Light();
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
         RPGRandom.initRandom();

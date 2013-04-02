@@ -3,8 +3,6 @@ package engine;
 import game.Game;
 import game.GameObject;
 import game.Time;
-import java.nio.FloatBuffer;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -15,25 +13,21 @@ import util.Log;
 
 public class Main {
 
-    private static final int DISPLAY_WIDTH = 1024;
+    private static final int DISPLAY_WIDTH = 500;
     private static final int DISPLAY_HEIGHT = DISPLAY_WIDTH / 16 * 9;
     private static final DisplayMode DISPLAY_MODE = new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT);
     private static final boolean FULLSCREEN = false;
     private static final boolean LIGHTING = true;
     private static final int FPS = 60;
     private static final float RENDER_DISTANCE = 2000000.0f;
-    private static FloatBuffer matSpecular;
-    private static FloatBuffer lightPosition;
-    private static FloatBuffer whiteLight;
-    private static FloatBuffer lModelAmbient;
 
     public static void main(String[] args) {
         System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/natives/");
         initDisplay();
+        initGame();
         if (LIGHTING) {
             initLighting();
         }
-        initGame();
         initCamera();
         gameLoop();
         cleanUp();
@@ -49,48 +43,8 @@ public class Main {
     }
 
     private static void initLighting() {
-        initLightArrays();
-        glShadeModel(GL_SMOOTH);
-        glMaterial(GL_FRONT, GL_SPECULAR, matSpecular);
-        glMaterialf(GL_FRONT, GL_SHININESS, 50.0f);
-        glLight(GL_LIGHT0, GL_POSITION, lightPosition);
-        glLight(GL_LIGHT0, GL_SPECULAR, whiteLight);
-        glLight(GL_LIGHT0, GL_DIFFUSE, whiteLight);
-        glLightModel(GL_LIGHT_MODEL_AMBIENT, lModelAmbient);
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
-        glEnable(GL_COLOR_MATERIAL);
-        glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-    }
-
-    private static void initLightArrays() {
-        matSpecular = BufferUtils.createFloatBuffer(4);
-        matSpecular.put(1.0f)
-                .put(1.0f)
-                .put(1.0f)
-                .put(20.0f);
-        matSpecular.flip();
-
-        lightPosition = BufferUtils.createFloatBuffer(4);
-        lightPosition.put(1.0f)
-                .put(1.0f)
-                .put(1.0f)
-                .put(1.0f);
-        lightPosition.flip();
-
-        whiteLight = BufferUtils.createFloatBuffer(4);
-        whiteLight.put(2.0f)
-                .put(2.0f)
-                .put(4.0f)
-                .put(1.0f);
-        whiteLight.flip();
-
-        lModelAmbient = BufferUtils.createFloatBuffer(4);
-        lModelAmbient.put(0.1f)
-                .put(0.1f)
-                .put(0.1f)
-                .put(0.1f);
-        lModelAmbient.flip();
+        Game.light.initLightArrays();
+        Game.light.setUpStates();
     }
 
     private static void getInput() {
@@ -127,7 +81,7 @@ public class Main {
         // TODO Use VertexBufferObjects for faster rendering
         Game.game.render();
         if (LIGHTING) {
-            glLight(GL_LIGHT0, GL_POSITION, lightPosition);
+            Game.light.update();
         }
         Display.update();
         Display.sync(FPS);

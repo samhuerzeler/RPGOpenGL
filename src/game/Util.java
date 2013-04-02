@@ -1,5 +1,7 @@
 package game;
 
+import java.nio.FloatBuffer;
+import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.*;
 import org.lwjgl.util.glu.Sphere;
@@ -39,5 +41,14 @@ public class Util {
             zz = s * t + c * zz;
         }
         glEnd();
+    }
+
+    public static FloatBuffer asFloatBuffer(float[] parameters) {
+        FloatBuffer buffer = BufferUtils.createFloatBuffer(parameters.length);
+        for (int i = 0; i < parameters.length; i++) {
+            buffer.put(parameters[i]);
+        }
+        buffer.flip();
+        return buffer;
     }
 }
