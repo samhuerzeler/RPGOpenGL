@@ -7,13 +7,13 @@ import java.util.logging.Logger;
 import org.lwjgl.input.Keyboard;
 import util.Log;
 
-public class Warrior extends Player {
+public class Priest extends Player {
 
-    private String className = "warrior";
+    private String className = "priest";
     private Ability ability = new Ability();
     private Delay abilityDelay = new Delay(1500);
 
-    public Warrior(float x, float y, float z) {
+    public Priest(float x, float y, float z) {
         super(x, y, z);
         abilityDelay.start();
     }
@@ -25,9 +25,9 @@ public class Warrior extends Player {
         // Hotbars
         try {
             if (input.keyPressed(Keyboard.KEY_1)) {
-                useAbility(ability.find("HeroicStrike", className));
+                useAbility(ability.find("Heal", className));
             } else if (input.keyPressed(Keyboard.KEY_2)) {
-                useAbility(ability.find("ShieldSlam", className));
+                useAbility(ability.find("Shield", className));
             }
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Warrior.class.getName()).log(Level.SEVERE, null, ex);

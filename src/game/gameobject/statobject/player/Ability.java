@@ -1,4 +1,4 @@
-package game.gameobject.statobject.player.warrior;
+package game.gameobject.statobject.player;
 
 public class Ability {
 
@@ -9,13 +9,10 @@ public class Ability {
     protected float attackRange;
 
     public Ability() {
-        id = 0;
-        name = null;
-        attackRange = 0;
     }
 
-    public Ability find(String str) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Ability a = (Ability) Class.forName("game.gameobject.statobject.player.warrior.ability." + str).newInstance();
+    public Ability find(String str, String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        Ability a = (Ability) Class.forName("game.gameobject.statobject.player." + className + "." + str).newInstance();
         return a;
     }
 

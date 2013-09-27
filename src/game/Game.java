@@ -5,6 +5,7 @@ import game.gameobject.statobject.Player;
 import game.gameobject.statobject.mob.normal.Guard;
 import game.gameobject.statobject.mob.normal.Monkey;
 import game.gameobject.statobject.mob.normal.Tiger;
+import game.gameobject.statobject.player.Priest;
 import game.gameobject.statobject.player.Warrior;
 import java.awt.Rectangle;
 import java.util.ArrayList;

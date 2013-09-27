@@ -1,6 +1,6 @@
-package game.gameobject.statobject.player.warrior.ability;
+package game.gameobject.statobject.player.warrior;
 
-import game.gameobject.statobject.player.warrior.Ability;
+import game.gameobject.statobject.player.Ability;
 
 public class HeroicStrike extends Ability {
 
