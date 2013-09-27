@@ -16,7 +16,7 @@ public class Main {
     private static final int DISPLAY_WIDTH = 1024;
     private static final int DISPLAY_HEIGHT = DISPLAY_WIDTH / 16 * 9;
     private static final DisplayMode DISPLAY_MODE = new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-    private static final int FPS = 60;
+    private static final int FPS = 120;
     private static final float RENDER_DISTANCE = 2000000.0f;
     private static final boolean FULLSCREEN = false;
     private static boolean LIGHTING = true;
