@@ -26,7 +26,7 @@ public final class Stats {
     public Stats(float xp, boolean levelable) {
         this.levelable = levelable;
         // REMOVE !!
-        scale.generateScale();
+        //scale.generateScale();
         // =====
         if (levelable) {
             this.xp = xp;

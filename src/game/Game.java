@@ -5,6 +5,7 @@ import game.gameobject.statobject.Player;
 import game.gameobject.statobject.mob.normal.Guard;
 import game.gameobject.statobject.mob.normal.Monkey;
 import game.gameobject.statobject.mob.normal.Tiger;
+import game.gameobject.statobject.player.Warrior;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,7 +29,7 @@ public class Game {
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
         RPGRandom.initRandom();
-        player = new Player(0, 200, 100);
+        player = new Warrior(0, 200, 100);
         objects.add(player);
         objects.add(new Guard(100, 0, 100, 7));
         objects.add(new Tiger(-100, 0, 0, 2));

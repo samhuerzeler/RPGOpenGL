@@ -8,7 +8,6 @@ public class Bow extends Weapon {
         id = 1;
         damage = 2;
         speed = 1200;
-        range = CAST_RANGE;
         init("Bow", WEAPON_SLOT);
     }
 }

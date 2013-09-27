@@ -13,13 +13,13 @@ import util.Log;
 
 public class Main {
 
-    private static final int DISPLAY_WIDTH = 500;
+    private static final int DISPLAY_WIDTH = 1024;
     private static final int DISPLAY_HEIGHT = DISPLAY_WIDTH / 16 * 9;
     private static final DisplayMode DISPLAY_MODE = new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT);
-    private static final boolean FULLSCREEN = false;
-    private static final boolean LIGHTING = true;
     private static final int FPS = 60;
     private static final float RENDER_DISTANCE = 2000000.0f;
+    private static final boolean FULLSCREEN = false;
+    private static boolean LIGHTING = true;
 
     public static void main(String[] args) {
         System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/natives/");
@@ -50,10 +50,18 @@ public class Main {
     private static void getInput() {
         // standard / debug input
         if (Keyboard.next()) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_F1)) {
+                LIGHTING = false;
+                Game.light.tearDownStates();
+            }
+            if (Keyboard.isKeyDown(Keyboard.KEY_F2)) {
+                LIGHTING = true;
+                Game.light.setUpStates();
+            }
             if (Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)) {
                 cleanUp();
             }
-            if (Keyboard.isKeyDown(Keyboard.KEY_P)) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_F5)) {
                 int polygonMode = glGetInteger(GL_POLYGON_MODE);
                 if (polygonMode == GL_LINE) {
                     glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);

@@ -8,7 +8,6 @@ public class Sword extends Weapon {
         id = 0;
         damage = 3;
         speed = 1000;
-        range = MELEE_RANGE;
         init("Sword", WEAPON_SLOT);
     }
 }

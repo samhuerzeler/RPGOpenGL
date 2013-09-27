@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import static org.lwjgl.opengl.GL11.*;
+import util.Log;
 
 public abstract class StatObject extends GameObject {
 
@@ -98,10 +99,12 @@ public abstract class StatObject extends GameObject {
 
     protected void addCombatTarget(StatObject so) {
         combatTargets.add(so);
+        Log.p(this.getName() + ": combat target added (" + so.getName() + ")");
     }
 
     protected void removeCombatTarget(StatObject so) {
         combatTargets.remove(so);
+        Log.p(this.getName() + ": combat target removed (" + so.getName() + ")");
     }
 
     protected boolean isInCombat() {

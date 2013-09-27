@@ -48,8 +48,8 @@ public abstract class Mob extends StatObject {
     public void update() {
         if (stats.getCurrentHealth() <= 0) {
             setOutOfCombat(this, target);
-            die();
             resetThreatMap();
+            die();
         }
         if (position.y > currentFloor.getHeight(position.x, position.z)) {
             applyGravity();

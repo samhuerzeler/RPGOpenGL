@@ -46,4 +46,10 @@ public class Light {
         glEnable(GL_COLOR_MATERIAL);
         glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     }
+    
+    public void tearDownStates() {
+        glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHT0);
+        glDisable(GL_COLOR_MATERIAL);
+    }
 }

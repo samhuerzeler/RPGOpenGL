@@ -12,6 +12,15 @@ public class StatScale {
     public StatScale() {
         scales = new double[NUM_STATS];
         scaleBonus = new double[NUM_STATS];
+
+        scales[Stats.VITALITY] = 1;
+        scales[Stats.STRENGTH] = 1;
+        scales[Stats.DEXTERITY] = 1;
+        scales[Stats.INTELLIGENCE] = 1;
+        scales[Stats.SPEED] = 1;
+        scales[Stats.DEFENSE] = 1;
+        scales[Stats.DODGE] = 1;
+        scales[Stats.BLOCK] = 1;
     }
 
     public void generateScale() {

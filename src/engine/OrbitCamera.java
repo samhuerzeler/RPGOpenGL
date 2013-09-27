@@ -11,6 +11,7 @@ public class OrbitCamera extends Camera {
     public static OrbitCamera camera;
     // target to follow
     private GameObject target;
+    private InputHandler input = new InputHandler();
 
     public OrbitCamera(float fov, float aspect, float near, float far, GameObject target) {
         setPosition(0, 0, 0);
@@ -35,10 +36,11 @@ public class OrbitCamera extends Camera {
     }
 
     void getInput() {
-        if (Keyboard.isKeyDown(Keyboard.KEY_ADD) || Keyboard.isKeyDown(Keyboard.KEY_L)) {
+        input.update();
+        if (input.keyPressed(Keyboard.KEY_ADD, true) || input.keyPressed(Keyboard.KEY_L, true)) {
             zoomIn();
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_SUBTRACT) || Keyboard.isKeyDown(Keyboard.KEY_K)) {
+        if (input.keyPressed(Keyboard.KEY_SUBTRACT, true) || input.keyPressed(Keyboard.KEY_K, true)) {
             zoomOut();
         }
     }

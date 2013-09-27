@@ -1,5 +1,6 @@
 package game.gameobject.statobject;
 
+import engine.InputHandler;
 import engine.Physics;
 import game.Equipment;
 import game.Game;
@@ -18,7 +19,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import util.Log;
 
-public class Player extends StatObject {
+public abstract class Player extends StatObject {
 
     public static final float DAMPING = 0.5f;
     public static final int MOUSEB_LEFT = 0;
@@ -28,6 +29,8 @@ public class Player extends StatObject {
     private boolean jumping = false;
     private Inventory inventory;
     private Equipment equipment;
+    protected boolean autoAttack = false;
+    protected InputHandler input = new InputHandler();
 
     public Player(float x, float y, float z) {
         physics = new Physics();
@@ -51,6 +54,9 @@ public class Player extends StatObject {
 
     @Override
     public void update() {
+        if (autoAttack) {
+            autoAttack();
+        }
         if (tick.isOver()) {
             tick.restart();
             replenishHealth();
@@ -68,6 +74,7 @@ public class Player extends StatObject {
     }
 
     public void getInput() {
+        input.update();
         // Mouse Input
         // TODO mouse grabbed conflicts with mwheel
         if (Mouse.isButtonDown(MOUSEB_RIGHT)) {
@@ -76,14 +83,16 @@ public class Player extends StatObject {
         } else {
             Mouse.setGrabbed(false);
         }
+
         // Keyboard Input
         float movementSpeed = 5.0f;
         float rotationSpeed = 2.0f;
 
-        boolean movingForward = Keyboard.isKeyDown(Keyboard.KEY_W);
-        boolean movingBackward = Keyboard.isKeyDown(Keyboard.KEY_S);
-        boolean movingLeft = Keyboard.isKeyDown(Keyboard.KEY_Q);
-        boolean movingRight = Keyboard.isKeyDown(Keyboard.KEY_E);
+
+        boolean movingForward = input.keyPressed(Keyboard.KEY_W, true);
+        boolean movingBackward = input.keyPressed(Keyboard.KEY_S, true);
+        boolean movingLeft = input.keyPressed(Keyboard.KEY_A, true);
+        boolean movingRight = input.keyPressed(Keyboard.KEY_D, true);
 
         if ((movingForward && (movingLeft || movingRight)) || (movingBackward && (movingLeft || movingRight))) {
             movementSpeed = (float) (movementSpeed / Math.sqrt(2));
@@ -101,46 +110,55 @@ public class Player extends StatObject {
         if (movingRight) {
             move(movementSpeed, 0);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+        if (input.keyPressed(Keyboard.KEY_Q, true)) {
             rotateY(-rotationSpeed);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+        if (input.keyPressed(Keyboard.KEY_E, true)) {
             rotateY(rotationSpeed);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_F) && attackDelay.isOver()) {
-            attack();
+        if (input.keyPressed(Keyboard.KEY_F)) {
+            autoAttack = !autoAttack;
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+        if (input.keyPressed(Keyboard.KEY_SPACE)) {
             if (!jumping && position.y < currentFloor.getHeight(position.x, position.z) + 1) {
                 position.y += jumpingSpeed;
                 jumping = true;
             }
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_1)) {
+        if (input.keyPressed(Keyboard.KEY_NUMPAD1)) {
             EquippableItem sword = inventory.findByName("Sword");
             equipItem(sword);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_2)) {
+        if (input.keyPressed(Keyboard.KEY_NUMPAD2)) {
             EquippableItem bow = inventory.findByName("Bow");
             equipItem(bow);
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_I)) {
+        if (input.keyPressed(Keyboard.KEY_C)) {
             listEquippedItems();
         }
     }
 
-    private void attack() {
-        ArrayList<GameObject> objects = Game.sphereCollide(position.x, position.z, attackRange);
-        removeEnemiesInBack(objects);
-        ArrayList<Enemy> enemies = findEnemies(objects);
-        attackClosestEnemy(enemies);
+    protected void autoAttack() {
+        if (attackDelay.isOver()) {
+            ArrayList<GameObject> objects = Game.sphereCollide(position.x, position.z, sightRange);
+            removeEnemiesInBack(objects);
+            ArrayList<Enemy> enemies = findEnemies(objects);
+            if (!enemies.isEmpty()) {
+                attackClosestEnemy(enemies);
+            } else {
+                autoAttack = false;
+            }
+        }
+        if (!isInCombat()) {
+            autoAttack = false;
+        }
     }
 
-    private void removeEnemiesInBack(ArrayList<GameObject> objects) {
+    protected void removeEnemiesInBack(ArrayList<GameObject> objects) {
         // TODO remove enemies in back
     }
 
-    private ArrayList<Enemy> findEnemies(ArrayList<GameObject> objects) {
+    protected ArrayList<Enemy> findEnemies(ArrayList<GameObject> objects) {
         ArrayList<Enemy> enemies = new ArrayList<Enemy>();
         for (GameObject go : objects) {
             if (go.getType() == ENEMY) {
@@ -150,7 +168,7 @@ public class Player extends StatObject {
         return enemies;
     }
 
-    private void attackClosestEnemy(ArrayList<Enemy> enemies) {
+    protected void attackClosestEnemy(ArrayList<Enemy> enemies) {
         if (enemies.size() > 0) {
             // find closest target
             Enemy closestTarget = enemies.get(0);
@@ -162,32 +180,34 @@ public class Player extends StatObject {
                 }
             }
             // attack closest target
-            if (!closestTarget.isResetting()) {
-                setInCombat(this, closestTarget);
+            if (!closestTarget.isResetting() && Util.dist(position.x, position.z, closestTarget.getX(), closestTarget.getZ()) <= attackRange) {
+                if (!isInCombat()) {
+                    setInCombat(this, closestTarget);
+                }
                 closestTarget.addToThreatMap(this, attackDamage);
                 closestTarget.extendFleeRange();
                 closestTarget.damage(attackDamage);
                 attackDelay.restart();
                 Log.p(name + " attacking " + closestTarget.getName() + " : " + closestTarget.getCurrentHealth() + "/" + closestTarget.getMaxHealth());
             } else {
-                Log.p(name + " : Target is resetting");
+                Log.p(name + " : Target is resetting or too far away");
             }
         } else {
             Log.p(name + " : No Target");
         }
     }
 
-    private void move(float amt, float dir) {
+    protected void move(float amt, float dir) {
         // TODO add speed based scaling
         position.x += MOVEMENT_SPEED * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir));
         position.z += MOVEMENT_SPEED * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir));
     }
 
-    private void rotateY(float amt) {
+    protected void rotateY(float amt) {
         rotation.y += amt * Time.getDelta();
     }
 
-    private void mouseRotate() {
+    protected void mouseRotate() {
         direction.x = Mouse.getDX();
         direction.y = Mouse.getDY();
         rotation.y += (direction.x * 0.1f);
@@ -200,7 +220,7 @@ public class Player extends StatObject {
         }
     }
 
-    private void jump() {
+    protected void jump() {
         if (position.y >= currentFloor.getHeight(position.x, position.z)) {
             position.y += jumpingSpeed * Time.getDelta();
         } else {
@@ -208,11 +228,11 @@ public class Player extends StatObject {
         }
     }
 
-    private void applyGravity() {
+    protected void applyGravity() {
         position.y -= physics.getFallingDistance();
     }
 
-    private void equipItem(EquippableItem item) {
+    protected void equipItem(EquippableItem item) {
         if (item != null) {
             equipment.equip(item);
             if (item.getSlot() == EquippableItem.WEAPON_SLOT) {
@@ -223,11 +243,13 @@ public class Player extends StatObject {
         }
     }
 
-    private void listEquippedItems() {
+    protected void listEquippedItems() {
         EquippableItem[] equippedItems = equipment.getItems();
         Log.p("Equipped items:");
         for (EquippableItem equippedItem : equippedItems) {
-            Log.p(equippedItem.getName());
+            if (equippedItem != null) {
+                Log.p(equippedItem.getName());
+            }
         }
     }
 
