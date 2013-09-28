@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class OrbitCamera extends Camera {
 
-    public static final float DEFAULT_DISTANCE = 40.0f;
+    public static final float DEFAULT_DISTANCE = 200.0f;
     public static OrbitCamera camera;
     // target to follow
     private GameObject target;
@@ -29,9 +29,13 @@ public class OrbitCamera extends Camera {
         if (Mouse.hasWheel()) {
             checkMouseWheel();
         }
+        rotation.x = target.getRX();
+        rotation.y = target.getRY();
+        rotation.z = target.getRZ();
         glTranslatef(0.0f, -currentDistance / 16, -currentDistance);
-        glRotatef(-target.getRX(), 1.0f, 0.0f, 0.0f);
-        glRotatef(target.getRY(), 0.0f, 1.0f, 0.0f);
+        glRotatef(-rotation.x, 1, 0, 0);
+        glRotatef(rotation.y, 0, 1, 0);
+        glRotatef(rotation.z, 0, 0, 1);
         glTranslatef(-target.getX(), -target.getY(), -target.getZ());
     }
 

@@ -72,7 +72,7 @@ public final class Stats {
         if (health > maxHealth) {
             health = maxHealth;
         }
-        Log.p("health gained: " + health + " (+" + (health - healthBefore) + ")");
+        Log.p("health gained: " + health + "/" + maxHealth + " (+" + (health - healthBefore) + ")");
     }
 
     public void replenishResource(Player.playerClass playerClass) {
@@ -91,7 +91,7 @@ public final class Stats {
         if (resource < 0) {
             resource = 0;
         }
-        Log.p("resource update: " + resource + " (" + (resource - resourceBefore) + ")");
+        Log.p("resource update: " + resource + "/" + maxResource + " (" + (resource - resourceBefore) + ")");
     }
 
     /**

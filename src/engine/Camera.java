@@ -9,9 +9,9 @@ public abstract class Camera {
 
     protected float currentDistance;
     protected float minDistance = 0.0f;
-    protected float maxDistance = 120.0f;
-    protected float zoomingSpeed = 1.0f;
-    protected int zoomingStep = 3;
+    protected float maxDistance = 2000.0f;
+    protected float zoomingSpeed = 10.0f;
+    protected int zoomingStep = 50;
     protected Vector3f position = new Vector3f();
     protected Vector3f rotation = new Vector3f();
     // field of view
@@ -60,9 +60,6 @@ public abstract class Camera {
     }
 
     public void useView() {
-        glRotatef(rotation.x, 1, 0, 0);
-        glRotatef(rotation.y, 0, 1, 0);
-        glRotatef(rotation.z, 0, 0, 1);
         glTranslatef(position.x, position.y, position.z);
     }
 
@@ -84,7 +81,7 @@ public abstract class Camera {
         position.z = z;
     }
 
-    protected Vector3f getRotation() {
+    public Vector3f getRotation() {
         return rotation;
     }
 

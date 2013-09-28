@@ -25,10 +25,10 @@ public class Main {
         System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/natives/");
         initDisplay();
         initGame();
+        initCamera();
         if (LIGHTING) {
             initLighting();
         }
-        initCamera();
         gameLoop();
         cleanUp();
     }
@@ -99,8 +99,8 @@ public class Main {
         Time.init();
         while (!Display.isCloseRequested()) {
             Time.update();
-            getInput();
             update();
+            getInput();
             render();
         }
     }
@@ -124,12 +124,10 @@ public class Main {
             Keyboard.create();
             Mouse.create();
             Display.setVSyncEnabled(true);
-            glClearColor(0.1f, 0.1f, 0.2f, 0.0f);
-            glEnable(GL_TEXTURE_2D);
-            glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        } catch (LWJGLException ex) {
-            Log.err("Could not set up the display!");
+            glClearColor(0.1f, 0.1f, 0.2f, 0.0f);
+        } catch (LWJGLException e) {
+            Log.err("Could not set up the display!" + e.getMessage());
             System.exit(1);
         }
     }

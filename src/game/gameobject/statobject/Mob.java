@@ -47,7 +47,6 @@ public abstract class Mob extends StatObject {
     @Override
     public void update() {
         if (stats.getCurrentHealth() <= 0) {
-            setOutOfCombat(this, target);
             resetThreatMap();
             die();
         }
@@ -82,7 +81,7 @@ public abstract class Mob extends StatObject {
                     attack();
                 }
             } else {
-                if (Util.dist(position.x, position.z, spawnPosition.x, spawnPosition.z) > currentFleeRange || !target.isAlive()) {
+                if (Util.dist(position.x, position.z, spawnPosition.x, spawnPosition.z) > currentFleeRange) {
                     setOutOfCombat(this, target);
                     removeFromThreatMap(target);
                     setTarget(null);
@@ -127,7 +126,7 @@ public abstract class Mob extends StatObject {
         if (enemyTypeId != NULL) {
             ArrayList<GameObject> objects = Game.sphereCollide(position.x, position.z, sightRange);
             for (GameObject go : objects) {
-                if (go.getType() == enemyTypeId) {
+                if (go.getType() == enemyTypeId && ((StatObject) go).isAlive()) {
                     setTarget((StatObject) go);
                     setInCombat(this, target);
                     addToThreatMap(target, 0);

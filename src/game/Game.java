@@ -1,15 +1,21 @@
 package game;
 
+import engine.FontHandler;
+import engine.OrbitCamera;
 import engine.Physics;
 import game.gameobject.statobject.Player;
 import game.gameobject.statobject.mob.normal.Guard;
 import game.gameobject.statobject.mob.normal.Monkey;
 import game.gameobject.statobject.mob.normal.Tiger;
-import game.gameobject.statobject.player.Priest;
+import game.gameobject.statobject.player.Warrior;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
+import org.lwjgl.util.vector.Vector3f;
+import org.newdawn.slick.Color;
 
 public class Game {
 
@@ -18,26 +24,31 @@ public class Game {
     public static Game game;
     public static World world;
     public static Light light;
-    private ArrayList<GameObject> objects;
+    private Map<GameObject, Vector3f> objects;
     private ArrayList<GameObject> objectsToRemove;
+    private FontHandler fontHandler = new FontHandler();
     public Player player;
 
     public Game() {
         world = new World();
         light = new Light();
-        objects = new ArrayList<GameObject>();
+        objects = new HashMap<GameObject, Vector3f>();
         objectsToRemove = new ArrayList<GameObject>();
         RPGRandom.initRandom();
-        player = new Priest(0, 200, 100);
-        objects.add(player);
-        objects.add(new Guard(100, 0, 100, 20));
-        objects.add(new Tiger(-100, 0, 0, 10));
-        objects.add(new Tiger(100, 0, 0, 12));
-        objects.add(new Monkey(0, 0, 0, 25));
+
+        player = new Warrior(0, 200, 100);
+        Monkey monkey = new Monkey(0, 0, 0, 1);
+        Tiger tiger = new Tiger(100, 0, 0, 1);
+        Guard guard = new Guard(100, 0, 100, 20);
+
+        objects.put(player, player.position);
+        objects.put(monkey, monkey.position);
+        objects.put(tiger, tiger.position);
+        objects.put(guard, guard.position);
     }
 
     public void update() {
-        for (GameObject go : objects) {
+        for (GameObject go : objects.keySet()) {
             if (!go.getFlag(REMOVE)) {
                 go.update();
             } else {
@@ -54,19 +65,21 @@ public class Game {
     public void render() {
         renderWorld();
         renderGameObjects();
+        renderText();
+        renderHud();
     }
 
-    public void renderWorld() {
+    private void renderWorld() {
         glEnable(GL_CULL_FACE);
         world.render();
+        glDisable(GL_CULL_FACE);
     }
 
-    public void renderGameObjects() {
+    private void renderGameObjects() {
         // render gameobjects
         // use vertexbufferobjects for faster rendering
-        glDisable(GL_CULL_FACE);
         glUseProgram(0);
-        for (GameObject go : objects) {
+        for (GameObject go : objects.keySet()) {
             if (go.getType() == 1) {
                 glColor3f(0.0f, 1.0f, 0.0f);
             } else if (go.getType() == 3) {
@@ -77,6 +90,28 @@ public class Game {
             renderSpawnPoint(go.getSpawnX(), go.getSpawnZ(), 32.0f);
             go.render();
         }
+    }
+
+    private void renderText() {
+        for (Map.Entry<GameObject, Vector3f> map : objects.entrySet()) {
+            glPushMatrix();
+            {
+                GameObject go = map.getKey();
+                Vector3f position = map.getValue();
+
+                glTranslatef(position.x, position.y + 60, position.z);
+                Vector3f cameraRotation = OrbitCamera.camera.getRotation();
+                glRotatef(-cameraRotation.y + 180, 0, 1, 0);
+                glRotatef(-cameraRotation.x, 1, 0, 0);
+                glScalef(-1, -1, 1);
+                fontHandler.drawString(0, 0, go.name, Color.orange);
+            }
+            glPopMatrix();
+        }
+    }
+
+    private void renderHud() {
+        // TODO render hud
     }
 
     private void renderSpawnPoint(float cx, float cz, float r) {
@@ -101,7 +136,7 @@ public class Game {
         player.getInput();
     }
 
-    public ArrayList<GameObject> getObjects() {
+    public Map<GameObject, Vector3f> getObjects() {
         return objects;
     }
 
@@ -111,7 +146,7 @@ public class Game {
 
     public static ArrayList<GameObject> sphereCollide(float x, float z, float radius) {
         ArrayList<GameObject> res = new ArrayList<GameObject>();
-        for (GameObject go : game.getObjects()) {
+        for (GameObject go : game.getObjects().keySet()) {
             if (Util.dist(go.getX(), go.getZ(), x, z) < radius) {
                 res.add(go);
             }
@@ -124,7 +159,7 @@ public class Game {
         float sx = x2 - x1;
         float sz = z2 - z1;
         Rectangle collider = new Rectangle((int) x1, (int) z1, (int) sx, (int) sz);
-        for (GameObject go : game.getObjects()) {
+        for (GameObject go : game.getObjects().keySet()) {
             if (Physics.checkCollision(collider, go) != null) {
                 res.add(go);
             }

@@ -1,5 +1,6 @@
 package game.gameobject;
 
+import engine.OrbitCamera;
 import game.Delay;
 import game.GameObject;
 import game.Stats;
@@ -8,8 +9,9 @@ import game.gameobject.statobject.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import static org.lwjgl.opengl.GL11.*;
 import util.Log;
+import static org.lwjgl.opengl.GL11.*;
+import org.lwjgl.util.vector.Vector3f;
 
 public abstract class StatObject extends GameObject {
 
@@ -24,7 +26,7 @@ public abstract class StatObject extends GameObject {
     protected float basicFleeRange;
     protected float currentFleeRange;
     protected float patrolRange;
-    protected Delay autoAttackDelay = new Delay(2000);
+    protected Delay autoAttackDelay = new Delay(100);
     protected Delay gcdDelay = new Delay(1500);
     protected Delay nonGcdDelay = new Delay(1500);
     protected Delay tick = new Delay(3000);
@@ -36,8 +38,11 @@ public abstract class StatObject extends GameObject {
 
     @Override
     public void render() {
+        // render gameobjects
         super.render();
-        // render sprite and range circles
+
+        glDisable(GL_LIGHTING);
+        // render range circles
         glPushMatrix();
         {
             glTranslatef(position.x, position.y, position.z);
@@ -52,12 +57,14 @@ public abstract class StatObject extends GameObject {
         }
         glPopMatrix();
 
+
+
         // render health bar
+        int currentHealth = stats.getCurrentHealth();
+        int maxHealth = stats.getMaxHealth();
         glPushMatrix();
         {
             glTranslatef(position.x, position.y, position.z);
-            // TODO rotate healthbar with player camera and fix size
-            glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
             if (type == ENEMY) {
                 glColor3f(1.0f, 0.0f, 0.0f);
             } else if (type == NPC) {
@@ -65,17 +72,16 @@ public abstract class StatObject extends GameObject {
             } else if (type == PLAYER) {
                 glColor3f(0.0f, 1.0f, 0.0f);
             }
-            renderHealthBar();
-            glColor3f(1.0f, 1.0f, 1.0f);
+            renderBar(currentHealth, maxHealth, 40, 5);
         }
         glPopMatrix();
 
         // render resource bar
+        int currentResource = stats.getCurrentResource();
+        int maxResource = stats.getMaxResource();
         glPushMatrix();
         {
             glTranslatef(position.x, position.y, position.z);
-            // TODO rotate healthbar with player camera and fix size
-            glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
             if (type == ENEMY) {
                 glColor3f(1.0f, 0.0f, 0.0f);
             } else if (type == NPC) {
@@ -83,42 +89,27 @@ public abstract class StatObject extends GameObject {
             } else if (type == PLAYER) {
                 glColor3f(1.0f, 0.0f, 0.0f);
             }
-            renderResourceBar();
-            glColor3f(1.0f, 1.0f, 1.0f);
+            renderBar(currentResource, maxResource, 35, 5);
         }
         glPopMatrix();
+        glEnable(GL_LIGHTING);
     }
 
-    private void renderHealthBar() {
-        int currentHealth = stats.getCurrentHealth();
-        int maxHealth = stats.getMaxHealth();
-        float healthPercentage = (float) currentHealth / (float) maxHealth * 100.0f;
-        glTranslatef(-5, 0, 0);
+    private void renderBar(int current, int max, float y, float height) {
+        float percentage = (float) current / (float) max * 100.0f;
+        Vector3f cameraRotation = OrbitCamera.camera.getRotation();
+        glRotatef(-cameraRotation.y + 180, 0, 1, 0);
+        glRotatef(-cameraRotation.x, 1, 0, 0);
+        glScalef(-1, 1, 1);
+        glTranslatef(-20, 0, 0);
         glBegin(GL_QUADS);
         {
-            glVertex2f(0, 6);
-            glVertex2f(healthPercentage / 10, 6);
-            glVertex2f(healthPercentage / 10, 5);
-            glVertex2f(0, 5);
+            glVertex2f(0, y);
+            glVertex2f(percentage * 20 / 50, y);
+            glVertex2f(percentage * 20 / 50, y - height);
+            glVertex2f(0, y - height);
         }
         glEnd();
-        glTranslatef(5, 0, 0);
-    }
-
-    private void renderResourceBar() {
-        int currentResource = stats.getCurrentResource();
-        int maxResource = stats.getMaxResource();
-        float resourcePercentage = (float) currentResource / (float) maxResource * 100.0f;
-        glTranslatef(-5, 0, 0);
-        glBegin(GL_QUADS);
-        {
-            glVertex2f(0, 5);
-            glVertex2f(resourcePercentage / 10, 5);
-            glVertex2f(resourcePercentage / 10, 4.5f);
-            glVertex2f(0, 4.5f);
-        }
-        glEnd();
-        glTranslatef(5, 0, 0);
     }
 
     public void damage(int amt) {
@@ -239,7 +230,11 @@ public abstract class StatObject extends GameObject {
     }
 
     public void resetThreatMap() {
+        for (StatObject so : threatMap.keySet()) {
+            so.setOutOfCombat(this, so);
+        }
         threatMap.clear();
+        Log.p(name + ": Threatmap cleared.");
     }
 
     public StatObject getHighestTreatTarget() {

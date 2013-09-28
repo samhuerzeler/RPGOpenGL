@@ -29,7 +29,7 @@ public class World {
 
     public World() {
         setMapTranslate(0.0f, 0.0f, 0.0f);
-        setMapScale(24.0f, 24.0f / 6, 24.0f);
+        setMapScale(48.0f, 48.0f / 6, 48.0f);
         setUpStates();
         setUpTexture();
         setUpHeightMap();
@@ -73,7 +73,6 @@ public class World {
     }
 
     private void setUpHeightMap() {
-
         try {
             BufferedImage heightmapImage = ImageIO.read(new File("res/images/heightmap.png"));
             mapWidth = heightmapImage.getWidth();

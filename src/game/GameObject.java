@@ -25,18 +25,17 @@ public abstract class GameObject {
     protected Vector3f spawnPosition = new Vector3f();
     protected Vector3f direction = new Vector3f();
     protected Vector3f rotation = new Vector3f();
-    protected boolean[] flags = new boolean[1];
+    protected boolean[] flags = new boolean[1]; // 0 = remove object
 
     public void update() {
     }
 
     public void render() {
-        // render sprite/texture
+        // render model
         glPushMatrix();
         {
             glTranslatef(position.x, position.y, position.z);
-            glRotatef(-rotation.y - 180, 0.0f, 1.0f, 0.0f);
-            //sprite.render();
+            glRotatef(-rotation.y + 180, 0, 1, 0);
             model.render();
         }
         glPopMatrix();
