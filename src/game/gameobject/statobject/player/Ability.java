@@ -2,18 +2,28 @@ package game.gameobject.statobject.player;
 
 public class Ability {
 
+    public enum coolDownType {
+
+        GLOBAL, NON_GLOBAL
+    }
+
+    public enum abilityType {
+
+        OFFENSIVE, DEFENSIVE, BUFF
+    }
     protected static final int MELEE_RANGE = 5;
     protected static final int CAST_RANGE = 60;
     protected int id;
-    protected String name;
-    protected float attackRange;
+    protected String abilityName;
+    protected String tooltip;
+    protected int resourceConsumption;
+    protected float range;
+    protected float minValue;
+    protected float maxValue;
+    protected coolDownType cdType;
+    protected abilityType aType;
 
     public Ability() {
-    }
-
-    public Ability find(String str, String className) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        Ability a = (Ability) Class.forName("game.gameobject.statobject.player." + className + "." + str).newInstance();
-        return a;
     }
 
     public int getId() {
@@ -21,10 +31,26 @@ public class Ability {
     }
 
     public String getName() {
-        return name;
+        return abilityName;
     }
 
-    public float getAttackRange() {
-        return attackRange;
+    public float getRange() {
+        return range;
+    }
+
+    public int getResourceConsumption() {
+        return resourceConsumption;
+    }
+
+    public int getValue() {
+        return (int) (minValue + maxValue) / 2;
+    }
+
+    public coolDownType getCoolDownType() {
+        return cdType;
+    }
+
+    public abilityType getAbilityType() {
+        return aType;
     }
 }

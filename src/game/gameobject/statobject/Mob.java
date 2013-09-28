@@ -34,13 +34,13 @@ public abstract class Mob extends StatObject {
         stats = new Stats(level, false);
         target = null;
         resetting = false;
-        attackDamage = 1;
+        autoAttackDamage = 1;
         sightRange = 50.0f;
         basicFleeRange = 150.0f;
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
         patrolRange = 30.0f;
-        attackDelay.start();
+        autoAttackDelay.start();
         patrolMovingDelay.start();
     }
 
@@ -78,7 +78,7 @@ public abstract class Mob extends StatObject {
             patrolling = false;
             if (!target.isResetting() && target.isAlive() && Util.isInLineOfSight(this, target) && Util.dist(position.x, position.z, target.getX(), target.getZ()) <= attackRange) {
                 lookAt(target.getX(), target.getY(), target.getZ());
-                if (attackDelay.isOver()) {
+                if (autoAttackDelay.isOver()) {
                     attack();
                 }
             } else {
@@ -94,9 +94,9 @@ public abstract class Mob extends StatObject {
     }
 
     private void attack() {
-        attackDelay.restart();
+        autoAttackDelay.restart();
         target.damage(getAttackDamage());
-        target.addToThreatMap(this, attackDamage);
+        target.addToThreatMap(this, autoAttackDamage);
         Log.p(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
     }
 
@@ -235,8 +235,8 @@ public abstract class Mob extends StatObject {
     }
 
     public void setAttackDelay(int time) {
-        attackDelay = new Delay(time);
-        attackDelay.start();
+        autoAttackDelay = new Delay(time);
+        autoAttackDelay.start();
     }
 
     public void setSightRange(float dist) {

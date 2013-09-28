@@ -4,6 +4,7 @@ import game.Delay;
 import game.GameObject;
 import game.Stats;
 import game.Util;
+import game.gameobject.statobject.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,13 +18,15 @@ public abstract class StatObject extends GameObject {
     protected Map<StatObject, Integer> threatMap = new HashMap<StatObject, Integer>();
     protected boolean resetting;
     protected StatObject target;
-    protected int attackDamage;
+    protected int autoAttackDamage;
     protected float attackRange;
     protected float sightRange;
     protected float basicFleeRange;
     protected float currentFleeRange;
     protected float patrolRange;
-    protected Delay attackDelay = new Delay(1500);
+    protected Delay autoAttackDelay = new Delay(2000);
+    protected Delay gcdDelay = new Delay(1500);
+    protected Delay nonGcdDelay = new Delay(1500);
     protected Delay tick = new Delay(3000);
     // object IDs
     protected static final int NULL = 0;
@@ -48,7 +51,8 @@ public abstract class StatObject extends GameObject {
             }
         }
         glPopMatrix();
-        // render healthbar
+
+        // render health bar
         glPushMatrix();
         {
             glTranslatef(position.x, position.y, position.z);
@@ -65,6 +69,24 @@ public abstract class StatObject extends GameObject {
             glColor3f(1.0f, 1.0f, 1.0f);
         }
         glPopMatrix();
+
+        // render resource bar
+        glPushMatrix();
+        {
+            glTranslatef(position.x, position.y, position.z);
+            // TODO rotate healthbar with player camera and fix size
+            glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
+            if (type == ENEMY) {
+                glColor3f(1.0f, 0.0f, 0.0f);
+            } else if (type == NPC) {
+                glColor3f(1.0f, 1.0f, 0.0f);
+            } else if (type == PLAYER) {
+                glColor3f(1.0f, 0.0f, 0.0f);
+            }
+            renderResourceBar();
+            glColor3f(1.0f, 1.0f, 1.0f);
+        }
+        glPopMatrix();
     }
 
     private void renderHealthBar() {
@@ -78,6 +100,22 @@ public abstract class StatObject extends GameObject {
             glVertex2f(healthPercentage / 10, 6);
             glVertex2f(healthPercentage / 10, 5);
             glVertex2f(0, 5);
+        }
+        glEnd();
+        glTranslatef(5, 0, 0);
+    }
+
+    private void renderResourceBar() {
+        int currentResource = stats.getCurrentResource();
+        int maxResource = stats.getMaxResource();
+        float resourcePercentage = (float) currentResource / (float) maxResource * 100.0f;
+        glTranslatef(-5, 0, 0);
+        glBegin(GL_QUADS);
+        {
+            glVertex2f(0, 5);
+            glVertex2f(resourcePercentage / 10, 5);
+            glVertex2f(resourcePercentage / 10, 4.5f);
+            glVertex2f(0, 4.5f);
         }
         glEnd();
         glTranslatef(5, 0, 0);
@@ -117,6 +155,18 @@ public abstract class StatObject extends GameObject {
         }
     }
 
+    protected void replenishResource(Player.playerClass playerClass) {
+        if (playerClass == Player.playerClass.WARRIOR) {
+            if (!isInCombat() && isAlive() && getCurrentResource() > 0) {
+                stats.replenishResource(playerClass);
+            }
+        } else {
+            if (!isInCombat() && isAlive() && getCurrentResource() <= getMaxResource()) {
+                stats.replenishResource(playerClass);
+            }
+        }
+    }
+
     public boolean isAlive() {
         return stats.getCurrentHealth() > 0;
     }
@@ -137,6 +187,14 @@ public abstract class StatObject extends GameObject {
         return stats.getCurrentHealth();
     }
 
+    public int getMaxResource() {
+        return stats.getMaxResource();
+    }
+
+    public int getCurrentResource() {
+        return stats.getCurrentResource();
+    }
+
     public float getStrength() {
         return stats.get(Stats.STRENGTH);
     }
@@ -154,7 +212,7 @@ public abstract class StatObject extends GameObject {
     }
 
     public int getAttackDamage() {
-        return attackDamage;
+        return autoAttackDamage;
     }
 
     public void setAttackRange(int amt) {
@@ -162,7 +220,7 @@ public abstract class StatObject extends GameObject {
     }
 
     public void setAttackDamage(int amt) {
-        attackDamage = amt;
+        autoAttackDamage = amt;
     }
 
     public boolean isResetting() {

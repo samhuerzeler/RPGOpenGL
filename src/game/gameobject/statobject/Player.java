@@ -2,6 +2,7 @@ package game.gameobject.statobject;
 
 import engine.InputHandler;
 import engine.Physics;
+import game.Delay;
 import game.Equipment;
 import game.Game;
 import game.GameObject;
@@ -12,6 +13,7 @@ import game.Time;
 import game.Util;
 import game.gameobject.StatObject;
 import game.gameobject.statobject.mob.Enemy;
+import game.gameobject.statobject.player.Ability;
 import game.item.EquippableItem;
 import game.item.equippableitem.Weapon;
 import java.util.ArrayList;
@@ -21,6 +23,10 @@ import util.Log;
 
 public abstract class Player extends StatObject {
 
+    public enum playerClass {
+
+        WARRIOR, PRIEST
+    }
     public static final float DAMPING = 0.5f;
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
@@ -29,8 +35,12 @@ public abstract class Player extends StatObject {
     private boolean jumping = false;
     private Inventory inventory;
     private Equipment equipment;
-    protected boolean autoAttack = false;
+    private ArrayList<GameObject> objectsInRange;
+    private ArrayList<Enemy> enemiesInRange;
+    private boolean autoAttack = false;
+    protected Stats.resource resource = Stats.resource.MANA;
     protected InputHandler input = new InputHandler();
+    protected playerClass playerCls;
 
     public Player(float x, float y, float z) {
         physics = new Physics();
@@ -47,8 +57,10 @@ public abstract class Player extends StatObject {
         equipment = new Equipment(inventory);
         sightRange = 150.0f;
         attackRange = size;
-        attackDamage = 20;
-        attackDelay.start();
+        autoAttackDamage = 20;
+        autoAttackDelay.start();
+        gcdDelay.start();
+        nonGcdDelay.start();
         tick.start();
     }
 
@@ -60,6 +72,7 @@ public abstract class Player extends StatObject {
         if (tick.isOver()) {
             tick.restart();
             replenishHealth();
+            replenishResource(playerCls);
         }
         if (jumping) {
             jump();
@@ -71,6 +84,9 @@ public abstract class Player extends StatObject {
             physics.resetFallingVelocity();
             jumping = false;
         }
+        objectsInRange = Game.sphereCollide(position.x, position.z, sightRange);
+        removeObjectsInBack(objectsInRange);
+        enemiesInRange = findEnemies(objectsInRange);
     }
 
     public void getInput() {
@@ -138,13 +154,59 @@ public abstract class Player extends StatObject {
         }
     }
 
+    protected void useAbility(Ability ability) {
+        if (ability != null) {
+            Delay delay = null;
+            if (ability.getCoolDownType() == Ability.coolDownType.GLOBAL) {
+                delay = gcdDelay;
+            } else if (ability.getCoolDownType() == Ability.coolDownType.NON_GLOBAL) {
+                delay = nonGcdDelay;
+            }
+            if (delay == null) {
+                Log.err("delay is null");
+                return;
+            }
+            if (delay.isOver()) {
+                if (stats.getCurrentResource() >= ability.getResourceConsumption()) {
+                    if (ability.getAbilityType() == Ability.abilityType.OFFENSIVE) {
+                        /**
+                         * OFFENSIVE abilities
+                         */
+                        if (!enemiesInRange.isEmpty()) {
+                            if (attackClosestEnemy(ability.getValue(), delay, false)) {
+                                stats.subtractResource(ability.getResourceConsumption());
+                                Log.p("ability used: " + ability.getName() + " (" + ability.getValue() + "), resource subtracted: " + ability.getResourceConsumption());
+                            }
+                        } else {
+                            Log.err("no enemies.");
+                        }
+                    } else if (ability.getAbilityType() == Ability.abilityType.DEFENSIVE) {
+                        /**
+                         * DEFENSIVE abilities
+                         */
+                        delay.restart();
+                        stats.addHealth(ability.getValue());
+                        stats.subtractResource(ability.getResourceConsumption());
+                        Log.p("ability used: " + ability.getName() + " (" + ability.getValue() + "), resource subtracted: " + ability.getResourceConsumption());
+                    } else if (ability.getAbilityType() == Ability.abilityType.BUFF) {
+                        /**
+                         * BUFF abilities
+                         */
+                    } else {
+                    }
+                } else {
+                    Log.err("not enough " + resource + ".");
+                }
+            } else {
+                Log.err("ability not ready yet.");
+            }
+        }
+    }
+
     protected void autoAttack() {
-        if (attackDelay.isOver()) {
-            ArrayList<GameObject> objects = Game.sphereCollide(position.x, position.z, sightRange);
-            removeEnemiesInBack(objects);
-            ArrayList<Enemy> enemies = findEnemies(objects);
-            if (!enemies.isEmpty()) {
-                attackClosestEnemy(enemies);
+        if (autoAttackDelay.isOver()) {
+            if (!enemiesInRange.isEmpty()) {
+                attackClosestEnemy(autoAttackDamage, autoAttackDelay, true);
             } else {
                 autoAttack = false;
             }
@@ -154,26 +216,26 @@ public abstract class Player extends StatObject {
         }
     }
 
-    protected void removeEnemiesInBack(ArrayList<GameObject> objects) {
+    protected void removeObjectsInBack(ArrayList<GameObject> objects) {
         // TODO remove enemies in back
     }
 
     protected ArrayList<Enemy> findEnemies(ArrayList<GameObject> objects) {
-        ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+        ArrayList<Enemy> e = new ArrayList<Enemy>();
         for (GameObject go : objects) {
             if (go.getType() == ENEMY) {
-                enemies.add((Enemy) go);
+                e.add((Enemy) go);
             }
         }
-        return enemies;
+        return e;
     }
 
-    protected void attackClosestEnemy(ArrayList<Enemy> enemies) {
-        if (enemies.size() > 0) {
+    protected boolean attackClosestEnemy(int damage, Delay delay, boolean resourceGain) {
+        if (enemiesInRange.size() > 0) {
             // find closest target
-            Enemy closestTarget = enemies.get(0);
-            if (enemies.size() > 1) {
-                for (Enemy e : enemies) {
+            Enemy closestTarget = enemiesInRange.get(0);
+            if (enemiesInRange.size() > 1) {
+                for (Enemy e : enemiesInRange) {
                     if (Util.dist(position.x, position.z, e.getX(), e.getZ()) < Util.dist(position.x, position.z, closestTarget.getX(), closestTarget.getZ())) {
                         closestTarget = e;
                     }
@@ -184,17 +246,22 @@ public abstract class Player extends StatObject {
                 if (!isInCombat()) {
                     setInCombat(this, closestTarget);
                 }
-                closestTarget.addToThreatMap(this, attackDamage);
+                closestTarget.addToThreatMap(this, damage);
                 closestTarget.extendFleeRange();
-                closestTarget.damage(attackDamage);
-                attackDelay.restart();
-                Log.p(name + " attacking " + closestTarget.getName() + " : " + closestTarget.getCurrentHealth() + "/" + closestTarget.getMaxHealth());
+                closestTarget.damage(damage);
+                if (resourceGain) {
+                    stats.addResource(12);
+                }
+                Log.p(name + " attacking " + closestTarget.getName() + " for " + damage + " damage " + closestTarget.getCurrentHealth() + "/" + closestTarget.getMaxHealth());
+                delay.restart();
+                return true;
             } else {
                 Log.p(name + " : Target is resetting or too far away");
             }
         } else {
             Log.p(name + " : No Target");
         }
+        return false;
     }
 
     protected void move(float amt, float dir) {

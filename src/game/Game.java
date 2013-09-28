@@ -6,10 +6,8 @@ import game.gameobject.statobject.mob.normal.Guard;
 import game.gameobject.statobject.mob.normal.Monkey;
 import game.gameobject.statobject.mob.normal.Tiger;
 import game.gameobject.statobject.player.Priest;
-import game.gameobject.statobject.player.Warrior;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Iterator;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -30,27 +28,23 @@ public class Game {
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
         RPGRandom.initRandom();
-        player = new Warrior(0, 200, 100);
+        player = new Priest(0, 200, 100);
         objects.add(player);
-        objects.add(new Guard(100, 0, 100, 7));
-        objects.add(new Tiger(-100, 0, 0, 2));
-        objects.add(new Tiger(100, 0, 0, 1));
-        objects.add(new Monkey(0, 0, 0, 5));
+        objects.add(new Guard(100, 0, 100, 20));
+        objects.add(new Tiger(-100, 0, 0, 10));
+        objects.add(new Tiger(100, 0, 0, 12));
+        objects.add(new Monkey(0, 0, 0, 25));
     }
 
     public void update() {
-        Iterator it = objects.iterator();
-        while (it.hasNext()) {
-            GameObject go = (GameObject) it.next();
+        for (GameObject go : objects) {
             if (!go.getFlag(REMOVE)) {
                 go.update();
             } else {
                 objectsToRemove.add(go);
             }
         }
-        it = objectsToRemove.iterator();
-        while (it.hasNext()) {
-            GameObject go = (GameObject) it.next();
+        for (GameObject go : objectsToRemove) {
             objects.remove(go);
             go = null;
         }
@@ -72,9 +66,7 @@ public class Game {
         // use vertexbufferobjects for faster rendering
         glDisable(GL_CULL_FACE);
         glUseProgram(0);
-        Iterator it = objects.iterator();
-        while (it.hasNext()) {
-            GameObject go = (GameObject) it.next();
+        for (GameObject go : objects) {
             if (go.getType() == 1) {
                 glColor3f(0.0f, 1.0f, 0.0f);
             } else if (go.getType() == 3) {
@@ -119,9 +111,7 @@ public class Game {
 
     public static ArrayList<GameObject> sphereCollide(float x, float z, float radius) {
         ArrayList<GameObject> res = new ArrayList<GameObject>();
-        Iterator it = game.getObjects().iterator();
-        while (it.hasNext()) {
-            GameObject go = (GameObject) it.next();
+        for (GameObject go : game.getObjects()) {
             if (Util.dist(go.getX(), go.getZ(), x, z) < radius) {
                 res.add(go);
             }
@@ -134,9 +124,7 @@ public class Game {
         float sx = x2 - x1;
         float sz = z2 - z1;
         Rectangle collider = new Rectangle((int) x1, (int) z1, (int) sx, (int) sz);
-        Iterator it = game.getObjects().iterator();
-        while (it.hasNext()) {
-            GameObject go = (GameObject) it.next();
+        for (GameObject go : game.getObjects()) {
             if (Physics.checkCollision(collider, go) != null) {
                 res.add(go);
             }

@@ -1,9 +1,14 @@
 package game;
 
+import game.gameobject.statobject.Player;
 import util.Log;
 
 public final class Stats {
 
+    public enum resource {
+
+        RAGE, MANA, ENERGY
+    }
 //    public static final double LEVEL_CONST = 25.0 * Math.pow(3.0, (3.0 / 2.0)); Old level constant
     public static final double MAX_LEVEL = 60;
     public static final double MAX_XP = 60000;
@@ -20,6 +25,9 @@ public final class Stats {
     private int level;
     private double xp;
     private int health;
+    private int maxHealth;
+    private int resource;
+    private int maxResource;
     private boolean levelable;
     private StatScale scale = new StatScale();
 
@@ -36,6 +44,9 @@ public final class Stats {
             this.level = (int) xp;
         }
         health = getMaxHealth();
+        maxHealth = getMaxHealth();
+        resource = 0;
+        maxResource = 100;
     }
 
     public int getCurrentHealth() {
@@ -46,15 +57,41 @@ public final class Stats {
         return health;
     }
 
+    public int getCurrentResource() {
+        int max = getMaxResource();
+        if (resource > max) {
+            resource = max;
+        }
+        return resource;
+    }
+
     public void replenishHealth() {
         int amt = 5;
         int healthBefore = health;
         health += amt;
-        int maxHealth = getMaxHealth();
         if (health > maxHealth) {
             health = maxHealth;
         }
-        Log.p("replenishing health... " + health + " (+" + (health - healthBefore) + ")");
+        Log.p("health gained: " + health + " (+" + (health - healthBefore) + ")");
+    }
+
+    public void replenishResource(Player.playerClass playerClass) {
+        int amt = 0;
+        int resourceBefore = resource;
+
+        if (playerClass == Player.playerClass.WARRIOR) {
+            amt = -1;
+        } else if (playerClass == Player.playerClass.PRIEST) {
+            amt = 20;
+        }
+        resource += amt;
+        if (resource > maxResource) {
+            resource = maxResource;
+        }
+        if (resource < 0) {
+            resource = 0;
+        }
+        Log.p("resource update: " + resource + " (" + (resource - resourceBefore) + ")");
     }
 
     /**
@@ -90,8 +127,8 @@ public final class Stats {
         return (int) (getLevel() * scale.getScale(VITALITY) * 10);
     }
 
-    public int getMaxMana() {
-        return (int) (getLevel() * scale.getScale(INTELLIGENCE) * 10);
+    public int getMaxResource() {
+        return maxResource;
     }
 
     public void addXp(float amt) {
@@ -101,7 +138,31 @@ public final class Stats {
         }
     }
 
+    public void addHealth(int amt) {
+        health += amt;
+        if (health > maxHealth) {
+            health = maxHealth;
+        }
+    }
+
+    public void addResource(int amt) {
+        resource += amt;
+        if (resource > maxResource) {
+            resource = maxResource;
+        }
+    }
+
+    public void subtractResource(int amt) {
+        resource -= amt;
+        if (resource < 0) {
+            resource = 0;
+        }
+    }
+
     public void damage(int amt) {
         health -= amt;
+        if (health < 0) {
+            health = 0;
+        }
     }
 }
