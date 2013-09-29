@@ -63,7 +63,7 @@ public abstract class Camera {
         glTranslatef(position.x, position.y, position.z);
     }
 
-    protected void initProjection() {
+    public void initProjection() {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective(fov, aspect, near, far);

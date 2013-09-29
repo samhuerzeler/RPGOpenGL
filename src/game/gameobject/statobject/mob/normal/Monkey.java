@@ -9,7 +9,7 @@ public class Monkey extends Enemy {
     public Monkey(float x, float y, float z, int level) {
         super(level);
         name = "Monkey";
-        size = 5.0f;
+        size = 50.0f;
         attackRange = size;
         Item[] items = new Item[]{
             new Bow()

@@ -13,10 +13,14 @@ public class FontHandler {
     }
     private TrueTypeFont font;
 
+    public FontHandler(int size) {
+        Font awtFont = new Font(type.ARIAL.toString(), Font.BOLD, size);
+        font = new TrueTypeFont(awtFont, false);
+    }
+
     public FontHandler() {
         // load a default java font
-        Font awtFont = new Font(type.ARIAL.toString(), Font.PLAIN, 10);
-        font = new TrueTypeFont(awtFont, false);
+        this(10);
     }
 
     public TrueTypeFont getFont() {

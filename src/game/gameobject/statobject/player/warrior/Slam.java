@@ -7,7 +7,7 @@ public class Slam extends Ability {
     public Slam() {
         id = 1;
         abilityName = "Slam";
-        resourceConsumption = 12;
+        resourceConsumption = 8;
         range = MELEE_RANGE;
         minValue = 6;
         maxValue = 10;

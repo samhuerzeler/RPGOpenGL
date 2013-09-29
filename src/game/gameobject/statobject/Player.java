@@ -31,7 +31,7 @@ public abstract class Player extends StatObject {
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
     private Physics physics;
-    private float jumpingSpeed = 1.0f;
+    private float jumpingSpeed = 6.0f;
     private boolean jumping = false;
     private Inventory inventory;
     private Equipment equipment;
@@ -44,9 +44,9 @@ public abstract class Player extends StatObject {
 
     public Player(float x, float y, float z) {
         physics = new Physics();
-        stats = new Stats(100000, true);
-        name = "Player";
-        size = 5.0f;
+        stats = new Stats(Stats.MAX_XP, true);
+        name = "Ranork";
+        size = 50.0f;
         spawnPosition.x = x;
         spawnPosition.y = y;
         spawnPosition.z = z;
@@ -57,7 +57,7 @@ public abstract class Player extends StatObject {
         equipment = new Equipment(inventory);
         sightRange = 150.0f;
         attackRange = size;
-        autoAttackDamage = 20;
+        autoAttackDamage = 5;
         autoAttackDelay.start();
         gcdDelay.start();
         nonGcdDelay.start();
@@ -87,6 +87,9 @@ public abstract class Player extends StatObject {
         objectsInRange = Game.sphereCollide(position.x, position.z, sightRange);
         removeObjectsInBack(objectsInRange);
         enemiesInRange = findEnemies(objectsInRange);
+        if (!isInCombat()) {
+            target = null;
+        }
     }
 
     public void getInput() {
@@ -209,6 +212,7 @@ public abstract class Player extends StatObject {
                 attackClosestEnemy(autoAttackDamage, autoAttackDelay, true);
             } else {
                 autoAttack = false;
+                Log.err("no enemies.");
             }
         }
         if (!isInCombat()) {
@@ -246,6 +250,7 @@ public abstract class Player extends StatObject {
                 if (!isInCombat()) {
                     setInCombat(this, closestTarget);
                 }
+                target = closestTarget;
                 closestTarget.addToThreatMap(this, damage);
                 closestTarget.extendFleeRange();
                 closestTarget.damage(damage);

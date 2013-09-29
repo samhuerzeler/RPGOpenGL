@@ -15,7 +15,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 public abstract class StatObject extends GameObject {
 
-    protected static final float MOVEMENT_SPEED = 0.2f;
+    protected static final float MOVEMENT_SPEED = 1f;
     protected ArrayList<StatObject> combatTargets = new ArrayList<StatObject>();
     protected Map<StatObject, Integer> threatMap = new HashMap<StatObject, Integer>();
     protected boolean resetting;
@@ -26,15 +26,15 @@ public abstract class StatObject extends GameObject {
     protected float basicFleeRange;
     protected float currentFleeRange;
     protected float patrolRange;
-    protected Delay autoAttackDelay = new Delay(100);
+    protected Delay autoAttackDelay = new Delay(2000);
     protected Delay gcdDelay = new Delay(1500);
     protected Delay nonGcdDelay = new Delay(1500);
     protected Delay tick = new Delay(3000);
     // object IDs
-    protected static final int NULL = 0;
-    protected static final int PLAYER = 1;
-    protected static final int ENEMY = 2;
-    protected static final int NPC = 3;
+    public static final int NULL = 0;
+    public static final int PLAYER = 1;
+    public static final int ENEMY = 2;
+    public static final int NPC = 3;
 
     @Override
     public void render() {
@@ -57,41 +57,40 @@ public abstract class StatObject extends GameObject {
         }
         glPopMatrix();
 
-
-
-        // render health bar
-        int currentHealth = stats.getCurrentHealth();
-        int maxHealth = stats.getMaxHealth();
-        glPushMatrix();
-        {
-            glTranslatef(position.x, position.y, position.z);
-            if (type == ENEMY) {
-                glColor3f(1.0f, 0.0f, 0.0f);
-            } else if (type == NPC) {
-                glColor3f(1.0f, 1.0f, 0.0f);
-            } else if (type == PLAYER) {
-                glColor3f(0.0f, 1.0f, 0.0f);
+        if (type != PLAYER) {
+            // render health bar
+            int currentHealth = stats.getCurrentHealth();
+            int maxHealth = stats.getMaxHealth();
+            glPushMatrix();
+            {
+                glTranslatef(position.x, position.y, position.z);
+                if (type == ENEMY) {
+                    glColor3f(1.0f, 0.0f, 0.0f);
+                } else if (type == NPC) {
+                    glColor3f(1.0f, 1.0f, 0.0f);
+                }
+                renderBar(currentHealth, maxHealth, 40, 5);
             }
-            renderBar(currentHealth, maxHealth, 40, 5);
-        }
-        glPopMatrix();
+            glPopMatrix();
 
-        // render resource bar
-        int currentResource = stats.getCurrentResource();
-        int maxResource = stats.getMaxResource();
-        glPushMatrix();
-        {
-            glTranslatef(position.x, position.y, position.z);
-            if (type == ENEMY) {
-                glColor3f(1.0f, 0.0f, 0.0f);
-            } else if (type == NPC) {
-                glColor3f(1.0f, 1.0f, 0.0f);
-            } else if (type == PLAYER) {
-                glColor3f(1.0f, 0.0f, 0.0f);
+            // render resource bar
+            int currentResource = stats.getCurrentResource();
+            int maxResource = stats.getMaxResource();
+            glPushMatrix();
+            {
+                glTranslatef(position.x, position.y, position.z);
+                switch (type) {
+                    case ENEMY:
+                        glColor3f(1.0f, 0.0f, 0.0f);
+                        break;
+                    case NPC:
+                        glColor3f(1.0f, 1.0f, 0.0f);
+                        break;
+                }
+                renderBar(currentResource, maxResource, 35, 5);
             }
-            renderBar(currentResource, maxResource, 35, 5);
+            glPopMatrix();
         }
-        glPopMatrix();
         glEnable(GL_LIGHTING);
     }
 
@@ -160,6 +159,10 @@ public abstract class StatObject extends GameObject {
 
     public boolean isAlive() {
         return stats.getCurrentHealth() > 0;
+    }
+
+    public StatObject getTarget() {
+        return target;
     }
 
     public String getName() {

@@ -9,10 +9,9 @@ public final class Stats {
 
         RAGE, MANA, ENERGY
     }
-//    public static final double LEVEL_CONST = 25.0 * Math.pow(3.0, (3.0 / 2.0)); Old level constant
-    public static final double MAX_LEVEL = 60;
-    public static final double MAX_XP = 60000;
-    public static final double LEVEL_CONST = (double) MAX_XP / ((double) MAX_LEVEL * (double) MAX_LEVEL);
+    //public static final double LEVEL_CONST = (double) MAX_XP / ((double) MAX_LEVEL * (double) MAX_LEVEL);
+    public static final double LEVEL_CONST = 25.0 * Math.pow(3.0, (3.0 / 2.0));
+    public static final double MAX_XP = 636529; // max level 60
     // stats
     public static final int VITALITY = 0;
     public static final int STRENGTH = 1;
@@ -31,14 +30,18 @@ public final class Stats {
     private boolean levelable;
     private StatScale scale = new StatScale();
 
-    public Stats(float xp, boolean levelable) {
+    public Stats(double xp, boolean levelable) {
         this.levelable = levelable;
         // REMOVE !!
         //scale.generateScale();
         // =====
         if (levelable) {
-            this.xp = xp;
-            this.level = 1;
+            if (xp >= MAX_XP) {
+                this.xp = MAX_XP;
+            } else {
+                this.xp = xp;
+            }
+            level = (int) Math.sqrt(this.xp / LEVEL_CONST);
         } else {
             this.xp = -1;
             this.level = (int) xp;
@@ -66,7 +69,7 @@ public final class Stats {
     }
 
     public void replenishHealth() {
-        int amt = 5;
+        int amt = 3;
         int healthBefore = health;
         health += amt;
         if (health > maxHealth) {
@@ -102,10 +105,7 @@ public final class Stats {
      * @return int Level
      */
     public int getLevel() {
-        if (!levelable) {
-            return level;
-        }
-        return (int) Math.sqrt((double) xp / LEVEL_CONST);
+        return level;
 
         /*
          * Old leveling formula
