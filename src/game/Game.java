@@ -143,7 +143,7 @@ public class Game {
             glVertex2f(xOffset, yOffset + height);
         }
         glEnd();
-        fontHandler.drawString(xOffset, yOffset + 15, player.getCurrentHealth() + "/" + player.getMaxHealth());
+        fontHandler.drawString(xOffset, yOffset + 15, player.getCurrentHealth() + " / " + player.getMaxHealth());
         // render resource bar
         yOffset = 60;
         percentage = (float) player.getCurrentResource() / (float) player.getMaxResource() * 100.0f;
@@ -156,7 +156,7 @@ public class Game {
             glVertex2f(xOffset, yOffset + height);
         }
         glEnd();
-        fontHandler.drawString(xOffset + 2, yOffset + 15, player.getCurrentResource() + "/" + player.getMaxResource());
+        fontHandler.drawString(xOffset + 2, yOffset + 15, player.getCurrentResource() + " / " + player.getMaxResource());
 
         // target
         if (player.getTarget() != null) {
@@ -175,7 +175,7 @@ public class Game {
                 glVertex2f(xOffset, yOffset + height);
             }
             glEnd();
-            fontHandler.drawString(xOffset + 2, yOffset + 15, player.getTarget().getCurrentHealth() + "/" + player.getTarget().getMaxHealth());
+            fontHandler.drawString(xOffset + 2, yOffset + 15, player.getTarget().getCurrentHealth() + " / " + player.getTarget().getMaxHealth());
             // render resource bar
             yOffset = 60;
             percentage = (float) player.getTarget().getCurrentResource() / (float) player.getTarget().getMaxResource() * 100.0f;
@@ -188,7 +188,7 @@ public class Game {
                 glVertex2f(xOffset, yOffset + height);
             }
             glEnd();
-            fontHandler.drawString(xOffset + 2, yOffset + 15, player.getTarget().getCurrentResource() + "/" + player.getTarget().getMaxResource());
+            fontHandler.drawString(xOffset + 2, yOffset + 15, player.getTarget().getCurrentResource() + " / " + player.getTarget().getMaxResource());
         }
 
         glMatrixMode(GL_PROJECTION);

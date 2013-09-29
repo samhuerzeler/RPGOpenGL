@@ -25,7 +25,7 @@ public class Light {
 
     public void initLightArrays() {
         matSpecular = Util.asFloatBuffer(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
-        matAmbient = Util.asFloatBuffer(new float[]{0.3f, 0.3f, 0.3f, 0.1f});
+        matAmbient = Util.asFloatBuffer(new float[]{0.4f, 0.4f, 0.4f, 1.0f});
         matDiffuse = Util.asFloatBuffer(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
         lightPosition = Util.asFloatBuffer(new float[]{100.0f, -500.0f, 100.0f, 1.0f});
         whiteLight = Util.asFloatBuffer(new float[]{2.0f, 2.0f, 4.0f, 1.0f});

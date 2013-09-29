@@ -86,11 +86,11 @@ public class Main {
         glLoadIdentity();
         OrbitCamera.camera.useView();
         OrbitCamera.camera.update();
-        // TODO Use VertexBufferObjects for faster rendering
-        Game.game.render();
         if (LIGHTING) {
             Game.light.update();
         }
+        // TODO Use VertexBufferObjects for faster rendering
+        Game.game.render();
         Display.update();
         Display.sync(FPS);
     }
