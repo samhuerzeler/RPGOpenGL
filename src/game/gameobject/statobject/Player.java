@@ -45,7 +45,7 @@ public abstract class Player extends StatObject {
     public Player(float x, float y, float z) {
         physics = new Physics();
         stats = new Stats(Stats.MAX_XP, true);
-        name = "Ranork";
+        name = "Player";
         size = 50.0f;
         spawnPosition.x = x;
         spawnPosition.y = y;

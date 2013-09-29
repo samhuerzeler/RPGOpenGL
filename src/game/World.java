@@ -102,13 +102,13 @@ public class World {
         } catch (IOException e) {
             Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, e);
         }
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); // GL_LINEAR (smooth) OR GL_NEAREST
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // GL_LINEAR (smooth) OR GL_NEAREST
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         heightmapDisplayList = glGenLists(1);
         glNewList(heightmapDisplayList, GL_COMPILE);
         glTranslatef(mapTranslate.x, mapTranslate.y, mapTranslate.z);
         glScalef(mapScale.x, mapScale.y, mapScale.z);
-        //texture.bind();
+        texture.bind();
         texture.release();
         for (int z = 0; z < data.length - 1; z++) {
             glBegin(GL_TRIANGLE_STRIP);

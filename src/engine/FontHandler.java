@@ -26,7 +26,8 @@ public class FontHandler {
         glDisable(GL_LIGHTING);
         glColor3f(1, 1, 1);
         SimpleText.drawString(str, x, y);
-        glEnable(GL_LIGHTING);
-
+        if (Main.LIGHTING) {
+            glEnable(GL_LIGHTING);
+        }
     }
 }
