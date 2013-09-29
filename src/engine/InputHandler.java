@@ -4,8 +4,8 @@ import org.lwjgl.input.Keyboard;
 
 public class InputHandler {
 
-    private boolean[] locked = new boolean[65536];
-    private boolean[] pressed = new boolean[65536];
+    private boolean[] locked = new boolean[256];
+    private boolean[] pressed = new boolean[256];
 
     public void update() {
         int key = Keyboard.getEventKey();

@@ -4,9 +4,9 @@ import org.lwjgl.opengl.GL11;
 
 //saucecode's text rendering in opengl 1.1
 //edited by kadence.
-// TODO REPLACE WITH A LESS DUMB SOLUTION....
 public class SimpleText {
 
+// TODO REPLACE WITH A BETTER SOLUTION....
     public static void drawString(String s, float x, float y) {
         float startX = x;
         GL11.glBegin(GL11.GL_POINTS);
