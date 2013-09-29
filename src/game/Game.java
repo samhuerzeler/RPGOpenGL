@@ -17,7 +17,6 @@ import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import org.lwjgl.util.vector.Vector3f;
-import org.newdawn.slick.Color;
 
 public class Game {
 
@@ -73,8 +72,10 @@ public class Game {
 
     private void renderWorld() {
         glEnable(GL_CULL_FACE);
+        glEnable(GL_TEXTURE_2D);
         world.render();
         glDisable(GL_CULL_FACE);
+        glDisable(GL_TEXTURE_2D);
     }
 
     private void renderGameObjects() {
@@ -106,7 +107,7 @@ public class Game {
                     glRotatef(-cameraRotation.y + 180, 0, 1, 0);
                     glRotatef(-cameraRotation.x, 1, 0, 0);
                     glScalef(-1, -1, 1);
-                    fontHandler.drawString(0, 0, go.name, Color.orange);
+                    fontHandler.drawString(0, 0, go.name);
                 }
             }
             glPopMatrix();
@@ -130,8 +131,7 @@ public class Game {
         float xOffset = 20;
         float yOffset = 20;
         float height = 20;
-        glDisable(GL_LIGHTING);
-        fontHandler.drawString(xOffset, yOffset, player.getName() + " (" + player.getLevel() + ")", Color.yellow);
+        fontHandler.drawString(xOffset, yOffset + 15, player.getName() + " (" + player.getLevel() + ")");
         yOffset = 40;
         float percentage = (float) player.getCurrentHealth() / (float) player.getMaxHealth() * 100.0f;
         glBegin(GL_QUADS);
@@ -143,11 +143,10 @@ public class Game {
             glVertex2f(xOffset, yOffset + height);
         }
         glEnd();
-        fontHandler.drawString(xOffset, yOffset, player.getCurrentHealth() + "/" + player.getMaxHealth(), Color.yellow);
+        fontHandler.drawString(xOffset, yOffset + 15, player.getCurrentHealth() + "/" + player.getMaxHealth());
         // render resource bar
         yOffset = 60;
         percentage = (float) player.getCurrentResource() / (float) player.getMaxResource() * 100.0f;
-        glDisable(GL_LIGHTING);
         glBegin(GL_QUADS);
         {
             glColor3f(1.0f, 0.0f, 0.0f);
@@ -157,17 +156,16 @@ public class Game {
             glVertex2f(xOffset, yOffset + height);
         }
         glEnd();
-        fontHandler.drawString(xOffset, yOffset, player.getCurrentResource() + "/" + player.getMaxResource(), Color.yellow);
+        fontHandler.drawString(xOffset + 2, yOffset + 15, player.getCurrentResource() + "/" + player.getMaxResource());
 
         // target
         if (player.getTarget() != null) {
             xOffset = 340;
             yOffset = 20;
-            fontHandler.drawString(xOffset, yOffset, player.getTarget().getName() + " (" + player.getTarget().getLevel() + ")", Color.yellow);
+            fontHandler.drawString(xOffset + 2, yOffset + 15, player.getTarget().getName() + " (" + player.getTarget().getLevel() + ")");
             // render healt bar
             yOffset = 40;
             percentage = (float) player.getTarget().getCurrentHealth() / (float) player.getTarget().getMaxHealth() * 100.0f;
-            glDisable(GL_LIGHTING);
             glBegin(GL_QUADS);
             {
                 glColor3f(0.0f, 1.0f, 0.0f);
@@ -177,11 +175,10 @@ public class Game {
                 glVertex2f(xOffset, yOffset + height);
             }
             glEnd();
-            fontHandler.drawString(xOffset, yOffset, player.getTarget().getCurrentHealth() + "/" + player.getTarget().getMaxHealth(), Color.yellow);
+            fontHandler.drawString(xOffset + 2, yOffset + 15, player.getTarget().getCurrentHealth() + "/" + player.getTarget().getMaxHealth());
             // render resource bar
             yOffset = 60;
             percentage = (float) player.getTarget().getCurrentResource() / (float) player.getTarget().getMaxResource() * 100.0f;
-            glDisable(GL_LIGHTING);
             glBegin(GL_QUADS);
             {
                 glColor3f(0.0f, 1.0f, 0.0f);
@@ -191,10 +188,9 @@ public class Game {
                 glVertex2f(xOffset, yOffset + height);
             }
             glEnd();
-            fontHandler.drawString(xOffset, yOffset, player.getTarget().getCurrentResource() + "/" + player.getTarget().getMaxResource(), Color.yellow);
+            fontHandler.drawString(xOffset + 2, yOffset + 15, player.getTarget().getCurrentResource() + "/" + player.getTarget().getMaxResource());
         }
 
-        glEnable(GL_LIGHTING);
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);

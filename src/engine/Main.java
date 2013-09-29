@@ -124,6 +124,8 @@ public class Main {
             Keyboard.create();
             Mouse.create();
             Display.setVSyncEnabled(true);
+            glEnable(GL_BLEND);
+            glEnable(GL_TEXTURE_2D);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glClearColor(0.1f, 0.1f, 0.2f, 0.0f);
         } catch (LWJGLException e) {

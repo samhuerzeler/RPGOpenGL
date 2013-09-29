@@ -41,7 +41,6 @@ public abstract class StatObject extends GameObject {
         // render gameobjects
         super.render();
 
-        glDisable(GL_LIGHTING);
         // render range circles
         glPushMatrix();
         {
@@ -91,7 +90,6 @@ public abstract class StatObject extends GameObject {
             }
             glPopMatrix();
         }
-        glEnable(GL_LIGHTING);
     }
 
     private void renderBar(int current, int max, float y, float height) {
