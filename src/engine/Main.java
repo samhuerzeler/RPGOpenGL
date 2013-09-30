@@ -17,7 +17,7 @@ public class Main {
     private static final int DISPLAY_HEIGHT = DISPLAY_WIDTH / 16 * 9;
     private static final DisplayMode DISPLAY_MODE = new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT);
     private static final int FPS = 120;
-    private static final float RENDER_DISTANCE = 2000000.0f;
+    private static final float RENDER_DISTANCE = 15000.0f;
     private static final boolean FULLSCREEN = false;
     public static boolean LIGHTING = true;
 
@@ -123,7 +123,7 @@ public class Main {
             Display.create();
             Keyboard.create();
             Mouse.create();
-            Display.setVSyncEnabled(true);
+            Display.setVSyncEnabled(false);
             glEnable(GL_BLEND);
             glEnable(GL_TEXTURE_2D);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -44,7 +44,7 @@ public class Light {
         // torch
         torchLightPosition = Util.asFloatBuffer(new float[]{0.0f, 0.0f, 0.0f, 1.0f});
         torchAmbient = Util.asFloatBuffer(new float[]{0.0f, 0.0f, 0.0f, 1.0f});
-        torchDiffuse = Util.asFloatBuffer(new float[]{0.9f, 0.6f, 0.2f, 1.0f});
+        torchDiffuse = Util.asFloatBuffer(new float[]{0.6f, 0.6f, 0.6f, 1.0f});
         // sun
         sunLightPosition = Util.asFloatBuffer(new float[]{0.0f, 1.0f, 0.5f, 0.0f});
         sunAmbient = Util.asFloatBuffer(new float[]{0.0f, 0.0f, 0.0f, 1.0f});

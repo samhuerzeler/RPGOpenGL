@@ -109,14 +109,16 @@ public class World {
         glTranslatef(mapTranslate.x, mapTranslate.y, mapTranslate.z);
         glScalef(mapScale.x, mapScale.y, mapScale.z);
         texture.bind();
-        texture.release();
         for (int z = 0; z < data.length - 1; z++) {
             glBegin(GL_TRIANGLE_STRIP);
             for (int x = 0; x < data[z].length; x++) {
+                // texture and vertex coordinates
                 glTexCoord2f(x, 1);
                 glVertex3f(x, data[z][x], z);
                 glTexCoord2f(x, 0);
                 glVertex3f(x, data[z + 1][x], z + 1);
+                // TODO normal
+
             }
             glEnd();
         }

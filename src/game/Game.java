@@ -121,7 +121,6 @@ public class Game {
         glOrtho(0.0, Display.getWidth(), Display.getHeight(), 0.0, -1.0, 10.0);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glClear(GL_DEPTH_BUFFER_BIT);
         glDisable(GL_DEPTH_TEST);  // disable depth-testing
 
 
@@ -134,6 +133,7 @@ public class Game {
         fontHandler.drawString(xOffset, yOffset + 15, player.getName() + " (" + player.getLevel() + ")");
         yOffset = 40;
         float percentage = (float) player.getCurrentHealth() / (float) player.getMaxHealth() * 100.0f;
+        glDisable(GL_LIGHTING);
         glBegin(GL_QUADS);
         {
             glColor3f(0.0f, 1.0f, 0.0f);
@@ -143,10 +143,12 @@ public class Game {
             glVertex2f(xOffset, yOffset + height);
         }
         glEnd();
+        glEnable(GL_LIGHTING);
         fontHandler.drawString(xOffset, yOffset + 15, player.getCurrentHealth() + " / " + player.getMaxHealth());
         // render resource bar
         yOffset = 60;
         percentage = (float) player.getCurrentResource() / (float) player.getMaxResource() * 100.0f;
+        glDisable(GL_LIGHTING);
         glBegin(GL_QUADS);
         {
             glColor3f(1.0f, 0.0f, 0.0f);
@@ -156,6 +158,7 @@ public class Game {
             glVertex2f(xOffset, yOffset + height);
         }
         glEnd();
+        glEnable(GL_LIGHTING);
         fontHandler.drawString(xOffset + 2, yOffset + 15, player.getCurrentResource() + " / " + player.getMaxResource());
 
         // target
@@ -166,6 +169,7 @@ public class Game {
             // render healt bar
             yOffset = 40;
             percentage = (float) player.getTarget().getCurrentHealth() / (float) player.getTarget().getMaxHealth() * 100.0f;
+            glDisable(GL_LIGHTING);
             glBegin(GL_QUADS);
             {
                 glColor3f(0.0f, 1.0f, 0.0f);
@@ -175,10 +179,12 @@ public class Game {
                 glVertex2f(xOffset, yOffset + height);
             }
             glEnd();
+            glEnable(GL_LIGHTING);
             fontHandler.drawString(xOffset + 2, yOffset + 15, player.getTarget().getCurrentHealth() + " / " + player.getTarget().getMaxHealth());
             // render resource bar
             yOffset = 60;
             percentage = (float) player.getTarget().getCurrentResource() / (float) player.getTarget().getMaxResource() * 100.0f;
+            glDisable(GL_LIGHTING);
             glBegin(GL_QUADS);
             {
                 glColor3f(0.0f, 1.0f, 0.0f);
@@ -188,6 +194,7 @@ public class Game {
                 glVertex2f(xOffset, yOffset + height);
             }
             glEnd();
+            glEnable(GL_LIGHTING);
             fontHandler.drawString(xOffset + 2, yOffset + 15, player.getTarget().getCurrentResource() + " / " + player.getTarget().getMaxResource());
         }
 

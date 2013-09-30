@@ -31,7 +31,7 @@ public abstract class Player extends StatObject {
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
     private Physics physics;
-    private float jumpingSpeed = 6.0f;
+    private float jumpingSpeed = 20;//6.0f;
     private boolean jumping = false;
     private Inventory inventory;
     private Equipment equipment;
