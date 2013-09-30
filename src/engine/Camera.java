@@ -68,6 +68,7 @@ public abstract class Camera {
         glLoadIdentity();
         gluPerspective(fov, aspect, near, far);
         glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
         glEnable(GL_DEPTH_TEST);
     }
 

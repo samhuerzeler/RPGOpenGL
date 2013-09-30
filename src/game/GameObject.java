@@ -31,14 +31,16 @@ public abstract class GameObject {
     }
 
     public void render() {
-        // render model
-        glPushMatrix();
-        {
-            glTranslatef(position.x, position.y, position.z);
-            glRotatef(-rotation.y + 180, 0, 1, 0);
-            model.render();
+        if (model != null) {
+            // render model
+            glPushMatrix();
+            {
+                glTranslatef(position.x, position.y, position.z);
+                glRotatef(-rotation.y + 180, 0, 1, 0);
+                model.render();
+            }
+            glPopMatrix();
         }
-        glPopMatrix();
     }
 
     protected void loadModel(String path) {

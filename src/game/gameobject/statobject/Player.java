@@ -271,8 +271,8 @@ public abstract class Player extends StatObject {
 
     protected void move(float amt, float dir) {
         // TODO add speed based scaling
-        position.x += MOVEMENT_SPEED * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir));
-        position.z += MOVEMENT_SPEED * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir));
+        position.x += MOVEMENT_SPEED * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir)) * Time.getDelta();
+        position.z += MOVEMENT_SPEED * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir)) * Time.getDelta();
     }
 
     protected void rotateY(float amt) {

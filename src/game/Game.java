@@ -28,7 +28,7 @@ public class Game {
     private Map<GameObject, Vector3f> objects;
     private ArrayList<GameObject> objectsToRemove;
     private FontHandler fontHandler = new FontHandler(20);
-    public Player player;
+    public static Player player;
 
     public Game() {
         world = new World();
