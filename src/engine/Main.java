@@ -26,9 +26,7 @@ public class Main {
         initDisplay();
         initGame();
         initCamera();
-        if (LIGHTING) {
-            initLighting();
-        }
+        initLighting();
         gameLoop();
         cleanUp();
     }

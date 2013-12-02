@@ -87,7 +87,7 @@ public class Game {
         glDisable(GL_CULL_FACE);
 
         glDisable(GL_LIGHTING);
-        glColor3d(0.8f, 0.8f, 0.8f);
+        glColor3d(1.0f, 1.0f, 1.0f);
         plattform.render();
         glEnable(GL_LIGHTING);
     }
