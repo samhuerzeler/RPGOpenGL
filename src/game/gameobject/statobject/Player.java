@@ -43,6 +43,7 @@ public abstract class Player extends StatObject {
     protected Stats.resource resource = Stats.resource.MANA;
     protected InputHandler input = new InputHandler();
     protected playerClass playerCls;
+    private boolean searchFloor = true;
 
     public Player(float x, float y, float z) {
         physics = new Physics();
@@ -76,21 +77,25 @@ public abstract class Player extends StatObject {
             replenishHealth();
             replenishResource(playerCls);
         }
+
         if (jumping) {
             jump();
         }
 
         if (position.y > currentFloor.getHeight(position.x, position.z)) {
             // find current floor
-            ArrayList<Floor> floors = Floor.getFloors();
-            currentFloor = new VoidFloor();
-            for (Floor f : floors) {
-                float floorHeight = f.getHeight(position.x, position.z);
-                float currentFloorHeight = currentFloor.getHeight(position.x, position.z);
-                if (f.inBound(position.x, position.z)
-                        && floorHeight < position.y
-                        && floorHeight > currentFloorHeight) {
-                    currentFloor = f;
+            if (searchFloor) {
+                System.out.println("searching floor");
+                ArrayList<Floor> floors = Floor.getFloors();
+                currentFloor = new VoidFloor();
+                for (Floor f : floors) {
+                    float floorHeight = f.getHeight(position.x, position.z);
+                    float currentFloorHeight = currentFloor.getHeight(position.x, position.z);
+                    if (f.inBound(position.x, position.z)
+                            && floorHeight < position.y
+                            && floorHeight > currentFloorHeight) {
+                        currentFloor = f;
+                    }
                 }
             }
             applyGravity();
@@ -317,12 +322,18 @@ public abstract class Player extends StatObject {
         // TODO collision with ceilings
         if (position.y >= currentFloor.getHeight(position.x, position.z)) {
             position.y += jumpingSpeed * Time.getDelta();
+            if (physics.getFallingDistance() > (jumpingSpeed * Time.getDelta())) {
+                searchFloor = false;
+            } else {
+                searchFloor = true;
+            }
         } else {
             jumping = false;
         }
     }
 
     protected void applyGravity() {
+        searchFloor = true;
         position.y -= physics.getFallingDistance();
     }
 
