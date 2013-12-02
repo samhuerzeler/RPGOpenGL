@@ -1,8 +1,10 @@
 package game;
 
+import game.floor.World;
 import engine.FontHandler;
 import engine.OrbitCamera;
 import engine.Physics;
+import game.floor.Plattform;
 import game.gameobject.StatObject;
 import game.gameobject.statobject.Player;
 import game.gameobject.statobject.mob.normal.Guard;
@@ -24,7 +26,9 @@ public class Game {
     public static final int REMOVE = 0;
     public static Game game;
     public static World world;
+    public static Plattform plattform;
     public static Light light;
+    public Floor floors = new Floor();
     private Map<GameObject, Vector3f> objects;
     private ArrayList<GameObject> objectsToRemove;
     private FontHandler fontHandler = new FontHandler(20);
@@ -32,9 +36,14 @@ public class Game {
 
     public Game() {
         world = new World();
+        plattform = new Plattform();
         light = new Light();
-        objects = new HashMap<GameObject, Vector3f>();
-        objectsToRemove = new ArrayList<GameObject>();
+
+        floors.add(world);
+        floors.add(plattform);
+
+        objects = new HashMap<>();
+        objectsToRemove = new ArrayList<>();
         RPGRandom.initRandom();
 
         player = new Warrior(0, 0, 0);
@@ -74,6 +83,13 @@ public class Game {
         glEnable(GL_CULL_FACE);
         glEnable(GL_TEXTURE_2D);
         world.render();
+
+        glDisable(GL_LIGHTING);
+        glDisable(GL_CULL_FACE);
+        plattform.render();
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_LIGHTING);
+
         glDisable(GL_CULL_FACE);
         glDisable(GL_TEXTURE_2D);
     }
@@ -236,7 +252,7 @@ public class Game {
     }
 
     public static ArrayList<GameObject> sphereCollide(float x, float z, float radius) {
-        ArrayList<GameObject> res = new ArrayList<GameObject>();
+        ArrayList<GameObject> res = new ArrayList<>();
         for (GameObject go : game.getObjects().keySet()) {
             if (Util.dist(go.getX(), go.getZ(), x, z) < radius) {
                 res.add(go);
@@ -246,7 +262,7 @@ public class Game {
     }
 
     public static ArrayList<GameObject> rectangleCollide(float x1, float z1, float x2, float z2) {
-        ArrayList<GameObject> res = new ArrayList<GameObject>();
+        ArrayList<GameObject> res = new ArrayList<>();
         float sx = x2 - x1;
         float sz = z2 - z1;
         Rectangle collider = new Rectangle((int) x1, (int) z1, (int) sx, (int) sz);

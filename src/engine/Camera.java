@@ -11,7 +11,7 @@ public abstract class Camera {
     protected float minDistance = 0.0f;
     protected float maxDistance = 2000.0f;
     protected float zoomingSpeed = 10.0f;
-    protected int zoomingStep = 50;
+    protected int zoomingStep = 200;
     protected Vector3f position = new Vector3f();
     protected Vector3f rotation = new Vector3f();
     // field of view

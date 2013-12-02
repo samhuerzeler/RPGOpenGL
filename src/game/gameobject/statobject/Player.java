@@ -4,6 +4,7 @@ import engine.InputHandler;
 import engine.Physics;
 import game.Delay;
 import game.Equipment;
+import game.Floor;
 import game.Game;
 import game.GameObject;
 import game.Inventory;
@@ -11,6 +12,7 @@ import game.Item;
 import game.Stats;
 import game.Time;
 import game.Util;
+import game.floor.VoidFloor;
 import game.gameobject.StatObject;
 import game.gameobject.statobject.mob.Enemy;
 import game.gameobject.statobject.player.Ability;
@@ -31,7 +33,7 @@ public abstract class Player extends StatObject {
     public static final int MOUSEB_LEFT = 0;
     public static final int MOUSEB_RIGHT = 1;
     private Physics physics;
-    private float jumpingSpeed = 20;//6.0f;
+    private float jumpingSpeed = 6.0f;
     private boolean jumping = false;
     private Inventory inventory;
     private Equipment equipment;
@@ -78,6 +80,18 @@ public abstract class Player extends StatObject {
             jump();
         }
         if (position.y > currentFloor.getHeight(position.x, position.z)) {
+            // find current floor
+            ArrayList<Floor> floors = Floor.getFloors();
+            currentFloor = new VoidFloor();
+            for (Floor f : floors) {
+                float floorHeight = f.getHeight(position.x, position.z);
+                float currentFloorHeight = currentFloor.getHeight(position.x, position.z);
+                if (f.inBound(position.x, position.z)
+                        && floorHeight < position.y
+                        && floorHeight > currentFloorHeight) {
+                    currentFloor = f;
+                }
+            }
             applyGravity();
         } else {
             position.y = currentFloor.getHeight(position.x, position.z);
@@ -225,7 +239,7 @@ public abstract class Player extends StatObject {
     }
 
     protected ArrayList<Enemy> findEnemies(ArrayList<GameObject> objects) {
-        ArrayList<Enemy> e = new ArrayList<Enemy>();
+        ArrayList<Enemy> e = new ArrayList<>();
         for (GameObject go : objects) {
             if (go.getType() == ENEMY) {
                 e.add((Enemy) go);
@@ -293,6 +307,7 @@ public abstract class Player extends StatObject {
     }
 
     protected void jump() {
+        // TODO collision with ceilings
         if (position.y >= currentFloor.getHeight(position.x, position.z)) {
             position.y += jumpingSpeed * Time.getDelta();
         } else {

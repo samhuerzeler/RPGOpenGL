@@ -1,5 +1,6 @@
 package game;
 
+import game.floor.World;
 import engine.Model;
 import engine.ModelLoader;
 import game.gameobject.statobject.Player;
@@ -14,7 +15,7 @@ import org.lwjgl.util.vector.Vector3f;
 public abstract class GameObject {
 
     protected World world = Game.world;
-    protected World currentFloor = world;
+    protected Floor currentFloor = world;
     protected String name;
     protected int type;
     protected float size;

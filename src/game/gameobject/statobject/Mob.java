@@ -2,11 +2,13 @@ package game.gameobject.statobject;
 
 import engine.Physics;
 import game.Delay;
+import game.Floor;
 import game.Game;
 import game.GameObject;
 import game.Stats;
 import game.Time;
 import game.Util;
+import game.floor.VoidFloor;
 import game.gameobject.StatObject;
 import java.util.ArrayList;
 import java.util.Random;
@@ -51,6 +53,18 @@ public abstract class Mob extends StatObject {
             die();
         }
         if (position.y > currentFloor.getHeight(position.x, position.z)) {
+            // find current floor
+            ArrayList<Floor> floors = Floor.getFloors();
+            currentFloor = new VoidFloor();
+            for (Floor f : floors) {
+                float floorHeight = f.getHeight(position.x, position.z);
+                float currentFloorHeight = currentFloor.getHeight(position.x, position.z);
+                if (f.inBound(position.x, position.z)
+                        && floorHeight < position.y
+                        && floorHeight > currentFloorHeight) {
+                    currentFloor = f;
+                }
+            }
             applyGravity();
         } else {
             position.y = currentFloor.getHeight(position.x, position.z);
