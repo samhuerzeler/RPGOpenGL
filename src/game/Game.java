@@ -27,6 +27,7 @@ public class Game {
     public static Game game;
     public static World world;
     public static Square plattform;
+    public static Square plattform2;
     public static Light light;
     public Floor floors = new Floor();
     private Map<GameObject, Vector3f> objects;
@@ -36,11 +37,13 @@ public class Game {
 
     public Game() {
         world = new World();
-        plattform = new Square();
+        plattform = new Square(0, 1050, 0);
+        plattform2 = new Square(-300, 1100, 0);
         light = new Light();
 
         floors.add(world);
         floors.add(plattform);
+        floors.add(plattform2);
 
         objects = new HashMap<>();
         objectsToRemove = new ArrayList<>();
@@ -89,6 +92,7 @@ public class Game {
         glDisable(GL_LIGHTING);
         glColor3d(1.0f, 1.0f, 1.0f);
         plattform.render();
+        plattform2.render();
         glEnable(GL_LIGHTING);
     }
 

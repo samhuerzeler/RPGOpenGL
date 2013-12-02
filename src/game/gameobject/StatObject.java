@@ -15,9 +15,9 @@ import org.lwjgl.util.vector.Vector3f;
 
 public abstract class StatObject extends GameObject {
 
-    protected static final float MOVEMENT_SPEED = 1f;
-    protected ArrayList<StatObject> combatTargets = new ArrayList<StatObject>();
-    protected Map<StatObject, Integer> threatMap = new HashMap<StatObject, Integer>();
+    protected static final float MOVEMENT_SPEED = 10f;
+    protected ArrayList<StatObject> combatTargets = new ArrayList<>();
+    protected Map<StatObject, Integer> threatMap = new HashMap<>();
     protected boolean resetting;
     protected StatObject target;
     protected int autoAttackDamage;

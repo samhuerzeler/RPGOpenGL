@@ -79,6 +79,7 @@ public abstract class Player extends StatObject {
         if (jumping) {
             jump();
         }
+
         if (position.y > currentFloor.getHeight(position.x, position.z)) {
             // find current floor
             ArrayList<Floor> floors = Floor.getFloors();
@@ -103,6 +104,12 @@ public abstract class Player extends StatObject {
         enemiesInRange = findEnemies(objectsInRange);
         if (!isInCombat()) {
             target = null;
+        }
+        if (position.y == 0) {
+            stats.damage(stats.getMaxHealth());
+        }
+        if (stats.getCurrentHealth() == 0) {
+            die();
         }
     }
 

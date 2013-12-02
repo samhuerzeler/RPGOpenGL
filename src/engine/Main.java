@@ -36,7 +36,7 @@ public class Main {
     }
 
     private static void initCamera() {
-        GameObject cameraTarget = Game.game.player;
+        GameObject cameraTarget = Game.player;
         OrbitCamera.camera = new OrbitCamera(70, (float) Display.getWidth() / (float) Display.getHeight(), 0.3f, RENDER_DISTANCE, cameraTarget);
     }
 
