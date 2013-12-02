@@ -83,15 +83,13 @@ public class Game {
         glEnable(GL_CULL_FACE);
         glEnable(GL_TEXTURE_2D);
         world.render();
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_CULL_FACE);
 
         glDisable(GL_LIGHTING);
-        glDisable(GL_CULL_FACE);
+        glColor3d(0.8f, 0.8f, 0.8f);
         plattform.render();
-        glEnable(GL_CULL_FACE);
         glEnable(GL_LIGHTING);
-
-        glDisable(GL_CULL_FACE);
-        glDisable(GL_TEXTURE_2D);
     }
 
     private void renderGameObjects() {

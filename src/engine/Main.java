@@ -19,7 +19,7 @@ public class Main {
     private static final int FPS = 120;
     private static final float RENDER_DISTANCE = 15000.0f;
     private static final boolean FULLSCREEN = false;
-    public static boolean LIGHTING = true;
+    public static boolean LIGHTING = false;
 
     public static void main(String[] args) {
         System.setProperty("org.lwjgl.librarypath", System.getProperty("user.dir") + "/natives/");

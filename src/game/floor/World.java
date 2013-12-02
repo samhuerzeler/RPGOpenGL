@@ -71,5 +71,6 @@ public class World extends Floor {
             glEnd();
         }
         glEndList();
+        texture.release();
     }
 }
