@@ -4,7 +4,7 @@ import game.floor.World;
 import engine.FontHandler;
 import engine.OrbitCamera;
 import engine.Physics;
-import game.floor.Plattform;
+import game.floor.Square;
 import game.gameobject.StatObject;
 import game.gameobject.statobject.Player;
 import game.gameobject.statobject.mob.normal.Guard;
@@ -26,7 +26,7 @@ public class Game {
     public static final int REMOVE = 0;
     public static Game game;
     public static World world;
-    public static Plattform plattform;
+    public static Square plattform;
     public static Light light;
     public Floor floors = new Floor();
     private Map<GameObject, Vector3f> objects;
@@ -36,7 +36,7 @@ public class Game {
 
     public Game() {
         world = new World();
-        plattform = new Plattform();
+        plattform = new Square();
         light = new Light();
 
         floors.add(world);

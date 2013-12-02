@@ -3,9 +3,12 @@ package game.floor;
 import game.Floor;
 import static org.lwjgl.opengl.GL11.*;
 
-public class Plattform extends Floor {
+public class Square extends Floor {
 
-    public Plattform() {
+    /**
+     * for testing purposes (multiple floors & ceiling collision)
+     */
+    public Square() {
         setMapTranslate(-250.0f, 0.0f, 0.0f);
         setMapScale(1.0f, 1.0f, 1.0f);
         width = 500;
