@@ -14,7 +14,6 @@ public class Animation {
     private ArrayList<Model> keyFrames;
     private Delay delay = new Delay(500);
     private int curFrame = 0;
-    private double currentTime;
 
     public Animation() {
         keyFrames = new ArrayList<>();
@@ -25,7 +24,9 @@ public class Animation {
         Model currentModel = keyFrames.get(curFrame);
         Model nextModel = keyFrames.get((curFrame + 1) % keyFrames.size());
         Model m = currentModel;
-        //m.interpolate(nextModel, delay);
+        if (!delay.isOver()) {
+            m.interpolate(nextModel, delay);
+        }
         m.render();
         if (delay.isOver()) {
             delay.restart();
