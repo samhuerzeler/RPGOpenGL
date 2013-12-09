@@ -7,7 +7,7 @@ public abstract class NPC extends Mob {
 
     public NPC(int level) {
         super(level);
-        enemyTypeId = ENEMY;
+        enemyTypeId = HOSTILE;
     }
 
     @Override
@@ -18,7 +18,7 @@ public abstract class NPC extends Mob {
         spawnPosition.x = x;
         spawnPosition.y = y;
         spawnPosition.z = z;
-        type = NPC;
+        type = FRIENDLY;
         sprite = new Sprite(r, g, b, sx, sy, sz);
     }
 }

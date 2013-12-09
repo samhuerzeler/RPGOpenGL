@@ -56,4 +56,12 @@ public class Delay {
     public boolean isActive() {
         return started;
     }
+
+    public double getCurrentTime() {
+        return length - ((endTime - Time.getTime()) / 1000000.0d);
+    }
+
+    public double getLength() {
+        return length;
+    }
 }

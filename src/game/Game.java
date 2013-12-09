@@ -40,28 +40,35 @@ public class Game {
     public static Player player;
 
     public Game() {
+        RPGRandom.initRandom();
+
+        light = new Light();
+
+        // init floors
         world = new World();
         sky = new Sky();
         voidFloor = new VoidFloor();
         plattform = new Square(0, 1050, 0);
         plattform2 = new Square(-200, 1100, 0);
-        light = new Light();
 
+        // add floors to floor list
         floors.add(world);
         floors.add(sky);
         floors.add(voidFloor);
         floors.add(plattform);
         floors.add(plattform2);
 
+        // init object lists
         objects = new HashMap<>();
         objectsToRemove = new ArrayList<>();
-        RPGRandom.initRandom();
 
+        // init game objects
         player = new Warrior(0, 0, 0);
         Monkey monkey = new Monkey(0, 0, -300, 20);
         Tiger tiger = new Tiger(300, 0, -300, 2);
         Guard guard = new Guard(300, 0, 0, 20);
 
+        // add game objects to objects list
         objects.put(player, player.position);
         objects.put(monkey, monkey.position);
         objects.put(tiger, tiger.position);
@@ -69,6 +76,7 @@ public class Game {
     }
 
     public void update() {
+        // add objects to remove to remove list
         for (GameObject go : objects.keySet()) {
             if (!go.getFlag(REMOVE)) {
                 go.update();
@@ -76,17 +84,19 @@ public class Game {
                 objectsToRemove.add(go);
             }
         }
+        // remove objects to remove
         for (GameObject go : objectsToRemove) {
             objects.remove(go);
             go = null;
         }
+        // clear remove list
         objectsToRemove.clear();
     }
 
     public void render() {
         renderWorld();
         renderGameObjects();
-        renderText();
+        //renderText();
         renderHud();
     }
 
@@ -105,8 +115,6 @@ public class Game {
     }
 
     private void renderGameObjects() {
-        // render gameobjects
-        // use vertexbufferobjects for faster rendering
         glUseProgram(0);
         for (GameObject go : objects.keySet()) {
             if (go.getType() == 1) {

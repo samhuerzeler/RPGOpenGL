@@ -1,11 +1,13 @@
 package game;
 
+import engine.Animation;
 import engine.Model;
 import engine.ModelLoader;
 import game.gameobject.statobject.Player;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.lwjgl.opengl.GL11.*;
@@ -20,6 +22,9 @@ public abstract class GameObject {
     protected String name;
     protected int type;
     protected float size;
+    protected ArrayList<Model> keyFrames;
+    protected Animation animation;
+    protected boolean moving;
     protected Sprite sprite;
     protected Model model;
     protected Stats stats;
@@ -33,15 +38,25 @@ public abstract class GameObject {
     }
 
     public void render() {
-        if (model != null) {
+        if (animation != null && moving) {
             // render model
             glPushMatrix();
             {
                 glTranslatef(position.x, position.y, position.z);
                 glRotatef(-rotation.y + 180, 0, 1, 0);
-                model.render();
+                animation.render();
             }
             glPopMatrix();
+        } else {
+            if (model != null) {
+                glPushMatrix();
+                {
+                    glTranslatef(position.x, position.y, position.z);
+                    glRotatef(-rotation.y + 180, 0, 1, 0);
+                    model.render();
+                }
+                glPopMatrix();
+            }
         }
     }
 
@@ -55,6 +70,11 @@ public abstract class GameObject {
         } catch (IOException ex) {
             Logger.getLogger(Player.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    protected void loadModel() {
+        model = keyFrames.get(0);
+        model.init();
     }
 
     public void remove() {

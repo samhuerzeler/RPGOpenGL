@@ -46,7 +46,7 @@ public abstract class Enemy extends Mob {
         spawnPosition.x = x;
         spawnPosition.y = y;
         spawnPosition.z = z;
-        type = ENEMY;
+        type = HOSTILE;
         sprite = new Sprite(r, g, b, sx, sy, sz);
     }
 }

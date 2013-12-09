@@ -36,8 +36,8 @@ public abstract class StatObject extends GameObject {
     // object IDs
     public static final int NULL = 0;
     public static final int PLAYER = 1;
-    public static final int ENEMY = 2;
-    public static final int NPC = 3;
+    public static final int HOSTILE = 2;
+    public static final int FRIENDLY = 3;
 
     @Override
     public void render() {
@@ -50,7 +50,7 @@ public abstract class StatObject extends GameObject {
             glTranslatef(position.x, position.y, position.z);
             glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
             glColor3f(1.0f, 1.0f, 1.0f);
-            if (type == ENEMY || type == NPC) {
+            if (type == HOSTILE || type == FRIENDLY) {
                 Util.renderCircle(0.0f, 0.0f, sightRange);
                 Util.renderCircle(0.0f, 0.0f, attackRange);
             } else if (type == PLAYER) {
@@ -66,9 +66,9 @@ public abstract class StatObject extends GameObject {
             glPushMatrix();
             {
                 glTranslatef(position.x, position.y, position.z);
-                if (type == ENEMY) {
+                if (type == HOSTILE) {
                     glColor3f(1.0f, 0.0f, 0.0f);
-                } else if (type == NPC) {
+                } else if (type == FRIENDLY) {
                     glColor3f(1.0f, 1.0f, 0.0f);
                 }
                 renderBar(currentHealth, maxHealth, 40, 5);
@@ -82,10 +82,10 @@ public abstract class StatObject extends GameObject {
             {
                 glTranslatef(position.x, position.y, position.z);
                 switch (type) {
-                    case ENEMY:
+                    case HOSTILE:
                         glColor3f(1.0f, 0.0f, 0.0f);
                         break;
-                    case NPC:
+                    case FRIENDLY:
                         glColor3f(1.0f, 1.0f, 0.0f);
                         break;
                 }
@@ -246,6 +246,10 @@ public abstract class StatObject extends GameObject {
 
     public boolean isResetting() {
         return resetting;
+    }
+
+    public boolean isMoving() {
+        return moving;
     }
 
     public void addToThreatMap(StatObject so, int amt) {

@@ -1,5 +1,6 @@
 package game.gameobject.statobject;
 
+import engine.Animation;
 import engine.InputHandler;
 import engine.Physics;
 import game.Delay;
@@ -45,6 +46,9 @@ public abstract class Player extends StatObject {
 
     public Player(float x, float y, float z) {
         physics = new Physics();
+        animation = new Animation();
+        keyFrames = animation.loadKeyFrames("res/models/player/", "test_animation");
+        loadModel();
         stats = new Stats(Stats.MAX_XP, true);
         name = "Player";
         size = 50.0f;
@@ -54,7 +58,6 @@ public abstract class Player extends StatObject {
         ceilingCollision = false;
         type = PLAYER;
         init(x, y, z, 0.2f, 0.2f, 1.0f, size, size, size);
-        loadModel("res/models/monkey.obj");
         inventory = new Inventory(20);
         equipment = new Equipment(inventory);
         sightRange = 150.0f;
@@ -68,7 +71,6 @@ public abstract class Player extends StatObject {
 
     @Override
     public void update() {
-
         if (autoAttack) {
             autoAttack();
         }
@@ -128,6 +130,13 @@ public abstract class Player extends StatObject {
         boolean movingBackward = input.keyPressed(Keyboard.KEY_S, true);
         boolean movingLeft = input.keyPressed(Keyboard.KEY_Q, true);
         boolean movingRight = input.keyPressed(Keyboard.KEY_E, true);
+
+        if (movingForward || movingBackward || movingLeft || movingRight) {
+            moving = true;
+        } else {
+            moving = false;
+            animation.reset();
+        }
 
         if ((movingForward && (movingLeft || movingRight)) || (movingBackward && (movingLeft || movingRight))) {
             movementSpeed = (float) (movementSpeed / Math.sqrt(2));
@@ -243,7 +252,7 @@ public abstract class Player extends StatObject {
     protected ArrayList<Enemy> findEnemies(ArrayList<GameObject> objects) {
         ArrayList<Enemy> e = new ArrayList<>();
         for (GameObject go : objects) {
-            if (go.getType() == ENEMY) {
+            if (go.getType() == HOSTILE) {
                 e.add((Enemy) go);
             }
         }
@@ -297,8 +306,8 @@ public abstract class Player extends StatObject {
 //                System.out.println(currentCeiling + ", " + (currentCeiling.getHeight((float) (position.x + xAmount), (float) (position.z + zAmount)) - position.y));
 //            }
 //        } else {
-            position.x += xAmount;
-            position.z += zAmount;
+        position.x += xAmount;
+        position.z += zAmount;
 //        }
     }
 
