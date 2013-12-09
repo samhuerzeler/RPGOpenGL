@@ -23,7 +23,6 @@ public class Animation {
     public void render() {
         Model currentModel = keyFrames.get(currentFrame);
         Model nextModel = keyFrames.get((currentFrame + 1) % keyFrames.size());
-        System.out.println(currentFrame);
         Model m = currentModel;
         if (!delay.isOver()) {
             m.interpolate(nextModel, delay);
