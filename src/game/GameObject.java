@@ -73,7 +73,7 @@ public abstract class GameObject {
     }
 
     protected void loadModel() {
-        model = keyFrames.get(0);
+        model = keyFrames.get(1);
         model.init();
     }
 
