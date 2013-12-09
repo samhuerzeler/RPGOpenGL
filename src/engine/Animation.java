@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 public class Animation {
 
     private ArrayList<Model> keyFrames;
+    private int currentFrame = 0;
     private Delay delay = new Delay(500);
-    private int curFrame = 0;
 
     public Animation() {
         keyFrames = new ArrayList<>();
@@ -21,8 +21,9 @@ public class Animation {
     }
 
     public void render() {
-        Model currentModel = keyFrames.get(curFrame);
-        Model nextModel = keyFrames.get((curFrame + 1) % keyFrames.size());
+        Model currentModel = keyFrames.get(currentFrame);
+        Model nextModel = keyFrames.get((currentFrame + 1) % keyFrames.size());
+        System.out.println(currentFrame);
         Model m = currentModel;
         if (!delay.isOver()) {
             m.interpolate(nextModel, delay);
@@ -30,13 +31,13 @@ public class Animation {
         m.render();
         if (delay.isOver()) {
             delay.restart();
-            curFrame++;
-            curFrame %= keyFrames.size();
+            currentFrame++;
+            currentFrame %= keyFrames.size();
         }
     }
 
     public void reset() {
-        curFrame = 0;
+        currentFrame = 0;
         delay.start();
     }
 
