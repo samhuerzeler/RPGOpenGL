@@ -21,13 +21,19 @@ public class Animation {
     }
 
     public void render() {
-        Model nextModel = keyFrames.get((currentFrame + 1) % keyFrames.size());
+        int previousFrame;
+        if (currentFrame == 0) {
+            previousFrame = keyFrames.size() - 1;
+        } else {
+            previousFrame = (currentFrame - 1) % keyFrames.size();
+        }
+        Model previousModel = keyFrames.get(previousFrame);
         Model currentModel = keyFrames.get(currentFrame);
 
         if (!delay.isOver()) {
-            nextModel.interpolate(currentModel, delay);
+            currentModel.interpolate(previousModel, delay);
         }
-        nextModel.render();
+        currentModel.render();
         if (delay.isOver()) {
             delay.restart();
             currentFrame++;
