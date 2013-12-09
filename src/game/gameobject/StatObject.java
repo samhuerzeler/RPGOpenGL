@@ -2,6 +2,8 @@ package game.gameobject;
 
 import engine.OrbitCamera;
 import game.Delay;
+import game.FloorObject;
+import game.Game;
 import game.GameObject;
 import game.Stats;
 import game.Util;
@@ -19,6 +21,7 @@ public abstract class StatObject extends GameObject {
     protected ArrayList<StatObject> combatTargets = new ArrayList<>();
     protected Map<StatObject, Integer> threatMap = new HashMap<>();
     protected boolean resetting;
+    protected boolean ceilingCollision;
     protected StatObject target;
     protected int autoAttackDamage;
     protected float attackRange;
@@ -107,6 +110,32 @@ public abstract class StatObject extends GameObject {
             glVertex2f(0, y - height);
         }
         glEnd();
+    }
+
+    protected void searchFloor() {
+        ArrayList<FloorObject> floors = FloorObject.getFloors();
+        currentFloor = Game.voidFloor;
+        for (FloorObject floor : floors) {
+            float floorHeight = floor.getHeight(position.x, position.z);
+            if (floor.inBound(position.x, position.z)
+                    && floorHeight < position.y
+                    && floorHeight > currentFloor.getHeight(position.x, position.z)) {
+                currentFloor = floor;
+            }
+        }
+    }
+
+    protected void searchCeiling() {
+        ArrayList<FloorObject> floors = FloorObject.getFloors();
+        currentCeiling = Game.sky;
+        for (FloorObject floor : floors) {
+            float floorHeight = floor.getHeight(position.x, position.z);
+            if (floor.inBound(position.x, position.z)
+                    && floorHeight > position.y
+                    && floorHeight < currentCeiling.getHeight(position.x, position.z)) {
+                currentCeiling = floor;
+            }
+        }
     }
 
     public void damage(int amt) {

@@ -4,7 +4,6 @@ import engine.InputHandler;
 import engine.Physics;
 import game.Delay;
 import game.Equipment;
-import game.FloorObject;
 import game.Game;
 import game.GameObject;
 import game.Inventory;
@@ -12,7 +11,6 @@ import game.Item;
 import game.Stats;
 import game.Time;
 import game.Util;
-import game.floorobject.VoidFloor;
 import game.gameobject.StatObject;
 import game.gameobject.statobject.mob.Enemy;
 import game.gameobject.statobject.player.Ability;
@@ -53,6 +51,7 @@ public abstract class Player extends StatObject {
         spawnPosition.x = x;
         spawnPosition.y = y;
         spawnPosition.z = z;
+        ceilingCollision = false;
         type = PLAYER;
         init(x, y, z, 0.2f, 0.2f, 1.0f, size, size, size);
         loadModel("res/models/monkey.obj");
@@ -69,6 +68,7 @@ public abstract class Player extends StatObject {
 
     @Override
     public void update() {
+
         if (autoAttack) {
             autoAttack();
         }
@@ -105,6 +105,8 @@ public abstract class Player extends StatObject {
         if (stats.getCurrentHealth() == 0) {
             die();
         }
+        ceilingCollision = false;
+        searchCeiling();
     }
 
     public void getInput() {
@@ -119,9 +121,8 @@ public abstract class Player extends StatObject {
         }
 
         // Keyboard Input
-        float movementSpeed = 5.0f;
+        float movementSpeed = MOVEMENT_SPEED;
         float rotationSpeed = 2.0f;
-
 
         boolean movingForward = input.keyPressed(Keyboard.KEY_W, true);
         boolean movingBackward = input.keyPressed(Keyboard.KEY_S, true);
@@ -285,9 +286,20 @@ public abstract class Player extends StatObject {
     }
 
     protected void move(float amt, float dir) {
-        // TODO add speed based scaling
-        position.x += MOVEMENT_SPEED * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir)) * Time.getDelta();
-        position.z += MOVEMENT_SPEED * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir)) * Time.getDelta();
+        double xAmount = MOVEMENT_SPEED * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir)) * Time.getDelta();
+        double zAmount = MOVEMENT_SPEED * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir)) * Time.getDelta();
+
+//        if (currentCeiling.inBound((float) (position.x + xAmount), (float) (position.z + zAmount))) {
+//            if (currentCeiling.getHeight((float) (position.x + xAmount), (float) (position.z + zAmount)) - position.y > 20) {
+//                position.x += xAmount;
+//                position.z += zAmount;
+//            } else {
+//                System.out.println(currentCeiling + ", " + (currentCeiling.getHeight((float) (position.x + xAmount), (float) (position.z + zAmount)) - position.y));
+//            }
+//        } else {
+            position.x += xAmount;
+            position.z += zAmount;
+//        }
     }
 
     protected void rotateY(float amt) {
@@ -307,38 +319,12 @@ public abstract class Player extends StatObject {
         }
     }
 
-    private void searchFloor() {
-        ArrayList<FloorObject> floors = FloorObject.getFloors();
-        currentFloor = Game.voidFloor;
-        for (FloorObject floor : floors) {
-            float floorHeight = floor.getHeight(position.x, position.z);
-            if (floor.inBound(position.x, position.z)
-                    && floorHeight < position.y
-                    && floorHeight > currentFloor.getHeight(position.x, position.z)) {
-                currentFloor = floor;
-            }
-        }
-    }
-
-    private void searchCeiling() {
-        ArrayList<FloorObject> floors = FloorObject.getFloors();
-        currentCeiling = Game.sky;
-        for (FloorObject floor : floors) {
-            float floorHeight = floor.getHeight(position.x, position.z);
-            if (floor.inBound(position.x, position.z)
-                    && floorHeight > position.y
-                    && floorHeight < currentCeiling.getHeight(position.x, position.z)) {
-                currentCeiling = floor;
-            }
-        }
-    }
-
     protected void jump() {
-        searchCeiling();
         boolean aboveFloor = position.y >= currentFloor.getHeight(position.x, position.z);
         boolean belowCeiling = (position.y + jumpingSpeed * Time.getDelta()) < (currentCeiling.getHeight(position.x, position.z));
 
         if ((currentCeiling.getHeight(position.x, position.z) - jumpingSpeed * Time.getDelta()) < (position.y)) {
+            ceilingCollision = true;
             physics.resetFallingVelocity();
         }
 
