@@ -1,6 +1,6 @@
-package game.floor;
+package game.floorobject;
 
-import game.Floor;
+import game.FloorObject;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import static org.lwjgl.opengl.GL11.*;
 
-public class World extends Floor {
+public class World extends FloorObject {
 
     public World() {
         super();

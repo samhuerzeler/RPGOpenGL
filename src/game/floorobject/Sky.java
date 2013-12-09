@@ -1,15 +1,15 @@
-package game.floor;
+package game.floorobject;
 
-import game.Floor;
+import game.FloorObject;
 
-public class VoidFloor extends Floor {
+public class Sky extends FloorObject {
 
-    public VoidFloor() {
+    public Sky() {
     }
 
     @Override
     public float getHeight(float x, float z) {
-        return 0;
+        return 32768;
     }
 
     @Override

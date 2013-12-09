@@ -1,6 +1,6 @@
 package game;
 
-import game.floor.World;
+import game.floorobject.World;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -13,7 +13,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 import util.ShaderLoader;
 
-public class Floor {
+public class FloorObject {
 
     protected float[][] data;
     protected int width;
@@ -24,9 +24,9 @@ public class Floor {
     protected int lookupTexture;
     protected int shaderProgram;
     protected Texture texture;
-    private static ArrayList<Floor> floors = new ArrayList<>();
+    private static ArrayList<FloorObject> floors = new ArrayList<>();
 
-    public Floor() {
+    public FloorObject() {
         setUpStates();
         setUpTexture();
     }
@@ -52,11 +52,11 @@ public class Floor {
         scale.z = z;
     }
 
-    public void add(Floor f) {
+    public void add(FloorObject f) {
         floors.add(f);
     }
 
-    public static ArrayList<Floor> getFloors() {
+    public static ArrayList<FloorObject> getFloors() {
         return floors;
     }
 

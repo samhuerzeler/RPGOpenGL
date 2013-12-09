@@ -1,9 +1,9 @@
-package game.floor;
+package game.floorobject;
 
-import game.Floor;
+import game.FloorObject;
 import static org.lwjgl.opengl.GL11.*;
 
-public class Square extends Floor {
+public class Square extends FloorObject {
 
     /**
      * for testing purposes (multiple floors & ceiling collision)

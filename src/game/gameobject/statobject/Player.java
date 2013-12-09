@@ -4,7 +4,7 @@ import engine.InputHandler;
 import engine.Physics;
 import game.Delay;
 import game.Equipment;
-import game.Floor;
+import game.FloorObject;
 import game.Game;
 import game.GameObject;
 import game.Inventory;
@@ -12,7 +12,7 @@ import game.Item;
 import game.Stats;
 import game.Time;
 import game.Util;
-import game.floor.VoidFloor;
+import game.floorobject.VoidFloor;
 import game.gameobject.StatObject;
 import game.gameobject.statobject.mob.Enemy;
 import game.gameobject.statobject.player.Ability;
@@ -85,18 +85,7 @@ public abstract class Player extends StatObject {
         if (position.y > currentFloor.getHeight(position.x, position.z)) {
             // find current floor
             if (searchFloor) {
-                System.out.println("searching floor");
-                ArrayList<Floor> floors = Floor.getFloors();
-                currentFloor = new VoidFloor();
-                for (Floor f : floors) {
-                    float floorHeight = f.getHeight(position.x, position.z);
-                    float currentFloorHeight = currentFloor.getHeight(position.x, position.z);
-                    if (f.inBound(position.x, position.z)
-                            && floorHeight < position.y
-                            && floorHeight > currentFloorHeight) {
-                        currentFloor = f;
-                    }
-                }
+                searchFloor();
             }
             applyGravity();
         } else {
@@ -136,8 +125,8 @@ public abstract class Player extends StatObject {
 
         boolean movingForward = input.keyPressed(Keyboard.KEY_W, true);
         boolean movingBackward = input.keyPressed(Keyboard.KEY_S, true);
-        boolean movingLeft = input.keyPressed(Keyboard.KEY_A, true);
-        boolean movingRight = input.keyPressed(Keyboard.KEY_D, true);
+        boolean movingLeft = input.keyPressed(Keyboard.KEY_Q, true);
+        boolean movingRight = input.keyPressed(Keyboard.KEY_E, true);
 
         if ((movingForward && (movingLeft || movingRight)) || (movingBackward && (movingLeft || movingRight))) {
             movementSpeed = (float) (movementSpeed / Math.sqrt(2));
@@ -155,10 +144,10 @@ public abstract class Player extends StatObject {
         if (movingRight) {
             move(movementSpeed, 0);
         }
-        if (input.keyPressed(Keyboard.KEY_Q, true)) {
+        if (input.keyPressed(Keyboard.KEY_A, true)) {
             rotateY(-rotationSpeed);
         }
-        if (input.keyPressed(Keyboard.KEY_E, true)) {
+        if (input.keyPressed(Keyboard.KEY_D, true)) {
             rotateY(rotationSpeed);
         }
         if (input.keyPressed(Keyboard.KEY_F)) {
@@ -318,15 +307,43 @@ public abstract class Player extends StatObject {
         }
     }
 
-    protected void jump() {
-        // TODO collision with ceilings
-        if (position.y >= currentFloor.getHeight(position.x, position.z)) {
-            position.y += jumpingSpeed * Time.getDelta();
-            if (physics.getFallingDistance() > (jumpingSpeed * Time.getDelta())) {
-                searchFloor = false;
-            } else {
-                searchFloor = true;
+    private void searchFloor() {
+        ArrayList<FloorObject> floors = FloorObject.getFloors();
+        currentFloor = Game.voidFloor;
+        for (FloorObject floor : floors) {
+            float floorHeight = floor.getHeight(position.x, position.z);
+            if (floor.inBound(position.x, position.z)
+                    && floorHeight < position.y
+                    && floorHeight > currentFloor.getHeight(position.x, position.z)) {
+                currentFloor = floor;
             }
+        }
+    }
+
+    private void searchCeiling() {
+        ArrayList<FloorObject> floors = FloorObject.getFloors();
+        currentCeiling = Game.sky;
+        for (FloorObject floor : floors) {
+            float floorHeight = floor.getHeight(position.x, position.z);
+            if (floor.inBound(position.x, position.z)
+                    && floorHeight > position.y
+                    && floorHeight < currentCeiling.getHeight(position.x, position.z)) {
+                currentCeiling = floor;
+            }
+        }
+    }
+
+    protected void jump() {
+        searchCeiling();
+        boolean aboveFloor = position.y >= currentFloor.getHeight(position.x, position.z);
+        boolean belowCeiling = (position.y + jumpingSpeed * Time.getDelta()) < (currentCeiling.getHeight(position.x, position.z));
+
+        if ((currentCeiling.getHeight(position.x, position.z) - jumpingSpeed * Time.getDelta()) < (position.y)) {
+            physics.resetFallingVelocity();
+        }
+
+        if (aboveFloor && belowCeiling) {
+            position.y += jumpingSpeed * Time.getDelta();
         } else {
             jumping = false;
         }

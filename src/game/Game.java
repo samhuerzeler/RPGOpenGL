@@ -1,10 +1,12 @@
 package game;
 
-import game.floor.World;
+import game.floorobject.World;
 import engine.FontHandler;
 import engine.OrbitCamera;
 import engine.Physics;
-import game.floor.Square;
+import game.floorobject.Sky;
+import game.floorobject.Square;
+import game.floorobject.VoidFloor;
 import game.gameobject.StatObject;
 import game.gameobject.statobject.Player;
 import game.gameobject.statobject.mob.normal.Guard;
@@ -26,10 +28,12 @@ public class Game {
     public static final int REMOVE = 0;
     public static Game game;
     public static World world;
+    public static FloorObject sky;
+    public static FloorObject voidFloor;
     public static Square plattform;
     public static Square plattform2;
     public static Light light;
-    public Floor floors = new Floor();
+    public FloorObject floors = new FloorObject();
     private Map<GameObject, Vector3f> objects;
     private ArrayList<GameObject> objectsToRemove;
     private FontHandler fontHandler = new FontHandler(20);
@@ -37,11 +41,15 @@ public class Game {
 
     public Game() {
         world = new World();
-        plattform = new Square(0, 1050, 0);
+        sky = new Sky();
+        voidFloor = new VoidFloor();
+        plattform = new Square(-300, 1050, 0);
         plattform2 = new Square(-300, 1100, 0);
         light = new Light();
 
         floors.add(world);
+        floors.add(sky);
+        floors.add(voidFloor);
         floors.add(plattform);
         floors.add(plattform2);
 
