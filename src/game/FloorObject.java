@@ -2,7 +2,6 @@ package game;
 
 import game.floorobject.World;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.lwjgl.opengl.GL11.*;
