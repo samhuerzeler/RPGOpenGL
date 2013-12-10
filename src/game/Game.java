@@ -1,5 +1,6 @@
 package game;
 
+import engine.Renderer;
 import game.floorobject.World;
 import engine.Physics;
 import game.floorobject.Sky;

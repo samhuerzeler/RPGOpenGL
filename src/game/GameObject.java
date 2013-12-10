@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.util.vector.Vector3f;
 
 public abstract class GameObject {
@@ -104,6 +103,22 @@ public abstract class GameObject {
 
     public float getSZ() {
         return sprite.getSizeZ();
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public Vector3f getPosition() {
+        return position;
+    }
+    
+    public Vector3f getRotation() {
+        return rotation;
+    }
+    
+    public Stats getStats() {
+        return stats;
     }
 
     public int getType() {

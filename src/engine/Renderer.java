@@ -1,13 +1,12 @@
-package game;
+package engine;
 
-import engine.Animation;
-import engine.FontHandler;
-import engine.Model;
-import engine.OrbitCamera;
+import game.GameObject;
+import game.Util;
 import static game.Game.plattform;
 import static game.Game.plattform2;
 import static game.Game.player;
 import static game.Game.world;
+import game.Stats;
 import game.gameobject.StatObject;
 import static game.gameobject.StatObject.FRIENDLY;
 import static game.gameobject.StatObject.HOSTILE;
@@ -49,6 +48,7 @@ public class Renderer {
     }
 
     public void renderWorld(ArrayList<WorldObject> objects) {
+        // TODO...........
         glEnable(GL_CULL_FACE);
         glEnable(GL_TEXTURE_2D);
         world.render();
@@ -77,13 +77,15 @@ public class Renderer {
             // render animation or model of the object
             Animation animation = go.getAnimation();
             Model model = go.getModel();
-
+            Vector3f position = go.getPosition();
+            Vector3f rotation = go.getRotation();
+            
             if (animation != null && go.isMoving()) {
                 // render model
                 glPushMatrix();
                 {
-                    glTranslatef(go.position.x, go.position.y, go.position.z);
-                    glRotatef(-go.rotation.y + 180, 0, 1, 0);
+                    glTranslatef(position.x, position.y, position.z);
+                    glRotatef(-rotation.y + 180, 0, 1, 0);
                     animation.render();
                 }
                 glPopMatrix();
@@ -91,8 +93,8 @@ public class Renderer {
                 if (model != null) {
                     glPushMatrix();
                     {
-                        glTranslatef(go.position.x, go.position.y, go.position.z);
-                        glRotatef(-go.rotation.y + 180, 0, 1, 0);
+                        glTranslatef(position.x, position.y, position.z);
+                        glRotatef(-rotation.y + 180, 0, 1, 0);
                         model.render();
                     }
                     glPopMatrix();
@@ -102,8 +104,8 @@ public class Renderer {
             // render range circles
             glPushMatrix();
             {
-                glTranslatef(go.position.x, go.position.y, go.position.z);
-                glRotatef(-go.rotation.y, 0.0f, 1.0f, 0.0f);
+                glTranslatef(position.x, position.y, position.z);
+                glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
                 glColor3f(1.0f, 1.0f, 1.0f);
                 int type = go.getType();
 
@@ -116,16 +118,18 @@ public class Renderer {
             }
             glPopMatrix();
 
-            if (go.type != PLAYER) {
+            if (go.getType() != PLAYER) {
+                Stats stats = go.getStats();
+                
                 // render health bar
-                int currentHealth = go.stats.getCurrentHealth();
-                int maxHealth = go.stats.getMaxHealth();
+                int currentHealth = stats.getCurrentHealth();
+                int maxHealth = stats.getMaxHealth();
                 glPushMatrix();
                 {
-                    glTranslatef(go.position.x, go.position.y, go.position.z);
-                    if (go.type == HOSTILE) {
+                    glTranslatef(position.x, position.y, position.z);
+                    if (go.getType() == HOSTILE) {
                         glColor3f(1.0f, 0.0f, 0.0f);
-                    } else if (go.type == FRIENDLY) {
+                    } else if (go.getType() == FRIENDLY) {
                         glColor3f(1.0f, 1.0f, 0.0f);
                     }
                     renderBar(currentHealth, maxHealth, 40, 5);
@@ -133,12 +137,12 @@ public class Renderer {
                 glPopMatrix();
 
                 // render resource bar
-                int currentResource = go.stats.getCurrentResource();
-                int maxResource = go.stats.getMaxResource();
+                int currentResource = stats.getCurrentResource();
+                int maxResource = stats.getMaxResource();
                 glPushMatrix();
                 {
-                    glTranslatef(go.position.x, go.position.y, go.position.z);
-                    switch (go.type) {
+                    glTranslatef(position.x, position.y, position.z);
+                    switch (go.getType()) {
                         case HOSTILE:
                             glColor3f(1.0f, 0.0f, 0.0f);
                             break;
@@ -192,13 +196,14 @@ public class Renderer {
         for (GameObject go : objects) {
             glPushMatrix();
             {
-                if (go.type != StatObject.PLAYER) {
-                    glTranslatef(go.position.x, go.position.y + 60, go.position.z);
+                if (go.getType() != StatObject.PLAYER) {
+                    Vector3f position = go.getPosition();
+                    glTranslatef(position.x, position.y + 60, position.z);
                     Vector3f cameraRotation = OrbitCamera.camera.getRotation();
                     glRotatef(-cameraRotation.y + 180, 0, 1, 0);
                     glRotatef(-cameraRotation.x, 1, 0, 0);
                     glScalef(-1, -1, 1);
-                    fontHandler.drawString(0, 0, go.name);
+                    fontHandler.drawString(0, 0, go.getName());
                 }
             }
             glPopMatrix();
