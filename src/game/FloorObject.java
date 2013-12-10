@@ -24,20 +24,14 @@ public class FloorObject {
     protected int lookupTexture;
     protected int shaderProgram;
     protected Texture texture;
-    private static ArrayList<FloorObject> floors = new ArrayList<>();
 
     public FloorObject() {
         setUpStates();
         setUpTexture();
     }
 
-    public void render() {
-        glPushMatrix();
-        {
-            //glUseProgram(shaderProgram);
-            glCallList(heightmapDisplayList);
-        }
-        glPopMatrix();
+    public int getHeightmapDisplayList() {
+        return heightmapDisplayList;
     }
 
     protected void setMapTranslate(float x, float y, float z) {
@@ -50,14 +44,6 @@ public class FloorObject {
         scale.x = x;
         scale.y = y;
         scale.z = z;
-    }
-
-    public void add(FloorObject f) {
-        floors.add(f);
-    }
-
-    public static ArrayList<FloorObject> getFloors() {
-        return floors;
     }
 
     public float getHeight(float x, float z) {

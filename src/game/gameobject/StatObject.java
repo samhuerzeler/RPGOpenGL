@@ -40,7 +40,7 @@ public abstract class StatObject extends GameObject {
     public static final int FRIENDLY = 3;
 
     protected void searchFloor() {
-        ArrayList<FloorObject> floors = FloorObject.getFloors();
+        ArrayList<FloorObject> floors = Game.game.getFloorObjects();
         currentFloor = Game.voidFloor;
         for (FloorObject floor : floors) {
             float floorHeight = floor.getHeight(position.x, position.z);
@@ -53,7 +53,7 @@ public abstract class StatObject extends GameObject {
     }
 
     protected void searchCeiling() {
-        ArrayList<FloorObject> floors = FloorObject.getFloors();
+        ArrayList<FloorObject> floors = Game.game.getFloorObjects();
         currentCeiling = Game.sky;
         for (FloorObject floor : floors) {
             float floorHeight = floor.getHeight(position.x, position.z);
@@ -179,7 +179,7 @@ public abstract class StatObject extends GameObject {
     public boolean isMoving() {
         return moving;
     }
-    
+
     public float getSightRange() {
         return sightRange;
     }

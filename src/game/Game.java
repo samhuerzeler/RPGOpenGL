@@ -28,8 +28,7 @@ public class Game {
     public static Square plattform;
     public static Square plattform2;
     public static Light light;
-    public FloorObject floors = new FloorObject();
-    private ArrayList<WorldObject> worldObjects;
+    private ArrayList<FloorObject> floorObjects;
     private ArrayList<GameObject> gameObjects;
     private ArrayList<GameObject> gameObjectsToRemove;
     private Renderer renderer = new Renderer();
@@ -47,11 +46,12 @@ public class Game {
         plattform2 = new Square(-200, 1100, 0);
 
         // add floors to floor list
-        floors.add(world);
-        floors.add(sky);
-        floors.add(voidFloor);
-        floors.add(plattform);
-        floors.add(plattform2);
+        floorObjects = new ArrayList<>();
+        floorObjects.add(world);
+        floorObjects.add(sky);
+        floorObjects.add(voidFloor);
+        floorObjects.add(plattform);
+        floorObjects.add(plattform2);
 
         // init object lists
         gameObjects = new ArrayList<>();
@@ -90,7 +90,7 @@ public class Game {
 
     public void render() {
         glUseProgram(0);
-        renderer.renderWorld(worldObjects);
+        renderer.renderFloors(floorObjects);
         renderer.renderObjects(gameObjects);
         renderer.renderText(gameObjects);
         renderer.renderHud();
@@ -98,6 +98,10 @@ public class Game {
 
     public void getInput() {
         player.getInput();
+    }
+
+    public ArrayList<FloorObject> getFloorObjects() {
+        return floorObjects;
     }
 
     public ArrayList<GameObject> getObjects() {

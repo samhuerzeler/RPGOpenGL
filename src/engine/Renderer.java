@@ -1,5 +1,6 @@
 package engine;
 
+import game.FloorObject;
 import game.GameObject;
 import game.Util;
 import static game.Game.plattform;
@@ -23,6 +24,7 @@ import static org.lwjgl.opengl.GL11.GL_PROJECTION;
 import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glCallList;
 import static org.lwjgl.opengl.GL11.glColor3d;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glDisable;
@@ -47,19 +49,22 @@ public class Renderer {
     public Renderer() {
     }
 
-    public void renderWorld(ArrayList<WorldObject> objects) {
+    public void renderFloors(ArrayList<FloorObject> floorObjects) {
         // TODO...........
         glEnable(GL_CULL_FACE);
         glEnable(GL_TEXTURE_2D);
-        world.render();
+
+
+        for (FloorObject wo : floorObjects) {
+            glPushMatrix();
+            {
+                //glUseProgram(shaderProgram);
+                glCallList(wo.getHeightmapDisplayList());
+            }
+            glPopMatrix();
+        }
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_CULL_FACE);
-
-        glDisable(GL_LIGHTING);
-        glColor3d(1.0f, 1.0f, 1.0f);
-        plattform.render();
-        plattform2.render();
-        glEnable(GL_LIGHTING);
     }
 
     public void renderObjects(ArrayList<GameObject> gameObjects) {
@@ -79,7 +84,7 @@ public class Renderer {
             Model model = go.getModel();
             Vector3f position = go.getPosition();
             Vector3f rotation = go.getRotation();
-            
+
             if (animation != null && go.isMoving()) {
                 // render model
                 glPushMatrix();
@@ -120,7 +125,7 @@ public class Renderer {
 
             if (go.getType() != PLAYER) {
                 Stats stats = go.getStats();
-                
+
                 // render health bar
                 int currentHealth = stats.getCurrentHealth();
                 int maxHealth = stats.getMaxHealth();
