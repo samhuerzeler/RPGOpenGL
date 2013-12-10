@@ -1,6 +1,9 @@
 package engine;
 
+import game.Game;
 import java.awt.Font;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.lwjgl.opengl.GL11.*;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
@@ -18,7 +21,7 @@ public class FontHandler {
         try {
             font.loadGlyphs();
         } catch (SlickException ex) {
-//             Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -26,19 +29,13 @@ public class FontHandler {
         this(10);
     }
 
-    public UnicodeFont getFont() {
-        return font;
-    }
-
     public void drawString(float x, float y, String str) {
         glDisable(GL_LIGHTING);
-        glColor3f(1, 1, 1);
-
-//        SimpleText.drawString(str, x, y);
-
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_BLEND);
+
         font.drawString(x, y, str);
+
         glDisable(GL_BLEND);
         glDisable(GL_TEXTURE_2D);
 

@@ -75,7 +75,7 @@ public class FloorObject {
         glUniform1i(glGetUniformLocation(shaderProgram, "lookup"), 0);
     }
 
-    private void setUpTexture() {
+    protected void setUpTexture() {
         try {
             texture = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/textures/grass.png"));
 

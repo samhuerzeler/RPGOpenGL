@@ -56,6 +56,7 @@ public class World extends FloorObject {
         glNewList(heightmapDisplayList, GL_COMPILE);
         glTranslatef(translate.x, translate.y, translate.z);
         glScalef(scale.x, scale.y, scale.z);
+        super.setUpTexture();
         texture.bind();
         for (int z = 0; z < data.length - 1; z++) {
             glBegin(GL_TRIANGLE_STRIP);

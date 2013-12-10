@@ -89,7 +89,7 @@ public class Game {
     }
 
     public void render() {
-        glUseProgram(0);
+        //glUseProgram(0);
         renderer.renderFloors(floorObjects);
         renderer.renderObjects(gameObjects);
         renderer.renderText(gameObjects);
