@@ -37,29 +37,6 @@ public abstract class GameObject {
     public void update() {
     }
 
-    public void render() {
-        if (animation != null && moving) {
-            // render model
-            glPushMatrix();
-            {
-                glTranslatef(position.x, position.y, position.z);
-                glRotatef(-rotation.y + 180, 0, 1, 0);
-                animation.render();
-            }
-            glPopMatrix();
-        } else {
-            if (model != null) {
-                glPushMatrix();
-                {
-                    glTranslatef(position.x, position.y, position.z);
-                    glRotatef(-rotation.y + 180, 0, 1, 0);
-                    model.render();
-                }
-                glPopMatrix();
-            }
-        }
-    }
-
     protected void loadModel(String path) {
         model = null;
         try {
@@ -83,6 +60,14 @@ public abstract class GameObject {
 
     public boolean getFlag(int index) {
         return flags[index];
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public Animation getAnimation() {
+        return animation;
     }
 
     public float getX() {
@@ -131,6 +116,10 @@ public abstract class GameObject {
 
     public float getSpawnZ() {
         return spawnPosition.z;
+    }
+
+    public boolean isMoving() {
+        return moving;
     }
 
     protected void init(float x, float y, float z, float r, float g, float b, float sx, float sy, float sz) {

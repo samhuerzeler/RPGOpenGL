@@ -53,18 +53,7 @@ public abstract class Mob extends StatObject {
             die();
         }
         if (position.y > currentFloor.getHeight(position.x, position.z)) {
-            // find current floor
-            ArrayList<FloorObject> floors = FloorObject.getFloors();
-            currentFloor = new VoidFloor();
-            for (FloorObject f : floors) {
-                float floorHeight = f.getHeight(position.x, position.z);
-                float currentFloorHeight = currentFloor.getHeight(position.x, position.z);
-                if (f.inBound(position.x, position.z)
-                        && floorHeight < position.y
-                        && floorHeight > currentFloorHeight) {
-                    currentFloor = f;
-                }
-            }
+            searchFloor();
             applyGravity();
         } else {
             position.y = currentFloor.getHeight(position.x, position.z);
@@ -228,7 +217,6 @@ public abstract class Mob extends StatObject {
         float dirY = (y - position.y);
         float dirZ = (z - position.z);
         rotation.y = (float) -Math.toDegrees(Math.atan2(dirX, dirZ)) - 180;
-        rotation.z = (float) -Math.toDegrees(Math.atan2(dirY, dirZ)) - 180;
     }
 
     private void applyGravity() {

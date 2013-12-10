@@ -42,7 +42,6 @@ public abstract class Player extends StatObject {
     protected Stats.resource resource = Stats.resource.MANA;
     protected InputHandler input = new InputHandler();
     protected playerClass playerCls;
-    private boolean searchFloor = true;
 
     public Player(float x, float y, float z) {
         physics = new Physics();
@@ -85,10 +84,7 @@ public abstract class Player extends StatObject {
         }
 
         if (position.y > currentFloor.getHeight(position.x, position.z)) {
-            // find current floor
-            if (searchFloor) {
-                searchFloor();
-            }
+            searchFloor();
             applyGravity();
         } else {
             position.y = currentFloor.getHeight(position.x, position.z);
@@ -345,7 +341,6 @@ public abstract class Player extends StatObject {
     }
 
     protected void applyGravity() {
-        searchFloor = true;
         position.y -= physics.getFallingDistance();
     }
 

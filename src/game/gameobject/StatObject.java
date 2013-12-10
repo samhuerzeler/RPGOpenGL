@@ -39,79 +39,6 @@ public abstract class StatObject extends GameObject {
     public static final int HOSTILE = 2;
     public static final int FRIENDLY = 3;
 
-    @Override
-    public void render() {
-        // render gameobjects
-        super.render();
-
-        // render range circles
-        glPushMatrix();
-        {
-            glTranslatef(position.x, position.y, position.z);
-            glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
-            glColor3f(1.0f, 1.0f, 1.0f);
-            if (type == HOSTILE || type == FRIENDLY) {
-                Util.renderCircle(0.0f, 0.0f, sightRange);
-                Util.renderCircle(0.0f, 0.0f, attackRange);
-            } else if (type == PLAYER) {
-                Util.renderCircle(0.0f, 0.0f, attackRange);
-            }
-        }
-        glPopMatrix();
-
-        if (type != PLAYER) {
-            // render health bar
-            int currentHealth = stats.getCurrentHealth();
-            int maxHealth = stats.getMaxHealth();
-            glPushMatrix();
-            {
-                glTranslatef(position.x, position.y, position.z);
-                if (type == HOSTILE) {
-                    glColor3f(1.0f, 0.0f, 0.0f);
-                } else if (type == FRIENDLY) {
-                    glColor3f(1.0f, 1.0f, 0.0f);
-                }
-                renderBar(currentHealth, maxHealth, 40, 5);
-            }
-            glPopMatrix();
-
-            // render resource bar
-            int currentResource = stats.getCurrentResource();
-            int maxResource = stats.getMaxResource();
-            glPushMatrix();
-            {
-                glTranslatef(position.x, position.y, position.z);
-                switch (type) {
-                    case HOSTILE:
-                        glColor3f(1.0f, 0.0f, 0.0f);
-                        break;
-                    case FRIENDLY:
-                        glColor3f(1.0f, 1.0f, 0.0f);
-                        break;
-                }
-                renderBar(currentResource, maxResource, 35, 5);
-            }
-            glPopMatrix();
-        }
-    }
-
-    private void renderBar(int current, int max, float y, float height) {
-        float percentage = (float) current / (float) max * 100.0f;
-        Vector3f cameraRotation = OrbitCamera.camera.getRotation();
-        glRotatef(-cameraRotation.y + 180, 0, 1, 0);
-        glRotatef(-cameraRotation.x, 1, 0, 0);
-        glScalef(-1, 1, 1);
-        glTranslatef(-20, 0, 0);
-        glBegin(GL_QUADS);
-        {
-            glVertex2f(0, y);
-            glVertex2f(percentage * 20 / 50, y);
-            glVertex2f(percentage * 20 / 50, y - height);
-            glVertex2f(0, y - height);
-        }
-        glEnd();
-    }
-
     protected void searchFloor() {
         ArrayList<FloorObject> floors = FloorObject.getFloors();
         currentFloor = Game.voidFloor;
@@ -248,8 +175,13 @@ public abstract class StatObject extends GameObject {
         return resetting;
     }
 
+    @Override
     public boolean isMoving() {
         return moving;
+    }
+    
+    public float getSightRange() {
+        return sightRange;
     }
 
     public void addToThreatMap(StatObject so, int amt) {
