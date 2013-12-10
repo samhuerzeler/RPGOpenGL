@@ -3,16 +3,12 @@ package engine;
 import game.FloorObject;
 import game.GameObject;
 import game.Util;
-import static game.Game.plattform;
-import static game.Game.plattform2;
 import static game.Game.player;
-import static game.Game.world;
 import game.Stats;
 import game.gameobject.StatObject;
 import static game.gameobject.StatObject.FRIENDLY;
 import static game.gameobject.StatObject.HOSTILE;
 import static game.gameobject.StatObject.PLAYER;
-import game.gameobject.WorldObject;
 import java.util.ArrayList;
 import org.lwjgl.opengl.Display;
 import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
@@ -25,7 +21,6 @@ import static org.lwjgl.opengl.GL11.GL_QUADS;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.glBegin;
 import static org.lwjgl.opengl.GL11.glCallList;
-import static org.lwjgl.opengl.GL11.glColor3d;
 import static org.lwjgl.opengl.GL11.glColor3f;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
@@ -50,7 +45,6 @@ public class Renderer {
     }
 
     public void renderFloors(ArrayList<FloorObject> floorObjects) {
-        // TODO...........
         glEnable(GL_CULL_FACE);
         glEnable(GL_TEXTURE_2D);
 
@@ -58,13 +52,102 @@ public class Renderer {
         for (FloorObject wo : floorObjects) {
             glPushMatrix();
             {
-                //glUseProgram(shaderProgram);
                 glCallList(wo.getHeightmapDisplayList());
             }
             glPopMatrix();
         }
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_CULL_FACE);
+    }
+
+    private void renderModel(GameObject go) {
+        Animation animation = go.getAnimation();
+        Model model = go.getModel();
+        Vector3f position = go.getPosition();
+        Vector3f rotation = go.getRotation();
+
+        if (animation != null && go.isMoving()) {
+            // render model
+            glPushMatrix();
+            {
+                glTranslatef(position.x, position.y, position.z);
+                glRotatef(-rotation.y + 180, 0, 1, 0);
+                animation.render();
+            }
+            glPopMatrix();
+        } else {
+            if (model != null) {
+                glPushMatrix();
+                {
+                    glTranslatef(position.x, position.y, position.z);
+                    glRotatef(-rotation.y + 180, 0, 1, 0);
+                    model.render();
+                }
+                glPopMatrix();
+            }
+        }
+    }
+
+    private void renderRangeCircle(GameObject go) {
+        Vector3f position = go.getPosition();
+        Vector3f rotation = go.getRotation();
+
+        glPushMatrix();
+        {
+            glTranslatef(position.x, position.y, position.z);
+            glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
+            glColor3f(1.0f, 1.0f, 1.0f);
+            int type = go.getType();
+
+            if (type == HOSTILE || type == FRIENDLY) {
+                Util.renderCircle(0.0f, 0.0f, ((StatObject) go).getSightRange());
+                Util.renderCircle(0.0f, 0.0f, ((StatObject) go).getAttackRange());
+            } else if (type == PLAYER) {
+                Util.renderCircle(0.0f, 0.0f, ((StatObject) go).getAttackRange());
+            }
+        }
+        glPopMatrix();
+    }
+
+    private void renderBars(GameObject go) {
+        Vector3f position = go.getPosition();
+
+        if (go.getType() != PLAYER) {
+            Stats stats = go.getStats();
+
+            // render health bar
+            int currentHealth = stats.getCurrentHealth();
+            int maxHealth = stats.getMaxHealth();
+            glPushMatrix();
+            {
+                glTranslatef(position.x, position.y, position.z);
+                if (go.getType() == HOSTILE) {
+                    glColor3f(1.0f, 0.0f, 0.0f);
+                } else if (go.getType() == FRIENDLY) {
+                    glColor3f(1.0f, 1.0f, 0.0f);
+                }
+                renderBar(currentHealth, maxHealth, 40, 5);
+            }
+            glPopMatrix();
+
+            // render resource bar
+            int currentResource = stats.getCurrentResource();
+            int maxResource = stats.getMaxResource();
+            glPushMatrix();
+            {
+                glTranslatef(position.x, position.y, position.z);
+                switch (go.getType()) {
+                    case HOSTILE:
+                        glColor3f(1.0f, 0.0f, 0.0f);
+                        break;
+                    case FRIENDLY:
+                        glColor3f(1.0f, 1.0f, 0.0f);
+                        break;
+                }
+                renderBar(currentResource, maxResource, 35, 5);
+            }
+            glPopMatrix();
+        }
     }
 
     public void renderObjects(ArrayList<GameObject> gameObjects) {
@@ -76,89 +159,11 @@ public class Renderer {
             } else {
                 glColor3f(1.0f, 0.0f, 0.0f);
             }
-            //renderSpawnPoint(go, 32.0f);
 
-
-            // render animation or model of the object
-            Animation animation = go.getAnimation();
-            Model model = go.getModel();
-            Vector3f position = go.getPosition();
-            Vector3f rotation = go.getRotation();
-
-            if (animation != null && go.isMoving()) {
-                // render model
-                glPushMatrix();
-                {
-                    glTranslatef(position.x, position.y, position.z);
-                    glRotatef(-rotation.y + 180, 0, 1, 0);
-                    animation.render();
-                }
-                glPopMatrix();
-            } else {
-                if (model != null) {
-                    glPushMatrix();
-                    {
-                        glTranslatef(position.x, position.y, position.z);
-                        glRotatef(-rotation.y + 180, 0, 1, 0);
-                        model.render();
-                    }
-                    glPopMatrix();
-                }
-            }
-
-            // render range circles
-            glPushMatrix();
-            {
-                glTranslatef(position.x, position.y, position.z);
-                glRotatef(-rotation.y, 0.0f, 1.0f, 0.0f);
-                glColor3f(1.0f, 1.0f, 1.0f);
-                int type = go.getType();
-
-                if (type == HOSTILE || type == FRIENDLY) {
-                    Util.renderCircle(0.0f, 0.0f, ((StatObject) go).getSightRange());
-                    Util.renderCircle(0.0f, 0.0f, ((StatObject) go).getAttackRange());
-                } else if (type == PLAYER) {
-                    Util.renderCircle(0.0f, 0.0f, ((StatObject) go).getAttackRange());
-                }
-            }
-            glPopMatrix();
-
-            if (go.getType() != PLAYER) {
-                Stats stats = go.getStats();
-
-                // render health bar
-                int currentHealth = stats.getCurrentHealth();
-                int maxHealth = stats.getMaxHealth();
-                glPushMatrix();
-                {
-                    glTranslatef(position.x, position.y, position.z);
-                    if (go.getType() == HOSTILE) {
-                        glColor3f(1.0f, 0.0f, 0.0f);
-                    } else if (go.getType() == FRIENDLY) {
-                        glColor3f(1.0f, 1.0f, 0.0f);
-                    }
-                    renderBar(currentHealth, maxHealth, 40, 5);
-                }
-                glPopMatrix();
-
-                // render resource bar
-                int currentResource = stats.getCurrentResource();
-                int maxResource = stats.getMaxResource();
-                glPushMatrix();
-                {
-                    glTranslatef(position.x, position.y, position.z);
-                    switch (go.getType()) {
-                        case HOSTILE:
-                            glColor3f(1.0f, 0.0f, 0.0f);
-                            break;
-                        case FRIENDLY:
-                            glColor3f(1.0f, 1.0f, 0.0f);
-                            break;
-                    }
-                    renderBar(currentResource, maxResource, 35, 5);
-                }
-                glPopMatrix();
-            }
+            renderSpawnPoint(go, 32.0f);
+            renderModel(go);
+            renderRangeCircle(go);
+            renderBars(go);
         }
     }
 
