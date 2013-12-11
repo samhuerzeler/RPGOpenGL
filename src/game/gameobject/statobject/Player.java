@@ -47,7 +47,7 @@ public abstract class Player extends StatObject {
         physics = new Physics();
         animation = new Animation();
         keyFrames = animation.loadKeyFrames("res/models/player/", "test_animation");
-        loadModel();
+        loadAnimationModel();
         stats = new Stats(Stats.MAX_XP, true);
         name = "Player";
         size = 50.0f;
@@ -131,7 +131,9 @@ public abstract class Player extends StatObject {
             moving = true;
         } else {
             moving = false;
-            animation.reset();
+            if (animation != null) {
+                animation.reset();
+            }
         }
 
         if ((movingForward && (movingLeft || movingRight)) || (movingBackward && (movingLeft || movingRight))) {

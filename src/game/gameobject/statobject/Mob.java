@@ -2,13 +2,11 @@ package game.gameobject.statobject;
 
 import engine.Physics;
 import game.Delay;
-import game.FloorObject;
 import game.Game;
 import game.GameObject;
 import game.Stats;
 import game.Time;
 import game.Util;
-import game.floorobject.VoidFloor;
 import game.gameobject.StatObject;
 import java.util.ArrayList;
 import java.util.Random;

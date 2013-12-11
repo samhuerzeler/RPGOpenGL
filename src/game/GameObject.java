@@ -48,7 +48,7 @@ public abstract class GameObject {
         }
     }
 
-    protected void loadModel() {
+    protected void loadAnimationModel() {
         model = keyFrames.get(0);
         model.init();
     }
@@ -104,19 +104,19 @@ public abstract class GameObject {
     public float getSZ() {
         return sprite.getSizeZ();
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public Vector3f getPosition() {
         return position;
     }
-    
+
     public Vector3f getRotation() {
         return rotation;
     }
-    
+
     public Stats getStats() {
         return stats;
     }

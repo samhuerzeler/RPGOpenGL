@@ -16,7 +16,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class Renderer {
 
-    private FontHandler fontHandler = new FontHandler(20);
+    private FontHandler fontHandler = new FontHandler(16);
 
     public Renderer() {
     }
