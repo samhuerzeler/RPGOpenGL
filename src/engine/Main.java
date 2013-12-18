@@ -9,7 +9,6 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import static org.lwjgl.opengl.GL11.*;
-import util.Log;
 
 public class Main {
 
@@ -127,7 +126,7 @@ public class Main {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glClearColor(0.1f, 0.1f, 0.2f, 0.0f);
         } catch (LWJGLException e) {
-            Log.err("Could not set up the display!" + e.getMessage());
+            System.err.println("Could not set up the display!" + e.getMessage());
             System.exit(1);
         }
     }

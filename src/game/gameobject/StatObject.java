@@ -1,19 +1,14 @@
 package game.gameobject;
 
-import engine.OrbitCamera;
 import game.Delay;
 import game.FloorObject;
 import game.Game;
 import game.GameObject;
 import game.Stats;
-import game.Util;
 import game.gameobject.statobject.Player;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import util.Log;
-import static org.lwjgl.opengl.GL11.*;
-import org.lwjgl.util.vector.Vector3f;
 
 public abstract class StatObject extends GameObject {
 
@@ -22,6 +17,7 @@ public abstract class StatObject extends GameObject {
     protected Map<StatObject, Integer> threatMap = new HashMap<>();
     protected boolean resetting;
     protected boolean ceilingCollision;
+    protected float stepSize = 50;
     protected StatObject target;
     protected int autoAttackDamage;
     protected float attackRange;
@@ -45,7 +41,7 @@ public abstract class StatObject extends GameObject {
         for (FloorObject floor : floors) {
             float floorHeight = floor.getHeight(position.x, position.z);
             if (floor.inBound(position.x, position.z)
-                    && floorHeight < position.y
+                    && floorHeight <= position.y + stepSize
                     && floorHeight > currentFloor.getHeight(position.x, position.z)) {
                 currentFloor = floor;
             }
@@ -65,8 +61,8 @@ public abstract class StatObject extends GameObject {
         }
     }
 
-    public void damage(int amt) {
-        stats.damage(amt);
+    public void removeHealth(int amt) {
+        stats.removeHealth(amt);
     }
 
     protected void setInCombat(StatObject so1, StatObject so2) {
@@ -81,16 +77,20 @@ public abstract class StatObject extends GameObject {
 
     protected void addCombatTarget(StatObject so) {
         combatTargets.add(so);
-        Log.p(this.getName() + ": combat target added (" + so.getName() + ")");
+        System.out.println(this.getName() + ": combat target added (" + so.getName() + ")");
     }
 
     protected void removeCombatTarget(StatObject so) {
         combatTargets.remove(so);
-        Log.p(this.getName() + ": combat target removed (" + so.getName() + ")");
+        System.out.println(this.getName() + ": combat target removed (" + so.getName() + ")");
     }
 
     protected boolean isInCombat() {
         return combatTargets.size() > 0;
+    }
+
+    protected boolean isInCombatWith(StatObject so) {
+        return combatTargets.contains(so);
     }
 
     protected void replenishHealth() {
@@ -117,10 +117,6 @@ public abstract class StatObject extends GameObject {
 
     public StatObject getTarget() {
         return target;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public int getLevel() {
@@ -175,11 +171,6 @@ public abstract class StatObject extends GameObject {
         return resetting;
     }
 
-    @Override
-    public boolean isMoving() {
-        return moving;
-    }
-
     public float getSightRange() {
         return sightRange;
     }
@@ -200,7 +191,7 @@ public abstract class StatObject extends GameObject {
             so.setOutOfCombat(this, so);
         }
         threatMap.clear();
-        Log.p(name + ": Threatmap cleared.");
+        System.out.println(name + ": Threatmap cleared.");
     }
 
     public StatObject getHighestTreatTarget() {

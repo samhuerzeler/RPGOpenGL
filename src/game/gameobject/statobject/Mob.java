@@ -10,7 +10,6 @@ import game.Util;
 import game.gameobject.StatObject;
 import java.util.ArrayList;
 import java.util.Random;
-import util.Log;
 
 public abstract class Mob extends StatObject {
 
@@ -40,6 +39,8 @@ public abstract class Mob extends StatObject {
         currentFleeRange = basicFleeRange;
         chaseRange = sightRange * 1.5f;
         patrolRange = 100.0f;
+        patrolX = position.x;
+        patrolZ = position.z;
         autoAttackDelay.start();
         patrolMovingDelay.start();
     }
@@ -62,14 +63,14 @@ public abstract class Mob extends StatObject {
             setTarget(getHighestTreatTarget());
         }
         if (target == null) {
-            if (Util.dist(position.x, position.z, lastPatrolX, lastPatrolZ) > (stats.get(Stats.SPEED))) {
-                if (!patrolling && lastPatrolX != 0 && lastPatrolZ != 0) {
-                    resetPosition();
-                    resetting = true;
-                } else {
-                    resetting = false;
-                    idle();
-                }
+            if (Util.dist(position.x, position.z, lastPatrolX, lastPatrolZ) > MOVEMENT_SPEED
+                    && !patrolling
+                    && lastPatrolX != 0
+                    && lastPatrolZ != 0) {
+
+                resetPosition();
+                System.out.println("resetting position");
+                resetting = true;
             } else {
                 resetting = false;
                 idle();
@@ -95,9 +96,9 @@ public abstract class Mob extends StatObject {
 
     private void attack() {
         autoAttackDelay.restart();
-        target.damage(getAttackDamage());
+        target.removeHealth(getAttackDamage());
         target.addToThreatMap(this, autoAttackDamage);
-        Log.p(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
+        System.out.println(name + " attacking " + target.getName() + " : " + target.getCurrentHealth() + "/" + target.getMaxHealth());
     }
 
     protected void idle() {
@@ -166,8 +167,8 @@ public abstract class Mob extends StatObject {
             }
         }
 
-        patrolX = position.x + newX;
-        patrolZ = position.z + newZ;
+        patrolX = lastPatrolX + newX;
+        patrolZ = lastPatrolZ + newZ;
         calculated = true;
     }
 

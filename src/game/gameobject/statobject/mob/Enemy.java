@@ -6,7 +6,6 @@ import game.gameobject.statobject.Mob;
 import game.gameobject.statobject.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
-import util.Log;
 
 public abstract class Enemy extends Mob {
 
@@ -28,7 +27,7 @@ public abstract class Enemy extends Mob {
     @Override
     protected void die() {
         for (Item loot : lootPool) {
-            Log.p("Loot: " + loot.getName());
+            System.out.println("Loot: " + loot.getName());
             if (target.getType() == PLAYER) {
                 ((Player) target).addXp(20);
                 ((Player) target).addItem(loot);

@@ -6,7 +6,6 @@ import engine.Physics;
 import game.floorobject.Sky;
 import game.floorobject.Square;
 import game.floorobject.VoidFloor;
-import game.gameobject.WorldObject;
 import game.gameobject.statobject.Player;
 import game.gameobject.statobject.mob.normal.Guard;
 import game.gameobject.statobject.mob.normal.Monkey;
@@ -14,7 +13,6 @@ import game.gameobject.statobject.mob.normal.Tiger;
 import game.gameobject.statobject.player.Warrior;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import static org.lwjgl.opengl.GL20.*;
 
 public class Game {
 
@@ -26,7 +24,6 @@ public class Game {
     public static Sky sky;
     public static VoidFloor voidFloor;
     public static Square plattform;
-    public static Square plattform2;
     public static Light light;
     private ArrayList<FloorObject> floorObjects;
     private ArrayList<GameObject> gameObjects;
@@ -43,7 +40,6 @@ public class Game {
         sky = new Sky();
         voidFloor = new VoidFloor();
         plattform = new Square(0, 1050, 0);
-        plattform2 = new Square(-200, 1100, 0);
 
         // add floors to floor list
         floorObjects = new ArrayList<>();
@@ -51,7 +47,6 @@ public class Game {
         floorObjects.add(sky);
         floorObjects.add(voidFloor);
         floorObjects.add(plattform);
-        floorObjects.add(plattform2);
 
         // init object lists
         gameObjects = new ArrayList<>();
@@ -89,10 +84,9 @@ public class Game {
     }
 
     public void render() {
-        //glUseProgram(0);
         renderer.renderFloors(floorObjects);
         renderer.renderObjects(gameObjects);
-        renderer.renderText(gameObjects);
+        renderer.renderNameplates(gameObjects);
         renderer.renderHud();
     }
 

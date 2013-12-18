@@ -20,7 +20,6 @@ import game.item.equippableitem.Weapon;
 import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import util.Log;
 
 public abstract class Player extends StatObject {
 
@@ -98,7 +97,8 @@ public abstract class Player extends StatObject {
             target = null;
         }
         if (position.y == 0) {
-            stats.damage(stats.getMaxHealth());
+            stats.removeHealth(stats.getMaxHealth());
+            System.out.println("You fell out of the world!");
         }
         if (stats.getCurrentHealth() == 0) {
             die();
@@ -189,7 +189,6 @@ public abstract class Player extends StatObject {
                 delay = nonGcdDelay;
             }
             if (delay == null) {
-                Log.err("delay is null");
                 return;
             }
             if (delay.isOver()) {
@@ -201,10 +200,10 @@ public abstract class Player extends StatObject {
                         if (!enemiesInRange.isEmpty()) {
                             if (attackClosestEnemy(ability.getValue(), delay, false)) {
                                 stats.subtractResource(ability.getResourceConsumption());
-                                Log.p("ability used: " + ability.getName() + " (" + ability.getValue() + "), resource subtracted: " + ability.getResourceConsumption());
+                                System.out.println("ability used: " + ability.getName() + " (" + ability.getValue() + "), resource subtracted: " + ability.getResourceConsumption());
                             }
                         } else {
-                            Log.err("no enemies.");
+                            System.err.println("no enemies.");
                         }
                     } else if (ability.getAbilityType() == Ability.abilityType.DEFENSIVE) {
                         /**
@@ -213,7 +212,7 @@ public abstract class Player extends StatObject {
                         delay.restart();
                         stats.addHealth(ability.getValue());
                         stats.subtractResource(ability.getResourceConsumption());
-                        Log.p("ability used: " + ability.getName() + " (" + ability.getValue() + "), resource subtracted: " + ability.getResourceConsumption());
+                        System.out.println("ability used: " + ability.getName() + " (" + ability.getValue() + "), resource subtracted: " + ability.getResourceConsumption());
                     } else if (ability.getAbilityType() == Ability.abilityType.BUFF) {
                         /**
                          * BUFF abilities
@@ -221,10 +220,10 @@ public abstract class Player extends StatObject {
                     } else {
                     }
                 } else {
-                    Log.err("not enough " + resource + ".");
+                    System.err.println("not enough " + resource + ".");
                 }
             } else {
-                Log.err("ability not ready yet.");
+                System.err.println("ability not ready yet.");
             }
         }
     }
@@ -235,7 +234,7 @@ public abstract class Player extends StatObject {
                 attackClosestEnemy(autoAttackDamage, autoAttackDelay, true);
             } else {
                 autoAttack = false;
-                Log.err("no enemies.");
+                System.err.println("no enemies.");
             }
         }
         if (!isInCombat()) {
@@ -248,13 +247,13 @@ public abstract class Player extends StatObject {
     }
 
     protected ArrayList<Enemy> findEnemies(ArrayList<GameObject> objects) {
-        ArrayList<Enemy> e = new ArrayList<>();
+        ArrayList<Enemy> enemies = new ArrayList<>();
         for (GameObject go : objects) {
             if (go.getType() == HOSTILE) {
-                e.add((Enemy) go);
+                enemies.add((Enemy) go);
             }
         }
-        return e;
+        return enemies;
     }
 
     protected boolean attackClosestEnemy(int damage, Delay delay, boolean resourceGain) {
@@ -262,32 +261,32 @@ public abstract class Player extends StatObject {
             // find closest target
             Enemy closestTarget = enemiesInRange.get(0);
             if (enemiesInRange.size() > 1) {
-                for (Enemy e : enemiesInRange) {
-                    if (Util.dist(position.x, position.z, e.getX(), e.getZ()) < Util.dist(position.x, position.z, closestTarget.getX(), closestTarget.getZ())) {
-                        closestTarget = e;
+                for (Enemy enemy : enemiesInRange) {
+                    if (Util.dist(position.x, position.z, enemy.getX(), enemy.getZ()) < Util.dist(position.x, position.z, closestTarget.getX(), closestTarget.getZ())) {
+                        closestTarget = enemy;
                     }
                 }
             }
             // attack closest target
             if (!closestTarget.isResetting() && Util.dist(position.x, position.z, closestTarget.getX(), closestTarget.getZ()) <= attackRange) {
-                if (!isInCombat()) {
+                if (!isInCombatWith(closestTarget)) {
                     setInCombat(this, closestTarget);
                 }
                 target = closestTarget;
                 closestTarget.addToThreatMap(this, damage);
                 closestTarget.extendFleeRange();
-                closestTarget.damage(damage);
+                closestTarget.removeHealth(damage);
                 if (resourceGain) {
                     stats.addResource(12);
                 }
-                Log.p(name + " attacking " + closestTarget.getName() + " for " + damage + " damage " + closestTarget.getCurrentHealth() + "/" + closestTarget.getMaxHealth());
+                System.out.println(name + " attacking " + closestTarget.getName() + " for " + damage + " damage " + closestTarget.getCurrentHealth() + "/" + closestTarget.getMaxHealth());
                 delay.restart();
                 return true;
             } else {
-                Log.p(name + " : Target is resetting or too far away");
+                System.out.println(name + " : Target is resetting or too far away");
             }
         } else {
-            Log.p(name + " : No Target");
+            System.out.println(name + " : No Target");
         }
         return false;
     }
@@ -295,18 +294,8 @@ public abstract class Player extends StatObject {
     protected void move(float amt, float dir) {
         double xAmount = MOVEMENT_SPEED * amt * Math.cos(Math.toRadians(rotation.y + 90 * dir)) * Time.getDelta();
         double zAmount = MOVEMENT_SPEED * amt * Math.sin(Math.toRadians(rotation.y + 90 * dir)) * Time.getDelta();
-
-//        if (currentCeiling.inBound((float) (position.x + xAmount), (float) (position.z + zAmount))) {
-//            if (currentCeiling.getHeight((float) (position.x + xAmount), (float) (position.z + zAmount)) - position.y > 20) {
-//                position.x += xAmount;
-//                position.z += zAmount;
-//            } else {
-//                System.out.println(currentCeiling + ", " + (currentCeiling.getHeight((float) (position.x + xAmount), (float) (position.z + zAmount)) - position.y));
-//            }
-//        } else {
         position.x += xAmount;
         position.z += zAmount;
-//        }
     }
 
     protected void rotateY(float amt) {
@@ -353,16 +342,16 @@ public abstract class Player extends StatObject {
                 setAttackDamage(((Weapon) item).getDamage());
                 setAttackRange(((Weapon) item).getRange());
             }
-            Log.p(item.getName() + " equipped");
+            System.out.println(item.getName() + " equipped");
         }
     }
 
     protected void listEquippedItems() {
         EquippableItem[] equippedItems = equipment.getItems();
-        Log.p("Equipped items:");
+        System.out.println("Equipped items:");
         for (EquippableItem equippedItem : equippedItems) {
             if (equippedItem != null) {
-                Log.p(equippedItem.getName());
+                System.out.println(equippedItem.getName());
             }
         }
     }
@@ -373,6 +362,6 @@ public abstract class Player extends StatObject {
 
     public void addXp(float amt) {
         stats.addXp(amt);
-        Log.p("experience added: " + amt);
+        System.out.println("experience added: " + amt);
     }
 }

@@ -177,7 +177,7 @@ public class Renderer {
         glEnd();
     }
 
-    public void renderText(ArrayList<GameObject> objects) {
+    public void renderNameplates(ArrayList<GameObject> objects) {
         for (GameObject go : objects) {
             glPushMatrix();
             {

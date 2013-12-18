@@ -1,7 +1,6 @@
 package game;
 
 import game.gameobject.statobject.Player;
-import util.Log;
 
 public final class Stats {
 
@@ -35,7 +34,7 @@ public final class Stats {
         // REMOVE !!
         //scale.generateScale();
         // =====
-        if (levelable) {
+        if (this.levelable) {
             if (xp >= MAX_XP) {
                 this.xp = MAX_XP;
             } else {
@@ -75,7 +74,7 @@ public final class Stats {
         if (health > maxHealth) {
             health = maxHealth;
         }
-        Log.p("health gained: " + health + "/" + maxHealth + " (+" + (health - healthBefore) + ")");
+        System.out.println("health gained: " + health + "/" + maxHealth + " (+" + (health - healthBefore) + ")");
     }
 
     public void replenishResource(Player.playerClass playerClass) {
@@ -94,11 +93,12 @@ public final class Stats {
         if (resource < 0) {
             resource = 0;
         }
-        Log.p("resource update: " + resource + "/" + maxResource + " (" + (resource - resourceBefore) + ")");
+        System.out.println("resource update: " + resource + "/" + maxResource + " (" + (resource - resourceBefore) + ")");
     }
 
     /**
-     * getLevel method. calculates the current level of a character based on current xp
+     * getLevel method. calculates the current level of a character based on
+     * current xp
      *
      * calculate xp from level = ax^2 calculate level from xp = sqrt(xp/a)
      *
@@ -159,7 +159,7 @@ public final class Stats {
         }
     }
 
-    public void damage(int amt) {
+    public void removeHealth(int amt) {
         health -= amt;
         if (health < 0) {
             health = 0;
